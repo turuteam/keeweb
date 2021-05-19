@@ -4,7 +4,13 @@ import { Logger } from 'util/logger';
 import { noop, unreachable } from 'util/fn';
 import { Launcher } from 'comp/launcher';
 import { Timeouts } from 'const/timeouts';
-import { NativeModuleCalls, NativeModuleHostCallbackMessage, YubiKeyInfo } from './desktop-ipc';
+import {
+    NativeArgon2OptionsArg,
+    NativeDataWithSalt,
+    NativeModuleCalls,
+    NativeModuleHostCallbackMessage,
+    YubiKeyInfo
+} from './desktop-ipc';
 
 const logger = new Logger('native-module-connector');
 
@@ -189,11 +195,15 @@ class NativeModules {
     //     }
     //     return Promise.resolve();
     // }
-    //
-    // argon2(password: number[], salt: number[], options) {
-    //     return this.call('argon2', password, salt, options);
-    // }
-    //
+
+    argon2(
+        password: NativeDataWithSalt,
+        salt: NativeDataWithSalt,
+        options: NativeArgon2OptionsArg
+    ): Promise<NativeDataWithSalt> {
+        return this.call('argon2', password, salt, options);
+    }
+
     // hardwareCryptoDeleteKey: () => {
     //     return Launcher.ipcRenderer.invoke('hardwareCryptoDeleteKey');
     // },

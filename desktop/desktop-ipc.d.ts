@@ -4,12 +4,31 @@ export interface YubiKeyInfo {
     id: string;
 }
 
+export interface NativeDataWithSalt {
+    data: number[];
+    salt: number[];
+}
+
+export interface NativeArgon2OptionsArg {
+    memoryCost: number;
+    hashLength: number;
+    timeCost: number;
+    parallelism: number;
+    type: number;
+    version: number;
+}
+
 export interface NativeModuleCalls {
     'start': () => void;
     'start-usb-listener': () => void;
     'stop-usb-listener': () => void;
     'get-yubikeys': () => YubiKeyInfo[];
     'yubikey-cancel-chal-resp': () => void;
+    'argon2': (
+        password: NativeDataWithSalt,
+        salt: NativeDataWithSalt,
+        options: NativeArgon2OptionsArg
+    ) => NativeDataWithSalt;
 }
 
 export interface NativeModuleHostCallbackYubiKeys {

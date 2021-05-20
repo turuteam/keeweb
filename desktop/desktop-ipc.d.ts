@@ -85,6 +85,7 @@ export interface DesktopIpcMainCalls {
     'set-global-shortcuts': (shortcuts: DesktopShortcutsSettings) => void;
     'get-temp-path': () => string | undefined;
     'get-app-path': () => string;
+    'get-user-data-path': () => string;
     'resolve-proxy': (url: string) => { host: string; port: string } | undefined;
     'spawn-process': (arg: ProcessSpawnArg) => ProcessSpawnResult;
 }

@@ -19,6 +19,7 @@ global.localStorage = jsdom.localStorage;
 global.navigator = jsdom.navigator;
 global.screen = jsdom.screen;
 global.location = jsdom.location;
+global.document = jsdom.document;
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 global.window = jsdom.window;

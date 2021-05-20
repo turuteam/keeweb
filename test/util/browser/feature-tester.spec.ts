@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { FeatureTester } from 'comp/browser/feature-tester';
+import { FeatureTester } from 'util/browser/feature-tester';
 
 describe('FeatureTester', () => {
     it('tests supported features', async () => {

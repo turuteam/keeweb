@@ -1,6 +1,6 @@
 import { Model } from 'util/model';
 import { SettingsStore } from 'comp/settings/settings-store';
-import { noop, omitEmpty } from 'util/fn';
+import { noop } from 'util/fn';
 import { Logger } from 'util/logger';
 import { NonFunctionPropertyNames, OptionalBooleanPropertyNames } from 'util/types';
 
@@ -52,12 +52,24 @@ class RuntimeDataModel extends Model {
         return true;
     }
 
+    get(key: string): unknown {
+        const thisRec = this as Record<string, unknown>;
+        return thisRec[key];
+    }
+
+    delete(key: string): void {
+        const thisRec = this as Record<string, unknown>;
+        delete thisRec[key];
+    }
+
     async save() {
         await SettingsStore.save('runtime-data', this);
     }
 
     toJSON(): Record<string, unknown> {
-        return omitEmpty(this as Record<string, unknown>);
+        return Object.fromEntries(
+            Object.entries(this).filter(([, value]) => !!value !== undefined)
+        );
     }
 
     private setBoolean(
@@ -69,7 +81,7 @@ class RuntimeDataModel extends Model {
             return true;
         }
         if (!value) {
-            this[key] = undefined;
+            delete this[key];
             return true;
         }
         return true;

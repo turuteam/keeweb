@@ -59,6 +59,25 @@ export interface DesktopShortcutsSettings {
     globalShortcutRestoreApp?: string;
 }
 
+interface HttpRequestConfig {
+    url: string;
+    method?: 'GET' | 'POST';
+    data?: ArrayBuffer | string;
+    multipartData?: string[];
+    dataType?: string;
+    headers?: Record<string, string>;
+    skipAuth?: boolean;
+    statuses?: number[];
+    tryNum?: number;
+    responseType?: XMLHttpRequestResponseType;
+}
+
+interface HttpResponse {
+    status: number;
+    response: unknown;
+    headers: Record<string, string>;
+}
+
 // ipcRenderer.on('event', ...args)
 // mainWindow.webContents.send('event', ...args)
 export interface DesktopIpcRendererEvents {
@@ -88,4 +107,6 @@ export interface DesktopIpcMainCalls {
     'get-user-data-path': () => string;
     'resolve-proxy': (url: string) => { host: string; port: string } | undefined;
     'spawn-process': (arg: ProcessSpawnArg) => ProcessSpawnResult;
+    'http-request': (arg: HttpRequestConfig) => HttpResponse;
+    'show-main-window': () => void;
 }

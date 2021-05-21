@@ -19,7 +19,7 @@ interface EventSpec {
     'keypress': (e: KeyboardEvent) => void;
     'keypress-modal': (e: KeyboardEvent, modal: string) => void;
     'popup-opened': (win: Window) => void;
-    'popup-closed': (win: Window, location?: string) => void;
+    'popup-closed': (win: Window, locationSearch?: string) => void;
     'qr-url-read': (url: string) => void;
     'qr-enter-manually': () => void;
 }

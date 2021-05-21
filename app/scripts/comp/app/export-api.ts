@@ -15,15 +15,13 @@ const ExportApi = {
     },
     runtimeData: {
         get(key?: string): unknown {
-            const rec = RuntimeDataModel as unknown as Record<string, unknown>;
-            return key ? rec[key] : { ...RuntimeDataModel };
+            return key ? RuntimeDataModel.get(key) : { ...RuntimeDataModel };
         },
         set(key: string, value: unknown): boolean {
             return RuntimeDataModel.set(key, value);
         },
         del(key: string): void {
-            const rec = RuntimeDataModel as unknown as Record<string, unknown>;
-            delete rec[key];
+            RuntimeDataModel.delete(key);
         }
     }
 };

@@ -28,10 +28,12 @@ export const GDriveApps = {
 
 export const OneDriveApps = {
     Local: {
-        id: 'b97c53d5-db5b-4124-aab9-d39195293815'
+        id: 'b97c53d5-db5b-4124-aab9-d39195293815',
+        secret: null
     },
     Production: {
-        id: 'bbc74d1b-3a9c-46e6-9da4-4c645e830923'
+        id: 'bbc74d1b-3a9c-46e6-9da4-4c645e830923',
+        secret: null
     },
     Desktop: {
         id: 'bbc74d1b-3a9c-46e6-9da4-4c645e830923',

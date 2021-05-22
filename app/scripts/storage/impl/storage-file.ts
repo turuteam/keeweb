@@ -8,7 +8,8 @@ import {
     StorageFileStat,
     StorageFileWatcherCallback,
     StoragePathIsDirectoryError,
-    StorageRevConflictError
+    StorageRevConflictError,
+    StorageSaveResult
 } from 'storage/types';
 import * as fs from 'fs';
 import * as NodePath from 'path';
@@ -30,10 +31,13 @@ class StorageFile extends StorageBase {
         super({
             name: 'file',
             icon: 'hdd',
-            enabled: !!Launcher,
             system: true,
             backup: true
         });
+    }
+
+    get enabled(): boolean {
+        return !!Launcher;
     }
 
     async load(path: string): Promise<StorageFileData> {
@@ -75,7 +79,7 @@ class StorageFile extends StorageBase {
         data: ArrayBuffer,
         opts?: StorageFileOptions,
         rev?: string
-    ): Promise<StorageFileStat> {
+    ): Promise<StorageSaveResult> {
         this._logger.debug('Save', path, rev);
         const ts = this._logger.ts();
 

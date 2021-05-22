@@ -18,7 +18,8 @@ import {
     StorageOAuthConfig,
     StorageOpenConfig,
     StorageSettingsConfig,
-    StorageFileNotFoundError
+    StorageFileNotFoundError,
+    StorageSaveResult
 } from 'storage/types';
 
 // https://www.dropbox.com/developers/documentation/http/documentation#oauth2-authorize
@@ -28,10 +29,13 @@ class StorageDropbox extends StorageBase {
         super({
             name: 'dropbox',
             icon: 'dropbox',
-            enabled: AppSettingsModel.dropbox,
             uipos: 20,
             backup: true
         });
+    }
+
+    get enabled(): boolean {
+        return AppSettingsModel.dropbox;
     }
 
     private toFullPath(path: string) {
@@ -355,7 +359,12 @@ class StorageDropbox extends StorageBase {
             throw new Error(`Bad .tag: ${tag}`);
         }
 
-        this._logger.debug('Stated', path, stat.folder ? 'folder' : stat.rev, this._logger.ts(ts));
+        this._logger.debug(
+            'Stat complete',
+            path,
+            stat.folder ? 'folder' : stat.rev,
+            this._logger.ts(ts)
+        );
         return stat;
     }
 
@@ -364,7 +373,7 @@ class StorageDropbox extends StorageBase {
         data: ArrayBuffer,
         opts?: StorageFileOptions,
         rev?: string
-    ): Promise<StorageFileStat> {
+    ): Promise<StorageSaveResult> {
         this._logger.debug('Save', path, rev);
         const ts = this._logger.ts();
         path = this.toFullPath(path);

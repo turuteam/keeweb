@@ -59,11 +59,13 @@ export interface DesktopShortcutsSettings {
     globalShortcutRestoreApp?: string;
 }
 
-interface HttpRequestConfig {
+export type HttpRequestMultipartDataItem = string | ArrayBuffer;
+
+export interface HttpRequestConfig {
     url: string;
-    method?: 'GET' | 'POST';
+    method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
     data?: ArrayBuffer | string;
-    multipartData?: string[];
+    multipartData?: HttpRequestMultipartDataItem[];
     dataType?: string;
     headers?: Record<string, string>;
     skipAuth?: boolean;
@@ -72,7 +74,7 @@ interface HttpRequestConfig {
     responseType?: XMLHttpRequestResponseType;
 }
 
-interface HttpResponse {
+export interface HttpResponse {
     status: number;
     data: unknown;
     headers: Record<string, string>;

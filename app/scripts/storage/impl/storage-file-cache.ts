@@ -1,6 +1,6 @@
 import { Launcher } from 'comp/launcher';
 import { StorageBase } from 'storage/storage-base';
-import { StorageFileData, StorageFileStat } from 'storage/types';
+import { StorageFileData, StorageSaveResult } from 'storage/types';
 import * as fs from 'fs';
 import * as NodePath from 'path';
 
@@ -10,9 +10,12 @@ class StorageFileCache extends StorageBase {
     constructor() {
         super({
             name: 'cache',
-            enabled: !!Launcher,
             system: true
         });
+    }
+
+    get enabled(): boolean {
+        return !!Launcher;
     }
 
     private async init(): Promise<string> {
@@ -35,7 +38,7 @@ class StorageFileCache extends StorageBase {
         return path;
     }
 
-    async save(id: string, data: ArrayBuffer): Promise<StorageFileStat> {
+    async save(id: string, data: ArrayBuffer): Promise<StorageSaveResult> {
         this._logger.debug('Save', id);
         const basePath = await this.init();
         const ts = this._logger.ts();

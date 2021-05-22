@@ -19,6 +19,7 @@ import {
     StorageListItem,
     StorageOAuthConfig,
     StorageOpenConfig,
+    StorageSaveResult,
     StorageSettingsConfig
 } from './types';
 
@@ -58,14 +59,12 @@ abstract class StorageBase {
     readonly uipos?: number;
     readonly system: boolean;
     readonly backup: boolean;
-    enabled: boolean;
 
     protected readonly _logger: Logger;
     private _oauthToken?: StorageProviderOAuthToken;
 
     protected constructor(props: {
         name: string;
-        enabled: boolean;
         icon?: string;
         system?: boolean;
         uipos?: number;
@@ -75,7 +74,6 @@ abstract class StorageBase {
             throw 'Failed to init provider: no name';
         }
         this.name = props.name;
-        this.enabled = props.enabled;
         this.icon = props.icon;
         this.system = !!props.system;
         this.backup = !!props.backup;
@@ -93,7 +91,7 @@ abstract class StorageBase {
         data: ArrayBuffer,
         opts?: StorageFileOptions,
         rev?: string
-    ): Promise<StorageFileStat>;
+    ): Promise<StorageSaveResult>;
 
     abstract remove?(id: string, opts?: StorageFileOptions): Promise<void>;
 
@@ -109,12 +107,7 @@ abstract class StorageBase {
         throw new Error('OAuth is not supported');
     }
 
-    setEnabled(enabled: boolean): void {
-        if (!enabled) {
-            this.logout().catch(noop);
-        }
-        this.enabled = enabled;
-    }
+    abstract get enabled(): boolean;
 
     get loggedIn(): boolean {
         return !!this.getStoredOAuthToken();
@@ -494,7 +487,7 @@ abstract class StorageBase {
         }
     }
 
-    protected async oauthRevokeToken(url: string, usePost?: boolean): Promise<void> {
+    protected async oauthRevokeToken(url?: string, usePost?: boolean): Promise<void> {
         const token = this.getStoredOAuthToken();
         if (token) {
             if (url) {
@@ -635,7 +628,7 @@ abstract class StorageBase {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    applySetting(key: string, value: string): void {
+    applySetting(key: string, value: string | null): void {
         throw new Error('applySetting is not implemented');
     }
 

@@ -1,5 +1,6 @@
 export interface StorageFileOptions {
-    username?: string;
+    user?: string;
+    password?: string;
 }
 
 export class HttpRequestError extends Error {
@@ -56,37 +57,43 @@ export interface StorageFileStat {
     folder?: boolean;
 }
 
+export interface StorageSaveResult {
+    rev?: string;
+    path?: string;
+}
+
 export interface StorageConfigField {
     type: string;
     id: string;
     title: string;
     desc?: string;
     required?: boolean;
-    value?: string;
+    value?: string | null;
 }
 
 export interface StorageConfigFieldText extends StorageConfigField {
     type: 'text';
     pattern?: string;
     placeholder?: string;
-    value?: string;
 }
 
 export interface StorageConfigFieldPassword extends StorageConfigField {
     type: 'password';
     pattern?: string;
     placeholder?: string;
-    value?: string;
 }
 
 export interface StorageConfigFieldSelect extends StorageConfigField {
     type: 'select';
     options: Record<string, string>;
-    value?: string;
+}
+
+export interface StorageConfigFieldCheckbox extends StorageConfigField {
+    type: 'checkbox';
 }
 
 export interface StorageOpenConfig {
-    desc: string;
+    desc?: string;
     fields: StorageConfigField[];
 }
 

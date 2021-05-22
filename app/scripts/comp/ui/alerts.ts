@@ -37,7 +37,9 @@ export class Alert {
         throw new Error('Not implemented');
     }
 
-    closeImmediate(): void {}
+    closeImmediate(): void {
+        // todo
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     change(config: { header?: string }): void {

@@ -10,7 +10,17 @@ import { RuntimeDataModel } from 'models/runtime-data-model';
 import { HttpRequestConfig, HttpResponse } from 'comp/launcher/desktop-ipc';
 import { AppSettingsModel } from 'models/app-settings-model';
 import { noop } from 'util/fn';
-import { StorageFileOptions } from './types';
+import {
+    HttpRequestError,
+    StorageFileData,
+    StorageFileOptions,
+    StorageFileStat,
+    StorageFileWatcherCallback,
+    StorageListItem,
+    StorageOAuthConfig,
+    StorageOpenConfig,
+    StorageSettingsConfig
+} from './types';
 
 const MaxRequestRetries = 3;
 
@@ -23,15 +33,6 @@ interface StorageProviderOAuthToken {
     expired?: boolean;
     scope?: string;
     userId?: string;
-}
-
-class HttpRequestError extends Error {
-    readonly status: number;
-
-    constructor(status: number) {
-        super(`HTTP status ${status}`);
-        this.status = status;
-    }
 }
 
 function isStorageProviderOAuthToken(obj: unknown): obj is StorageProviderOAuthToken {
@@ -51,23 +52,12 @@ function isStorageProviderOAuthToken(obj: unknown): obj is StorageProviderOAuthT
     return true;
 }
 
-interface StorageOAuthConfig {
-    scope: string;
-    url: string;
-    tokenUrl: string;
-    clientId: string;
-    clientSecret: string;
-    pkce: boolean;
-    width: number;
-    height: number;
-    urlParams: Record<string, string>;
-}
-
 abstract class StorageBase {
     readonly name: string;
     readonly icon?: string;
     readonly uipos?: number;
     readonly system: boolean;
+    readonly backup: boolean;
     enabled: boolean;
 
     protected readonly _logger: Logger;
@@ -79,6 +69,7 @@ abstract class StorageBase {
         icon?: string;
         system?: boolean;
         uipos?: number;
+        backup?: boolean;
     }) {
         if (!props.name) {
             throw 'Failed to init provider: no name';
@@ -87,20 +78,32 @@ abstract class StorageBase {
         this.enabled = props.enabled;
         this.icon = props.icon;
         this.system = !!props.system;
+        this.backup = !!props.backup;
         this.uipos = props.uipos;
 
         this._logger = new Logger('storage-' + this.name);
     }
 
+    abstract load(id: string, opts?: StorageFileOptions): Promise<StorageFileData>;
+
+    abstract stat(id: string, opts?: StorageFileOptions): Promise<StorageFileStat>;
+
     abstract save(
         id: string,
-        opts: StorageFileOptions | undefined,
-        data: ArrayBuffer
-    ): Promise<void>;
+        data: ArrayBuffer,
+        opts?: StorageFileOptions,
+        rev?: string
+    ): Promise<StorageFileStat>;
 
-    abstract load(id: string, opts: StorageFileOptions | undefined): Promise<ArrayBuffer>;
+    abstract remove?(id: string, opts?: StorageFileOptions): Promise<void>;
 
-    abstract remove(id: string, opts: StorageFileOptions | undefined): Promise<void>;
+    abstract list?(dir: string): Promise<StorageListItem[]>;
+
+    abstract mkdir?(path: string): Promise<void>;
+
+    abstract watch?(path: string, callback: StorageFileWatcherCallback): void;
+
+    abstract unwatch?(path: string, callback: StorageFileWatcherCallback): void;
 
     protected getOAuthConfig(): StorageOAuthConfig {
         throw new Error('OAuth is not supported');
@@ -108,7 +111,7 @@ abstract class StorageBase {
 
     setEnabled(enabled: boolean): void {
         if (!enabled) {
-            this.logout();
+            this.logout().catch(noop);
         }
         this.enabled = enabled;
     }
@@ -117,8 +120,8 @@ abstract class StorageBase {
         return !!this.getStoredOAuthToken();
     }
 
-    logout(): void {
-        // can be overridden
+    logout(): Promise<void> {
+        return Promise.resolve();
     }
 
     private getStoredOAuthToken(): StorageProviderOAuthToken | undefined {
@@ -211,7 +214,7 @@ abstract class StorageBase {
                 }
                 resolve({
                     status: xhr.status,
-                    response: xhr.response,
+                    data: xhr.response,
                     headers
                 });
             });
@@ -289,7 +292,7 @@ abstract class StorageBase {
         return new URL(`oauth-result/${this.name}.html`, redirectUrl).href;
     }
 
-    private async oauthAuthorize(): Promise<void> {
+    protected async oauthAuthorize(): Promise<void> {
         if (this.tokenIsValid(this._oauthToken)) {
             return Promise.resolve();
         }
@@ -491,7 +494,7 @@ abstract class StorageBase {
         }
     }
 
-    private async oauthRevokeToken(url: string, usePost?: boolean): Promise<void> {
+    protected async oauthRevokeToken(url: string, usePost?: boolean): Promise<void> {
         const token = this.getStoredOAuthToken();
         if (token) {
             if (url) {
@@ -606,12 +609,39 @@ abstract class StorageBase {
         }
 
         this._logger.debug('Refresh token exchanged');
-        if (typeof res.response === 'object') {
-            const rec = res.response as Record<string, unknown>;
+        if (typeof res.data === 'object') {
+            const rec = res.data as Record<string, unknown>;
             // eslint-disable-next-line camelcase
             rec.refresh_token = refreshToken;
         }
-        this.oauthProcessReturn(res.response);
+        this.oauthProcessReturn(res.data);
+    }
+
+    needShowOpenConfig(): boolean {
+        return false;
+    }
+
+    getOpenConfig(): StorageOpenConfig {
+        throw new Error('getOpenConfig is not implemented');
+    }
+
+    getSettingsConfig(): StorageSettingsConfig {
+        throw new Error('getSettingsConfig is not implemented');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    applyConfig(config: Record<string, string | null>): Promise<void> {
+        throw new Error('applyConfig is not implemented');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    applySetting(key: string, value: string): void {
+        throw new Error('applySetting is not implemented');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    getPathForName(fileName: string): string {
+        throw new Error('getPathForName is not implemented');
     }
 }
 

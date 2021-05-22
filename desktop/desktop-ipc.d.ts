@@ -74,7 +74,7 @@ interface HttpRequestConfig {
 
 interface HttpResponse {
     status: number;
-    response: unknown;
+    data: unknown;
     headers: Record<string, string>;
 }
 

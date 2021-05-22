@@ -76,7 +76,11 @@ export class Model<EventSpec extends ListenerSignature<EventSpec> = DefaultModel
     private emitter(): TypedEmitter<EventSpec> {
         let emitter = this[SymbolEmitter];
         if (!emitter) {
-            this[SymbolEmitter] = emitter = new TypedEmitter<EventSpec>();
+            emitter = new TypedEmitter<EventSpec>();
+            Object.defineProperty(this, SymbolEmitter, {
+                enumerable: false,
+                value: emitter
+            });
             emitter.setMaxListeners(DefaultMaxListeners);
         }
         return emitter;

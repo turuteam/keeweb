@@ -3,7 +3,7 @@ import { Logger } from 'util/logger';
 import * as http from 'http';
 import { TypedEmitter } from 'tiny-typed-emitter';
 import { HtmlRenderer } from 'util/browser/html-renderer';
-import { StorageOauthResult } from 'ui/standalone/storage-oauth-result';
+import { StorageOauthResult } from 'views/standalone/storage-oauth-result';
 
 interface HttpOAuthListenerEvents {
     'ready': () => void;

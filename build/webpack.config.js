@@ -47,8 +47,6 @@ function config(options) {
             ],
             alias: {
                 'babel-helpers': path.join(rootDir, 'app/lib/babel-helpers.js'),
-                jquery: `jquery/dist/jquery${devMode ? '' : '.min'}.js`,
-                morphdom: `morphdom/dist/morphdom-umd${devMode ? '' : '.min'}.js`,
                 kdbxweb: `kdbxweb/dist/kdbxweb${devMode ? '' : '.min'}.js`,
                 baron: `baron/baron${devMode ? '' : '.min'}.js`,
                 qrcode: `jsqrcode/dist/qrcode${devMode ? '' : '.min'}.js`,
@@ -190,7 +188,6 @@ function config(options) {
                     pkg.license
             ),
             new webpack.ProvidePlugin({
-                $: 'jquery',
                 babelHelpers: 'babel-helpers'
             }),
             new webpack.IgnorePlugin(/^(moment)$/),
@@ -206,7 +203,8 @@ function config(options) {
             xmldom: 'null',
             crypto: 'null',
             fs: 'null',
-            path: 'null'
+            path: 'null',
+            electron: 'null'
         },
         devtool: devMode ? 'source-map' : undefined
     };

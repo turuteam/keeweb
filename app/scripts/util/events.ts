@@ -1,6 +1,7 @@
 import { TypedEmitter } from 'tiny-typed-emitter';
 
 interface EventSpec {
+    'app-ready': () => void;
     'app-minimized': () => void;
     'app-maximized': () => void;
     'app-unmaximized': () => void;

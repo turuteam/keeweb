@@ -44,7 +44,7 @@ The app can be built with grunt: `grunt` (html files will be in `dist/`).
 Desktop apps are built with `grunt desktop`. This requires some magic and currently works only on CI, 
 you can find more details in [the GitHub Actions workflow](.github/workflows/build.yaml).  
 
-To run the desktop (electron) app without building an installer, build the app with `grunt` and start it this way:
+To run the desktop (electron) app in development mode, start it this way:
 ```bash
 npm run dev
 npm run electron

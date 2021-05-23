@@ -1,3 +1,7 @@
+/* eslint-disable import/first */
+if (process.env.NODE_ENV === 'development') {
+    require('preact/debug');
+}
 import { h, render } from 'preact';
 import { App } from 'ui/app';
 import { Events } from 'util/events';
@@ -21,6 +25,7 @@ import { Logger } from 'util/logger';
 import { FeatureTester } from 'util/browser/feature-tester';
 import { UsbListener } from 'comp/devices/usb-listener';
 import { noop } from 'util/fn';
+/* eslint-enable */
 
 declare global {
     interface Window {

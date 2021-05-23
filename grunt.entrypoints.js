@@ -5,15 +5,6 @@ module.exports = function(grunt) {
         'build-web-app'
     ]);
 
-    grunt.registerTask('dev', 'Build project and start web server and watcher', [
-        'build-web-app',
-        'devsrv'
-    ]);
-
-    grunt.registerTask('devsrv', 'Start web server and watcher', [
-        'webpack-dev-server'
-    ]);
-
     grunt.registerTask('desktop', 'Build web and desktop apps for all platforms', [
         'default',
         'build-desktop'

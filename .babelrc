@@ -1,6 +1,12 @@
 {
-    "presets": [],
+    "presets": [
+        ["@babel/typescript", { "jsxPragma": "h" }]
+    ],
     "plugins": [
+        ["@babel/transform-react-jsx", {
+            "runtime": "automatic",
+            "importSource": "preact"
+        }],
         ["@babel/plugin-proposal-class-properties", { "loose": true }],
         ["@babel/plugin-proposal-object-rest-spread", { "loose": true,
             "useBuiltIns": true

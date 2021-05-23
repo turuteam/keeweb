@@ -1,7 +1,6 @@
 /* eslint-env node */
 
 const fs = require('fs-extra');
-const path = require('path');
 const { execSync } = require('child_process');
 const debug = require('debug');
 
@@ -92,11 +91,6 @@ module.exports = function (grunt) {
             desktop: ['tmp/desktop', 'dist/desktop']
         },
         copy: {
-            html: {
-                src: 'app/index.html',
-                dest: 'tmp/index.html',
-                nonull: true
-            },
             'content-dist': {
                 cwd: 'app/content/',
                 src: '**',
@@ -104,24 +98,10 @@ module.exports = function (grunt) {
                 expand: true,
                 nonull: true
             },
-            icons: {
-                cwd: 'app/icons/',
-                src: ['*.png', '*.svg'],
-                dest: 'tmp/icons/',
-                expand: true,
-                nonull: true
-            },
             'dist-icons': {
                 cwd: 'app/icons/',
                 src: ['*.png', '*.svg'],
                 dest: 'dist/icons/',
-                expand: true,
-                nonull: true
-            },
-            manifest: {
-                cwd: 'app/manifest/',
-                src: ['*.json', '*.xml'],
-                dest: 'tmp/',
                 expand: true,
                 nonull: true
             },
@@ -339,25 +319,6 @@ module.exports = function (grunt) {
         },
         webpack: {
             app: webpackConfig.config(webpackOptions)
-        },
-        'webpack-dev-server': {
-            options: {
-                webpack: webpackConfig.config({
-                    ...webpackOptions,
-                    mode: 'development',
-                    sha: 'dev'
-                }),
-                publicPath: '/',
-                contentBase: [
-                    path.resolve(__dirname, 'tmp'),
-                    path.resolve(__dirname, 'app/content')
-                ],
-                progress: false
-            },
-            js: {
-                keepalive: true,
-                port: 8085
-            }
         },
         electron: {
             options: {

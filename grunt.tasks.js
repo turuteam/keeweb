@@ -4,9 +4,6 @@ module.exports = function (grunt) {
     grunt.registerTask('build-web-app', [
         'clean',
         'eslint',
-        'copy:html',
-        'copy:icons',
-        'copy:manifest',
         'webpack:app',
         'inline',
         'htmlmin',

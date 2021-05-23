@@ -6,6 +6,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const rootDir = path.join(__dirname, '..');
 
@@ -37,8 +38,6 @@ function config(options) {
             modules: true,
             reasons: true
         },
-        progress: false,
-        failOnError: true,
         resolve: {
             modules: [
                 path.join(rootDir, 'app/scripts'),
@@ -125,15 +124,10 @@ function config(options) {
                     options: { type: 'module', exports: 'default babelHelpers' }
                 },
                 {
-                    test: /\.js$/,
+                    test: /\.(js|tsx|ts)$/,
                     exclude: /(node_modules|babel-helpers\.js)/,
                     loader: 'babel-loader',
                     options: { cacheDirectory: true }
-                },
-                {
-                    test: /\.tsx?$/,
-                    use: 'ts-loader',
-                    exclude: /node_modules/
                 },
                 { test: /argon2\.wasm/, type: 'javascript/auto', loader: 'base64-loader' },
                 { test: /argon2(\.min)?\.js/, loader: 'raw-loader' },
@@ -177,6 +171,14 @@ function config(options) {
             ]
         },
         plugins: [
+            new CopyPlugin({
+                patterns: [
+                    { from: 'app/index.html', to: 'index.html' },
+                    { from: 'app/icons', to: 'icons' },
+                    { from: 'app/manifest/manifest.json', to: 'manifest.json' },
+                    { from: 'app/manifest/browserconfig.xml', to: 'browserconfig.xml' }
+                ]
+            }),
             new webpack.BannerPlugin(
                 'keeweb v' +
                     pkg.version +

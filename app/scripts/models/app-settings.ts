@@ -449,7 +449,7 @@ class AppSettings extends Model {
     }
 
     private setBoolean(
-        key: NonNullable<PropertiesOfType<AppSettings, boolean | undefined>>,
+        key: PropertiesOfType<AppSettings, boolean | undefined>,
         value: unknown
     ): boolean {
         if (typeof value === 'boolean') {

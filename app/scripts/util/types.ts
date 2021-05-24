@@ -5,6 +5,8 @@ export type NonFunctionPropertyNames<T> = NonNullable<
     }[Extract<keyof T, string>]
 >;
 
-export type PropertiesOfType<T, PropType> = {
-    [K in keyof T]: T[K] extends PropType ? K : never;
-}[keyof T];
+export type PropertiesOfType<T, PropType> = NonNullable<
+    {
+        [K in keyof T]: T[K] extends PropType ? K : never;
+    }[keyof T]
+>;

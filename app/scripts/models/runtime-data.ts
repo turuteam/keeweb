@@ -97,7 +97,7 @@ class RuntimeData extends Model {
     }
 
     private setBoolean(
-        key: NonNullable<PropertiesOfType<RuntimeData, boolean | undefined>>,
+        key: PropertiesOfType<RuntimeData, boolean | undefined>,
         value: unknown
     ): boolean {
         if (typeof value === 'boolean') {
@@ -112,7 +112,7 @@ class RuntimeData extends Model {
     }
 
     private setString(
-        key: NonNullable<PropertiesOfType<RuntimeData, string | undefined>>,
+        key: PropertiesOfType<RuntimeData, string | undefined>,
         value: unknown
     ): boolean {
         if (typeof value === 'string') {
@@ -126,10 +126,7 @@ class RuntimeData extends Model {
         return false;
     }
 
-    private setDate(
-        key: NonNullable<PropertiesOfType<RuntimeData, Date | undefined>>,
-        value: unknown
-    ): boolean {
+    private setDate(key: PropertiesOfType<RuntimeData, Date | undefined>, value: unknown): boolean {
         if (!value) {
             delete this[key];
             return true;

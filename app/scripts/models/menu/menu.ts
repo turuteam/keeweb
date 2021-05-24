@@ -12,7 +12,7 @@ import { MenuOption } from './menu-option';
 
 type MenuType = 'app' | 'settings';
 
-class MenuModel extends Model {
+class Menu extends Model {
     private readonly _menus = {} as Record<MenuType, MenuSection[]>;
 
     sections: MenuSection[];
@@ -225,7 +225,7 @@ class MenuModel extends Model {
                 continue;
             }
             for (const item of section.items) {
-                yield* MenuModel.allItemsWithin(item);
+                yield* Menu.allItemsWithin(item);
             }
         }
     }
@@ -233,7 +233,7 @@ class MenuModel extends Model {
     private *allItems() {
         for (const section of this.sections) {
             for (const item of section.items) {
-                yield* MenuModel.allItemsWithin(item);
+                yield* Menu.allItemsWithin(item);
             }
         }
     }
@@ -300,4 +300,4 @@ class MenuModel extends Model {
     }
 }
 
-export { MenuModel };
+export { Menu };

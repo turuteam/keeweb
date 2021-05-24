@@ -13,7 +13,7 @@ import { FileInfoModel } from 'models/file-info-model';
 import { FileModel } from 'models/file-model';
 import { GroupModel } from 'models/group-model';
 import { YubiKeyOtpModel } from 'models/otp-device/yubikey-otp-model';
-import { MenuModel } from 'models/menu/menu-model';
+import { Menu } from 'models/menu/menu-model';
 import { DateFormat } from 'comp/i18n/date-format';
 import { Launcher } from 'comp/launcher';
 import { UrlFormat } from 'util/formatting/url-format';
@@ -28,7 +28,7 @@ class AppModel {
     tags = [];
     files = new FileCollection();
     fileInfos = FileInfoCollection;
-    menu = new MenuModel();
+    menu = new Menu();
     filter = {};
     sort = 'title';
     settings = AppSettingsModel;

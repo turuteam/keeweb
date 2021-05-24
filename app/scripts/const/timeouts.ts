@@ -1,4 +1,6 @@
 export const Timeouts = {
+    ShowTip: 200,
+    HideTip: 500,
     CopyTip: 1500,
     AutoHideHint: 3000,
     FileChangeSync: 3000,

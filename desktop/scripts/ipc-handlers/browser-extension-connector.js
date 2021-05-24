@@ -237,7 +237,7 @@ async function processPendingSocketData(socket) {
         return;
     }
 
-    logger.debug(`Extension[${state.socketId}] -> KeeWeb`, request);
+    logger.info(`Extension[${state.socketId}] -> KeeWeb`, request);
 
     if (!request) {
         logger.warn(`Empty request for socket ${state.socketId}`, request);
@@ -276,7 +276,7 @@ async function processFirstMessageFromSocket(socket, message) {
         return;
     }
 
-    logger.debug(`Init connection ${state.socketId}`, message);
+    logger.info(`Init connection ${state.socketId}`, message);
 
     state.processingData = true;
 
@@ -387,11 +387,11 @@ function sendMessageToSocket(socket, message) {
         return;
     }
     if (!state.active) {
-        logger.warn(`Ignoring a message to inactive socket ${state.socketId}`);
+        logger.info(`Ignoring a message to inactive socket ${state.socketId}`);
         return;
     }
 
-    logger.debug(`KeeWeb -> Extension[${state.socketId}]`, message);
+    logger.info(`KeeWeb -> Extension[${state.socketId}]`, message);
 
     const responseData = Buffer.from(JSON.stringify(message));
     const lengthBuf = Buffer.from(new Uint32Array([responseData.byteLength]).buffer);

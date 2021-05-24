@@ -21,5 +21,7 @@ export const Timeouts = {
     NativeModuleHostRestartTime: 3000,
     FastAnimation: 100,
     AutoTypeCopyPaste: 300,
-    KeeWebConnectRequest: 60000
+    KeeWebConnectRequest: 60000,
+    UpdateInterval: 1000 * 60 * 60 * 24,
+    MinUpdateTimeout: 500
 };

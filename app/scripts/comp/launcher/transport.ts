@@ -20,13 +20,11 @@ const Transport = {
 
     async httpGet(config: {
         url: string;
-        file: string;
-        cache?: false;
+        file?: string;
+        cache?: boolean;
         cleanupOldFiles?: boolean;
         noRedirect?: boolean;
-        success: (fileName?: string, data?: Buffer) => void;
-        error: (e: Error) => void;
-    }): Promise<void> {
+    }): Promise<{ fileName?: string; data?: Buffer }> {
         let tmpFile: string;
         if (config.file) {
             const baseTempPath = await this.cacheFilePath();
@@ -53,7 +51,7 @@ const Transport = {
                 try {
                     if (config.cache && (await fs.promises.stat(tmpFile)).size > 0) {
                         logger.info('File already downloaded', config.url);
-                        return config.success(tmpFile);
+                        return Promise.resolve({ fileName: tmpFile });
                     } else {
                         await fs.promises.unlink(tmpFile);
                     }
@@ -87,52 +85,55 @@ const Transport = {
             opts.port = proxy.port;
             opts.path = config.url;
         }
-        https
-            .get(opts, (res) => {
-                logger.info(`Response from ${config.url}: `, res.statusCode);
-                if (res.statusCode === 200) {
-                    if (config.file) {
-                        const file = fs.createWriteStream(tmpFile);
-                        res.pipe(file);
-                        file.on('finish', () => {
-                            file.on('close', () => {
-                                config.success(tmpFile);
+
+        return new Promise((resolve, reject) => {
+            https
+                .get(opts, (res) => {
+                    logger.info(`Response from ${config.url}: `, res.statusCode);
+                    if (res.statusCode === 200) {
+                        if (config.file) {
+                            const file = fs.createWriteStream(tmpFile);
+                            res.pipe(file);
+                            file.on('finish', () => {
+                                file.on('close', () => {
+                                    resolve({ fileName: tmpFile });
+                                });
+                                file.close();
                             });
-                            file.close();
-                        });
-                        file.on('error', (err) => {
-                            config.error(err);
-                        });
+                            file.on('error', (err) => {
+                                reject(err);
+                            });
+                        } else {
+                            const chunks: Buffer[] = [];
+                            res.on('data', (chunk) => {
+                                chunks.push(chunk);
+                            });
+                            res.on('end', () => {
+                                resolve({ data: Buffer.concat(chunks) });
+                            });
+                        }
+                    } else if (
+                        res.headers.location &&
+                        (res.statusCode === 301 || res.statusCode === 302)
+                    ) {
+                        if (config.noRedirect) {
+                            return reject(new Error('Too many redirects'));
+                        }
+                        config.url = res.headers.location;
+                        config.noRedirect = true;
+                        resolve(Transport.httpGet(config));
                     } else {
-                        const chunks: Buffer[] = [];
-                        res.on('data', (chunk) => {
-                            chunks.push(chunk);
-                        });
-                        res.on('end', () => {
-                            config.success(undefined, Buffer.concat(chunks));
-                        });
+                        reject(new Error(`HTTP status ${res.statusCode ?? 0}`));
                     }
-                } else if (
-                    res.headers.location &&
-                    (res.statusCode === 301 || res.statusCode === 302)
-                ) {
-                    if (config.noRedirect) {
-                        return config.error(new Error('Too many redirects'));
+                })
+                .on('error', (e) => {
+                    logger.error('Cannot GET ' + config.url, e);
+                    if (tmpFile) {
+                        fs.unlink(tmpFile, noop);
                     }
-                    config.url = res.headers.location;
-                    config.noRedirect = true;
-                    Transport.httpGet(config).catch(noop);
-                } else {
-                    config.error(new Error(`HTTP status ${res.statusCode ?? 0}`));
-                }
-            })
-            .on('error', (e) => {
-                logger.error('Cannot GET ' + config.url, e);
-                if (tmpFile) {
-                    fs.unlink(tmpFile, noop);
-                }
-                config.error(e);
-            });
+                    reject(e);
+                });
+        });
     }
 };
 

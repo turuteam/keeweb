@@ -31,20 +31,13 @@ type TypedIpcRenderer = {
 export class LauncherElectron {
     name = 'electron';
     version = process.versions.electron;
+    pendingUpdateFile?: string;
 
     constructor() {
         this.ipcRenderer.on('log', (e, name, level, ...args) => {
             const logger = new Logger(name);
             logger[level](...args);
         });
-    }
-
-    get platform(): NodeJS.Platform {
-        return process.platform;
-    }
-
-    get arch(): string {
-        return process.arch;
     }
 
     get ipcRenderer(): TypedIpcRenderer {
@@ -177,19 +170,23 @@ export class LauncherElectron {
     //     this.exitRequested = true;
     //     this.requestExit();
     // },
-    // requestExit() {
-    //     const app = this.remoteApp();
-    //     app.setHookBeforeQuitEvent(false);
-    //     if (this.pendingUpdateFile) {
-    //         app.restartAndUpdate(this.pendingUpdateFile);
-    //     } else {
-    //         app.quit();
-    //     }
-    // },
-    // requestRestartAndUpdate(updateFilePath) {
-    //     this.pendingUpdateFile = updateFilePath;
-    //     this.requestExit();
-    // },
+
+    requestExit(): void {
+        throw new Error('TODO');
+        // const app = this.remoteApp();
+        // app.setHookBeforeQuitEvent(false);
+        // if (this.pendingUpdateFile) {
+        //     app.restartAndUpdate(this.pendingUpdateFile);
+        // } else {
+        //     app.quit();
+        // }
+    }
+
+    requestRestartAndUpdate(updateFilePath: string): void {
+        this.pendingUpdateFile = updateFilePath;
+        this.requestExit();
+    }
+
     // cancelRestart() {
     //     this.pendingUpdateFile = undefined;
     // },
@@ -221,9 +218,11 @@ export class LauncherElectron {
     // canDetectOsSleep() {
     //     return process.platform !== 'linux';
     // },
-    // updaterEnabled() {
-    //     return process.platform !== 'linux';
-    // },
+
+    updaterEnabled(): boolean {
+        return process.platform !== 'linux';
+    }
+
     // getMainWindow() {
     //     return this.remoteApp().getMainWindow();
     // },

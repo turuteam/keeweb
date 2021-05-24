@@ -18,7 +18,7 @@ const UsbListener = {
 
         Events.on('native-modules-yubikeys', (numYubiKeys) => {
             if (numYubiKeys !== this.attachedYubiKeys) {
-                logger.debug(`YubiKeys changed ${this.attachedYubiKeys} => ${numYubiKeys}`);
+                logger.info(`YubiKeys changed ${this.attachedYubiKeys} => ${numYubiKeys}`);
                 this.attachedYubiKeys = numYubiKeys;
                 Events.emit('usb-devices-changed');
             }

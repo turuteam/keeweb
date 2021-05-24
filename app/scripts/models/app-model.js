@@ -65,7 +65,7 @@ class AppModel {
     loadConfig(configLocation) {
         return new Promise((resolve, reject) => {
             this.ensureCanLoadConfig(configLocation);
-            this.appLogger.debug('Loading config from', configLocation);
+            this.applogger.info('Loading config from', configLocation);
             const ts = this.appLogger.ts();
             const xhr = new XMLHttpRequest();
             xhr.open('GET', configLocation);
@@ -789,14 +789,7 @@ class AppModel {
     }
 
     addToLastOpenFiles(file, rev) {
-        this.appLogger.debug(
-            'Add last open file',
-            file.id,
-            file.name,
-            file.storage,
-            file.path,
-            rev
-        );
+        this.applogger.info('Add last open file', file.id, file.name, file.storage, file.path, rev);
         const dt = new Date();
         const fileInfo = new FileInfoModel({
             id: file.id,
@@ -1267,7 +1260,7 @@ class AppModel {
         let needBackup = false;
         if (!backup.lastTime) {
             needBackup = true;
-            logger.debug('No last backup time, backup now');
+            logger.info('No last backup time, backup now');
         } else {
             const dt = new Date(backup.lastTime);
             switch (backup.schedule) {
@@ -1288,7 +1281,7 @@ class AppModel {
             if (dt.getTime() <= Date.now()) {
                 needBackup = true;
             }
-            logger.debug(
+            logger.info(
                 'Last backup time: ' +
                     new Date(backup.lastTime) +
                     ', schedule: ' +
@@ -1328,9 +1321,9 @@ class AppModel {
     }
 
     tryOpenOtpDeviceInBackground() {
-        this.appLogger.debug('Auto-opening a YubiKey');
+        this.applogger.info('Auto-opening a YubiKey');
         this.openOtpDevice((err) => {
-            this.appLogger.debug('YubiKey auto-open complete', err);
+            this.applogger.info('YubiKey auto-open complete', err);
         });
     }
 

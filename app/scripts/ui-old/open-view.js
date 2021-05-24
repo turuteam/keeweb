@@ -678,7 +678,7 @@ class OpenView extends View {
         this.busy = true;
         this.params.password = this.passwordInput.value;
         if (this.encryptedPassword && !this.params.password.length) {
-            logger.debug('Encrypting password using hardware decryption');
+            logger.info('Encrypting password using hardware decryption');
             const touchIdPrompt = Locale.bioOpenAuthPrompt.replace('{}', this.params.name);
             const encryptedPassword = kdbxweb.ProtectedValue.fromBase64(
                 this.encryptedPassword.value

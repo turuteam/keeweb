@@ -33,9 +33,9 @@ const AutoType = {
         const entry = (e && e.entry) || null;
         const sequence = (e && e.sequence) || null;
         const context = (e && e.context) || null;
-        logger.debug('Auto type event', entry);
+        logger.info('Auto type event', entry);
         if (this.running) {
-            logger.debug('Already running, skipping event');
+            logger.info('Already running, skipping event');
             return;
         }
         if (entry) {
@@ -83,19 +83,19 @@ const AutoType = {
         this.running = true;
         const sequence = result.sequence || result.entry.getEffectiveAutoTypeSeq();
         const context = result.context;
-        logger.debug('Start', sequence);
+        logger.info('Start', sequence);
         const ts = logger.ts();
         try {
             const parser = new AutoTypeParser(sequence);
             const runner = parser.parse();
-            logger.debug('Parsed', this.printOps(runner.ops));
+            logger.info('Parsed', this.printOps(runner.ops));
             runner.resolve(result.entry, context, (err) => {
                 if (err) {
                     this.running = false;
                     logger.error('Resolve error', err);
                     return callback && callback(err);
                 }
-                logger.debug('Resolved', this.printOps(runner.ops));
+                logger.info('Resolved', this.printOps(runner.ops));
                 if (result.entry.autoTypeObfuscation) {
                     try {
                         runner.obfuscate();
@@ -104,7 +104,7 @@ const AutoType = {
                         logger.error('Obfuscate error', e);
                         return callback && callback(e);
                     }
-                    logger.debug('Obfuscated');
+                    logger.info('Obfuscated');
                 }
                 runner.run((err) => {
                     this.running = false;
@@ -112,7 +112,7 @@ const AutoType = {
                         logger.error('Run error', err);
                         return callback && callback(err);
                     }
-                    logger.debug('Complete', logger.ts(ts));
+                    logger.info('Complete', logger.ts(ts));
                     return callback && callback();
                 }, windowId);
             });
@@ -153,7 +153,7 @@ const AutoType = {
     },
 
     hideWindow(callback) {
-        logger.debug('Hide window');
+        logger.info('Hide window');
         if (Launcher.isAppFocused()) {
             Launcher.hideApp();
             setTimeout(callback, Timeouts.AutoTypeAfterHide);
@@ -163,7 +163,7 @@ const AutoType = {
     },
 
     getActiveWindowInfo(callback) {
-        logger.debug('Getting window info');
+        logger.info('Getting window info');
         const helper = new AutoTypeHelper();
         return helper.getActiveWindowInfo((err, windowInfo) => {
             if (err) {
@@ -176,7 +176,7 @@ const AutoType = {
                     const urlMatches = urlMatcher.exec(windowInfo.title);
                     windowInfo.url = urlMatches && urlMatches.length > 0 ? urlMatches[0] : null;
                 }
-                logger.debug('Window info', windowInfo.id, windowInfo.title, windowInfo.url);
+                logger.info('Window info', windowInfo.id, windowInfo.title, windowInfo.url);
             }
             return callback(err, windowInfo);
         });
@@ -184,12 +184,12 @@ const AutoType = {
 
     activeWindowMatches(windowInfo, callback) {
         if (!windowInfo || !windowInfo.id) {
-            logger.debug('Skipped active window check because window id is unknown');
+            logger.info('Skipped active window check because window id is unknown');
             return callback(true);
         }
         this.getActiveWindowInfo((err, activeWindowInfo) => {
             if (!activeWindowInfo) {
-                logger.debug('Error during active window check, something is wrong', err);
+                logger.info('Error during active window check, something is wrong', err);
                 return callback(false);
             }
             if (activeWindowInfo.id !== windowInfo.id && !this.supportsEventsWithWindowId) {
@@ -223,19 +223,19 @@ const AutoType = {
             );
             const evt = { filter, windowInfo };
             if (!AppModel.instance.files.hasOpenFiles()) {
-                logger.debug('auto-type event delayed');
+                logger.info('auto-type event delayed');
                 this.focusMainWindow();
                 try {
                     await AppModel.instance.unlockAnyFile('autoTypeUnlockMessage');
                 } catch {
-                    logger.debug('auto-type event canceled');
+                    logger.info('auto-type event canceled');
                     return;
                 }
                 if (this.selectEntryView) {
                     this.selectEntryView.show();
                 }
             }
-            logger.debug('processing auto-type event');
+            logger.info('processing auto-type event');
             this.processEventWithFilter(evt);
         });
     },
@@ -281,7 +281,7 @@ const AutoType = {
             topMessage
         });
         this.selectEntryView.on('result', (result) => {
-            logger.debug('Entry selected', result);
+            logger.info('Entry selected', result);
             this.selectEntryView.off('result');
             this.selectEntryView.remove();
             this.selectEntryView = null;

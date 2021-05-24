@@ -102,7 +102,7 @@ function decryptRequest(request) {
     const json = new TextDecoder().decode(data);
     const payload = JSON.parse(json);
 
-    logger.debug('Extension -> KeeWeb -> (decrypted)', payload);
+    logger.info('Extension -> KeeWeb -> (decrypted)', payload);
 
     if (!payload) {
         throw new Error('Empty request payload');
@@ -115,7 +115,7 @@ function decryptRequest(request) {
 }
 
 function encryptResponse(request, payload) {
-    logger.debug('KeeWeb -> Extension (decrypted)', payload);
+    logger.info('KeeWeb -> Extension (decrypted)', payload);
 
     const nonceBytes = kdbxweb.ByteUtils.base64ToBytes(request.nonce);
     incrementNonce(nonceBytes);
@@ -280,7 +280,7 @@ function getHumanReadableExtensionName(client) {
 }
 
 function focusKeeWeb() {
-    logger.debug('Focus KeeWeb');
+    logger.info('Focus KeeWeb');
     if (Launcher) {
         if (!Launcher.isAppFocused()) {
             Launcher.showMainWindow();

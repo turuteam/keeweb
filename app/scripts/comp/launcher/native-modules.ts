@@ -57,7 +57,7 @@ class NativeModules {
             return this._hostStartPromise;
         }
 
-        logger.debug('Starting native module host');
+        logger.info('Starting native module host');
 
         this._hostStartPromise = this.call('start').then(() => {
             this._hostStartPromise = undefined;

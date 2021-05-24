@@ -20,7 +20,7 @@ const PluginGallery = {
         this.loadError = false;
         const ts = this.logger.ts();
         return new Promise((resolve) => {
-            this.logger.debug('Loading plugins...');
+            this.logger.info('Loading plugins...');
             const xhr = new XMLHttpRequest();
             xhr.open('GET', Links.Plugins + '/plugins.json');
             xhr.responseType = 'json';
@@ -44,7 +44,7 @@ const PluginGallery = {
                 return this.verifySignature(data).then((gallery) => {
                     this.loadError = !gallery;
                     if (gallery) {
-                        this.logger.debug(
+                        this.logger.info(
                             `Loaded ${gallery.plugins.length} plugins`,
                             this.logger.ts(ts)
                         );
@@ -84,7 +84,7 @@ const PluginGallery = {
         return SettingsStore.load('plugin-gallery').then((data) => {
             if (data) {
                 return this.verifySignature(data).then((gallery) => {
-                    this.logger.debug(`Loaded cached plugin gallery`, this.logger.ts(ts));
+                    this.logger.info(`Loaded cached plugin gallery`, this.logger.ts(ts));
                     return gallery;
                 });
             }

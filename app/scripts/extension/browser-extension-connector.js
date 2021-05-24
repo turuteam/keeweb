@@ -143,7 +143,7 @@ const BrowserExtensionConnector = {
         if (e?.data?.kwConnect !== 'request') {
             return;
         }
-        logger.debug('Extension -> KeeWeb', e.data);
+        logger.info('Extension -> KeeWeb', e.data);
         pendingBrowserMessages.push(e.data);
         this.processBrowserMessages();
     },
@@ -173,7 +173,7 @@ const BrowserExtensionConnector = {
     },
 
     sendWebResponse(response) {
-        logger.debug('KeeWeb -> Extension', response);
+        logger.info('KeeWeb -> Extension', response);
         response.kwConnect = 'response';
         postMessage(response, window.location.origin);
     },

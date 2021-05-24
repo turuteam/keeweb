@@ -39,14 +39,14 @@ class StorageFileCache extends StorageBase {
     }
 
     async save(id: string, data: ArrayBuffer): Promise<StorageSaveResult> {
-        this._logger.debug('Save', id);
+        this._logger.info('Save', id);
         const basePath = await this.init();
         const ts = this._logger.ts();
 
         const path = NodePath.join(basePath, id);
         try {
             await fs.promises.writeFile(path, Buffer.from(data));
-            this._logger.debug('Saved', id, this._logger.ts(ts));
+            this._logger.info('Saved', id, this._logger.ts(ts));
         } catch (err) {
             this._logger.error('Error saving to cache', id, err);
             throw err;
@@ -59,14 +59,14 @@ class StorageFileCache extends StorageBase {
     }
 
     async load(id: string): Promise<StorageFileData> {
-        this._logger.debug('Load', id);
+        this._logger.info('Load', id);
         const basePath = await this.init();
         const ts = this._logger.ts();
 
         const path = NodePath.join(basePath, id);
         try {
             const data = await fs.promises.readFile(path);
-            this._logger.debug('Loaded', id, this._logger.ts(ts));
+            this._logger.info('Loaded', id, this._logger.ts(ts));
 
             const stat = await fs.promises.stat(path);
             const rev = stat.mtime.getTime().toString();
@@ -79,7 +79,7 @@ class StorageFileCache extends StorageBase {
     }
 
     async remove(id: string): Promise<void> {
-        this._logger.debug('Remove', id);
+        this._logger.info('Remove', id);
         const basePath = await this.init();
         const ts = this._logger.ts();
         const path = NodePath.join(basePath, id);
@@ -92,7 +92,7 @@ class StorageFileCache extends StorageBase {
 
         try {
             await fs.promises.unlink(path);
-            this._logger.debug('Removed', id, this._logger.ts(ts));
+            this._logger.info('Removed', id, this._logger.ts(ts));
         } catch (err) {
             this._logger.error('Error removing from cache', id, err);
             throw err;

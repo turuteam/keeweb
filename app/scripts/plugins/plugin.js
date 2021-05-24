@@ -210,7 +210,7 @@ class Plugin extends Model {
             res = httpGet(url, true);
         }
         return res.then((data) => {
-            this.logger.debug('Resource data loaded', type, this.logger.ts(ts));
+            this.logger.info('Resource data loaded', type, this.logger.ts(ts));
             return this.verifyResource(data, type).then((data) => {
                 this.resources[type] = data;
             });
@@ -224,7 +224,7 @@ class Plugin extends Model {
         return SignatureVerifier.verify(data, signature, manifest.publicKey)
             .then((valid) => {
                 if (valid) {
-                    this.logger.debug('Resource signature validated', type, this.logger.ts(ts));
+                    this.logger.info('Resource signature validated', type, this.logger.ts(ts));
                     return data;
                 } else {
                     this.logger.error('Resource signature invalid', type);
@@ -269,7 +269,7 @@ class Plugin extends Model {
             resourceSavePromises.push(this.saveResource(key, this.resources[key]));
         }
         return Promise.all(resourceSavePromises).catch((e) => {
-            this.logger.debug('Error saving plugin resources', e);
+            this.logger.info('Error saving plugin resources', e);
             return this.uninstall().then(() => {
                 throw 'Error saving plugin resources';
             });
@@ -327,7 +327,7 @@ class Plugin extends Model {
                             }
                         }
                     }
-                    this.logger.debug('Plugin style installed');
+                    this.logger.info('Plugin style installed');
                     resolve();
                 });
             } catch (e) {
@@ -387,7 +387,7 @@ class Plugin extends Model {
                 setTimeout(() => {
                     delete global[jsVar];
                     if (this.module.exports.uninstall) {
-                        this.logger.debug('Plugin script installed', this.logger.ts(ts));
+                        this.logger.info('Plugin script installed', this.logger.ts(ts));
                         this.loadPluginSettings();
                         resolve();
                     } else {
@@ -428,7 +428,7 @@ class Plugin extends Model {
             const localeData = JSON.parse(text);
             SettingsManager.allLocales[locale.name] = locale.title;
             SettingsManager.customLocales[locale.name] = localeData;
-            this.logger.debug('Plugin locale installed');
+            this.logger.info('Plugin locale installed');
         });
     }
 
@@ -470,7 +470,7 @@ class Plugin extends Model {
         if (settings) {
             this.setSettings(settings);
         }
-        this.logger.debug('Plugin settings loaded', this.logger.ts(ts));
+        this.logger.info('Plugin settings loaded', this.logger.ts(ts));
     }
 
     uninstallPluginCode() {
@@ -655,7 +655,7 @@ class Plugin extends Model {
                     commonLogger.error('Failed to parse manifest', manifest);
                     throw 'Failed to parse manifest';
                 }
-                commonLogger.debug('Loaded manifest', manifest);
+                commonlogger.info('Loaded manifest', manifest);
                 if (expectedManifest) {
                     if (expectedManifest.name !== manifest.name) {
                         throw 'Bad plugin name';
@@ -692,29 +692,29 @@ Plugin.defineModelProperties({
 Object.assign(Plugin, PluginStatus);
 
 function httpGet(url, binary) {
-    commonLogger.debug('GET', url);
+    commonlogger.info('GET', url);
     const ts = commonLogger.ts();
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('load', () => {
             if (xhr.status === 200) {
-                commonLogger.debug('GET OK', url, commonLogger.ts(ts));
+                commonlogger.info('GET OK', url, commonLogger.ts(ts));
                 resolve(xhr.response);
             } else {
-                commonLogger.debug('GET error', url, xhr.status);
+                commonlogger.info('GET error', url, xhr.status);
                 reject(xhr.status ? `HTTP status ${xhr.status}` : 'network error');
             }
         });
         xhr.addEventListener('error', () => {
-            commonLogger.debug('GET error', url, xhr.status);
+            commonlogger.info('GET error', url, xhr.status);
             reject(xhr.status ? `HTTP status ${xhr.status}` : 'network error');
         });
         xhr.addEventListener('abort', () => {
-            commonLogger.debug('GET aborted', url);
+            commonlogger.info('GET aborted', url);
             reject('Network request timeout');
         });
         xhr.addEventListener('timeout', () => {
-            commonLogger.debug('GET timeout', url);
+            commonlogger.info('GET timeout', url);
             reject('Network request timeout');
         });
         if (binary) {

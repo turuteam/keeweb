@@ -133,7 +133,7 @@ const SettingsManager = {
             metaThemeColor.content = window.getComputedStyle(document.body).backgroundColor;
         }
         this.activeTheme = theme;
-        logger.debug('Theme changed', theme);
+        logger.info('Theme changed', theme);
         Events.emit('theme-changed');
     },
 
@@ -155,7 +155,7 @@ const SettingsManager = {
             for (const config of this.autoSwitchedThemes) {
                 if (config.light === this.activeTheme || config.dark === this.activeTheme) {
                     const newTheme = ThemeWatcher.dark ? config.dark : config.light;
-                    logger.debug('Setting theme triggered by system settings change', newTheme);
+                    logger.info('Setting theme triggered by system settings change', newTheme);
                     this.setTheme(newTheme);
                     break;
                 }

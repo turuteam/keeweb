@@ -97,14 +97,14 @@ class OtpQrReader {
     private pasteEvent(e: ClipboardEvent) {
         const items = e.clipboardData?.items;
         if (!items) {
-            logger.debug('Empty clipboard data');
+            logger.info('Empty clipboard data');
             return;
         }
         const item = [...items].find(
             (item) => item.kind === 'file' && item.type.indexOf('image') !== -1
         );
         if (!item) {
-            logger.debug('Paste without file');
+            logger.info('Paste without file');
             return;
         }
         logger.info('Reading pasted image', item.type);
@@ -117,7 +117,7 @@ class OtpQrReader {
         if (file) {
             this.readFile(file);
         } else {
-            logger.debug('Empty file');
+            logger.info('Empty file');
         }
     }
 
@@ -125,10 +125,10 @@ class OtpQrReader {
         const reader = new FileReader();
         reader.onload = () => {
             if (typeof reader.result !== 'string') {
-                logger.debug('Read not a string');
+                logger.info('Read not a string');
                 return;
             }
-            logger.debug('Image data loaded');
+            logger.info('Image data loaded');
             this.readQr(reader.result);
         };
         reader.readAsDataURL(file);
@@ -137,7 +137,7 @@ class OtpQrReader {
     private readQr(imageData: string) {
         const image = new Image();
         image.onload = () => {
-            logger.debug('Image format loaded');
+            logger.info('Image format loaded');
             try {
                 const ts = logger.ts();
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
@@ -163,7 +163,7 @@ class OtpQrReader {
             }
         };
         image.onerror = () => {
-            logger.debug('Image load error');
+            logger.info('Image load error');
             this.removeAlert();
             Alerts.error({
                 header: Locale.detOtpImageError,

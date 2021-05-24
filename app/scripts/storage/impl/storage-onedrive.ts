@@ -37,7 +37,7 @@ class StorageOneDrive extends StorageBase {
 
     async load(path: string): Promise<StorageFileData> {
         await this.oauthAuthorize();
-        this._logger.debug('Load', path);
+        this._logger.info('Load', path);
         const ts = this._logger.ts();
         const url = BaseUrl + path;
 
@@ -59,7 +59,7 @@ class StorageOneDrive extends StorageBase {
         const downloadUrl = responseData['@microsoft.graph.downloadUrl'];
 
         if (typeof downloadUrl !== 'string') {
-            this._logger.debug(
+            this._logger.info(
                 'Load error',
                 path,
                 'no download url',
@@ -70,7 +70,7 @@ class StorageOneDrive extends StorageBase {
         }
 
         if (typeof responseData.eTag !== 'string') {
-            this._logger.debug('Load error', path, 'no rev', responseData, this._logger.ts(ts));
+            this._logger.info('Load error', path, 'no rev', responseData, this._logger.ts(ts));
             throw new Error('No rev');
         }
 
@@ -98,14 +98,14 @@ class StorageOneDrive extends StorageBase {
             throw err;
         }
 
-        this._logger.debug('Loaded', path, rev, this._logger.ts(ts));
+        this._logger.info('Loaded', path, rev, this._logger.ts(ts));
 
         return { data, rev };
     }
 
     async stat(path: string): Promise<StorageFileStat> {
         await this.oauthAuthorize();
-        this._logger.debug('Stat', path);
+        this._logger.info('Stat', path);
         const ts = this._logger.ts();
         const url = BaseUrl + path;
 
@@ -122,7 +122,7 @@ class StorageOneDrive extends StorageBase {
             responseData = response.data as Record<string, unknown>;
         } catch (err) {
             if (err instanceof HttpRequestError && err.status === 404) {
-                this._logger.debug('Stat error: not found', path, this._logger.ts(ts));
+                this._logger.info('Stat error: not found', path, this._logger.ts(ts));
                 throw new StorageFileNotFoundError();
             }
             this._logger.error('Stat error', path, err, this._logger.ts(ts));
@@ -135,7 +135,7 @@ class StorageOneDrive extends StorageBase {
             throw new Error('No eTag');
         }
 
-        this._logger.debug('Stat done', path, rev, this._logger.ts(ts));
+        this._logger.info('Stat done', path, rev, this._logger.ts(ts));
         return { rev };
     }
 
@@ -146,7 +146,7 @@ class StorageOneDrive extends StorageBase {
         rev?: string
     ): Promise<StorageSaveResult> {
         await this.oauthAuthorize();
-        this._logger.debug('Save', path, rev);
+        this._logger.info('Save', path, rev);
         const ts = this._logger.ts();
         const url = BaseUrl + path + ':/content';
 
@@ -179,16 +179,16 @@ class StorageOneDrive extends StorageBase {
             throw new Error('No eTag');
         }
         if (status === 412) {
-            this._logger.debug('Save conflict', path, storageRev, this._logger.ts(ts));
+            this._logger.info('Save conflict', path, storageRev, this._logger.ts(ts));
             throw new StorageRevConflictError(rev ?? '', storageRev);
         }
-        this._logger.debug('Saved', path, rev, this._logger.ts(ts));
+        this._logger.info('Saved', path, rev, this._logger.ts(ts));
         return { rev: storageRev };
     }
 
     async list(dir: string): Promise<StorageListItem[]> {
         await this.oauthAuthorize();
-        this._logger.debug('List');
+        this._logger.info('List');
         const ts = this._logger.ts();
         const url = BaseUrl + (dir ? `${dir}:/children` : '/drive/root/children');
 
@@ -213,7 +213,7 @@ class StorageOneDrive extends StorageBase {
             this._logger.error('List error', this._logger.ts(ts), responseData);
             throw new Error('List error');
         }
-        this._logger.debug('Listed', this._logger.ts(ts));
+        this._logger.info('Listed', this._logger.ts(ts));
 
         const result: StorageListItem[] = [];
         for (const item of responseData.value) {
@@ -246,7 +246,7 @@ class StorageOneDrive extends StorageBase {
     }
 
     async remove(path: string): Promise<void> {
-        this._logger.debug('Remove', path);
+        this._logger.info('Remove', path);
         const ts = this._logger.ts();
         const url = BaseUrl + path;
 
@@ -261,12 +261,12 @@ class StorageOneDrive extends StorageBase {
             this._logger.error('Remove error', path, err, this._logger.ts(ts));
             throw err;
         }
-        this._logger.debug('Removed', path, this._logger.ts(ts));
+        this._logger.info('Removed', path, this._logger.ts(ts));
     }
 
     async mkdir(path: string): Promise<void> {
         await this.oauthAuthorize();
-        this._logger.debug('Make dir', path);
+        this._logger.info('Make dir', path);
         const ts = this._logger.ts();
         const url = BaseUrl + '/drive/root/children';
         const data = JSON.stringify({ name: path.replace('/drive/root:/', ''), folder: {} });
@@ -285,7 +285,7 @@ class StorageOneDrive extends StorageBase {
             throw err;
         }
 
-        this._logger.debug('Made dir', path, this._logger.ts(ts));
+        this._logger.info('Made dir', path, this._logger.ts(ts));
     }
 
     async logout(): Promise<void> {

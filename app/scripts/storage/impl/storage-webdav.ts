@@ -147,7 +147,7 @@ class StorageWebDav extends StorageBase {
             stat = await this.statRequest(path, opts, 'Save:stat');
         } catch (err) {
             if (err instanceof StorageFileNotFoundError) {
-                this._logger.debug('Save: not found, creating');
+                this._logger.info('Save: not found, creating');
                 useTmpPath = false;
             } else {
                 throw err;
@@ -155,7 +155,7 @@ class StorageWebDav extends StorageBase {
         }
 
         if (stat.rev !== rev) {
-            this._logger.debug('Save error', path, 'rev conflict', stat.rev, rev);
+            this._logger.info('Save error', path, 'rev conflict', stat.rev, rev);
             throw new StorageRevConflictError(rev ?? '', stat.rev ?? '');
         }
         if (useTmpPath) {
@@ -184,7 +184,7 @@ class StorageWebDav extends StorageBase {
             }
 
             if (stat.rev !== rev) {
-                this._logger.debug('Save error', path, 'rev conflict', stat.rev, rev);
+                this._logger.info('Save error', path, 'rev conflict', stat.rev, rev);
                 try {
                     await this.request({
                         ...saveOpts,
@@ -279,9 +279,9 @@ class StorageWebDav extends StorageBase {
         data?: string | ArrayBuffer;
     }): Promise<StorageFileData> {
         if (config.rev) {
-            this._logger.debug(config.op, config.path, config.rev);
+            this._logger.info(config.op, config.path, config.rev);
         } else {
-            this._logger.debug(config.op, config.path);
+            this._logger.info(config.op, config.path);
         }
 
         const ts = this._logger.ts();
@@ -290,7 +290,7 @@ class StorageWebDav extends StorageBase {
             const xhr = new XMLHttpRequest();
             xhr.addEventListener('load', () => {
                 if ([200, 201, 204].indexOf(xhr.status) < 0) {
-                    this._logger.debug(
+                    this._logger.info(
                         config.op + ' error',
                         config.path,
                         xhr.status,
@@ -320,7 +320,7 @@ class StorageWebDav extends StorageBase {
                     let rev = xhr.getResponseHeader('Last-Modified');
                     if (!rev) {
                         if (!config.noStat) {
-                            this._logger.debug(
+                            this._logger.info(
                                 config.op + ' error',
                                 config.path,
                                 'no headers',
@@ -339,17 +339,17 @@ class StorageWebDav extends StorageBase {
 
                     const completedOpName =
                         config.op + (config.op.charAt(config.op.length - 1) === 'e' ? 'd' : 'ed');
-                    this._logger.debug(completedOpName, config.path, rev, this._logger.ts(ts));
+                    this._logger.info(completedOpName, config.path, rev, this._logger.ts(ts));
 
                     resolve({ data: responseData, rev });
                 })().catch(noop);
             });
             xhr.addEventListener('error', () => {
-                this._logger.debug(config.op + ' error', config.path, this._logger.ts(ts));
+                this._logger.info(config.op + ' error', config.path, this._logger.ts(ts));
                 reject(new Error('Network error'));
             });
             xhr.addEventListener('abort', () => {
-                this._logger.debug(
+                this._logger.info(
                     config.op + ' error',
                     config.path,
                     'aborted',
@@ -389,7 +389,7 @@ class StorageWebDav extends StorageBase {
             !(xhr.response instanceof ArrayBuffer) ||
             !xhr.response.byteLength
         ) {
-            this._logger.debug('Cannot calculate rev by content');
+            this._logger.info('Cannot calculate rev by content');
             return Promise.reject(new Error('Cannot calculate rev by content'));
         }
 
@@ -397,7 +397,7 @@ class StorageWebDav extends StorageBase {
 
         return kdbxweb.CryptoEngine.sha256(xhr.response).then((hash) => {
             const rev = kdbxweb.ByteUtils.bytesToHex(hash).substr(0, 10);
-            this._logger.debug('Calculated rev by content', `${byteLength} bytes`, rev);
+            this._logger.info('Calculated rev by content', `${byteLength} bytes`, rev);
             return rev;
         });
     }

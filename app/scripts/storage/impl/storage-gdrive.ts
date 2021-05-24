@@ -45,7 +45,7 @@ class StorageGDrive extends StorageBase {
             throw new Error('Empty rev');
         }
 
-        this._logger.debug('Load', path);
+        this._logger.info('Load', path);
 
         const ts = this._logger.ts();
         const url = UrlFormat.makeUrl(`${BaseUrl}/files/${path}/revisions/${stat.rev}`, {
@@ -67,7 +67,7 @@ class StorageGDrive extends StorageBase {
             throw err;
         }
 
-        this._logger.debug('Loaded', path, stat.rev, this._logger.ts(ts));
+        this._logger.info('Loaded', path, stat.rev, this._logger.ts(ts));
         return { data, rev: stat.rev };
     }
 
@@ -76,7 +76,7 @@ class StorageGDrive extends StorageBase {
             throw new StorageFileNotFoundError();
         }
         await this.oauthAuthorize();
-        this._logger.debug('Stat', path);
+        this._logger.info('Stat', path);
         const ts = this._logger.ts();
         const url = UrlFormat.makeUrl(`${BaseUrl}/files/${path}`, {
             fields: 'headRevisionId',
@@ -107,7 +107,7 @@ class StorageGDrive extends StorageBase {
         }
 
         const rev = responseData.headRevisionId;
-        this._logger.debug('Stat done', path, rev, this._logger.ts(ts));
+        this._logger.info('Stat done', path, rev, this._logger.ts(ts));
 
         return { rev };
     }
@@ -125,7 +125,7 @@ class StorageGDrive extends StorageBase {
             throw new StorageRevConflictError(rev, stat.rev ?? '');
         }
 
-        this._logger.debug('Save', path);
+        this._logger.info('Save', path);
 
         const ts = this._logger.ts();
         const isNew = path.lastIndexOf(NewFileIdPrefix, 0) === 0;
@@ -192,7 +192,7 @@ class StorageGDrive extends StorageBase {
             throw err;
         }
 
-        this._logger.debug('Saved', path, this._logger.ts(ts));
+        this._logger.info('Saved', path, this._logger.ts(ts));
 
         const newRev = responseData.headRevisionId;
         if (typeof newRev !== 'string' || !newRev) {
@@ -213,7 +213,7 @@ class StorageGDrive extends StorageBase {
     async list(dir: string): Promise<StorageListItem[]> {
         await this.oauthAuthorize();
 
-        this._logger.debug('List');
+        this._logger.info('List');
 
         const ts = this._logger.ts();
 
@@ -237,7 +237,7 @@ class StorageGDrive extends StorageBase {
                 throw err;
             }
 
-            this._logger.debug('Listed drives', this._logger.ts(ts));
+            this._logger.info('Listed drives', this._logger.ts(ts));
 
             if (!Array.isArray(responseData.drives)) {
                 throw new Error('Empty drives');
@@ -298,7 +298,7 @@ class StorageGDrive extends StorageBase {
                 throw err;
             }
 
-            this._logger.debug('Listed', this._logger.ts(ts));
+            this._logger.info('Listed', this._logger.ts(ts));
 
             if (!Array.isArray(responseData.files)) {
                 throw new Error('Empty files');
@@ -349,7 +349,7 @@ class StorageGDrive extends StorageBase {
     }
 
     async remove(path: string): Promise<void> {
-        this._logger.debug('Remove', path);
+        this._logger.info('Remove', path);
         const ts = this._logger.ts();
         const url = `${BaseUrl}/files/${path}`;
         try {
@@ -363,7 +363,7 @@ class StorageGDrive extends StorageBase {
             this._logger.error('Remove error', path, err, this._logger.ts(ts));
             throw err;
         }
-        this._logger.debug('Removed', path, this._logger.ts(ts));
+        this._logger.info('Removed', path, this._logger.ts(ts));
     }
 
     async logout(): Promise<void> {

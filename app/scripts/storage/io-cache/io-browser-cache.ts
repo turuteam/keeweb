@@ -30,7 +30,7 @@ export class IoBrowserCache extends IoCacheBase {
     }
 
     async save(id: string, data: ArrayBuffer): Promise<void> {
-        this.logger.debug('Save', id);
+        this.logger.info('Save', id);
         const db = await this.openDb();
         return new Promise((resolve, reject) => {
             try {
@@ -40,7 +40,7 @@ export class IoBrowserCache extends IoCacheBase {
                     .objectStore('files')
                     .put(data, id);
                 req.onsuccess = () => {
-                    this.logger.debug('Saved', id, this.logger.ts(ts));
+                    this.logger.info('Saved', id, this.logger.ts(ts));
                     resolve();
                 };
                 req.onerror = () => {
@@ -55,14 +55,14 @@ export class IoBrowserCache extends IoCacheBase {
     }
 
     async load(id: string): Promise<ArrayBuffer> {
-        this.logger.debug('Load', id);
+        this.logger.info('Load', id);
         const db = await this.openDb();
         return new Promise((resolve, reject) => {
             try {
                 const ts = this.logger.ts();
                 const req = db.transaction(['files'], 'readonly').objectStore('files').get(id);
                 req.onsuccess = () => {
-                    this.logger.debug('Loaded', id, this.logger.ts(ts));
+                    this.logger.info('Loaded', id, this.logger.ts(ts));
                     if (!(req.result instanceof ArrayBuffer)) {
                         reject('Failed to read data from IndexedDB');
                     }
@@ -80,14 +80,14 @@ export class IoBrowserCache extends IoCacheBase {
     }
 
     async remove(id: string): Promise<void> {
-        this.logger.debug('Remove', id);
+        this.logger.info('Remove', id);
         const db = await this.openDb();
         return new Promise((resolve, reject) => {
             try {
                 const ts = this.logger.ts();
                 const req = db.transaction(['files'], 'readwrite').objectStore('files').delete(id);
                 req.onsuccess = () => {
-                    this.logger.debug('Removed', id, this.logger.ts(ts));
+                    this.logger.info('Removed', id, this.logger.ts(ts));
                     resolve();
                 };
                 req.onerror = () => {

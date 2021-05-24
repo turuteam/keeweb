@@ -24,9 +24,13 @@ class Logger {
 
     static readonly Level = Level;
 
-    constructor(name: string, id?: string, level = Level.All) {
+    constructor(name: string, id?: string) {
         this._prefix = name ? name + (id ? ':' + id : '') : 'default';
-        this.level = level;
+        this.level = Level.Info;
+
+        if (sessionStorage?.[`debug_${name}`]) {
+            this.level = Level.Debug;
+        }
     }
 
     ts(): number;

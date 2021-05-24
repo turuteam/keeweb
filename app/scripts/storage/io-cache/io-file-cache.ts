@@ -34,12 +34,12 @@ export class IoFileCache extends IoCacheBase {
 
     async save(id: string, data: ArrayBuffer): Promise<void> {
         await this.init();
-        this.logger.debug('Save', id);
+        this.logger.info('Save', id);
         const ts = this.logger.ts();
         const filePath = this.resolvePath(id);
         try {
             await fs.promises.writeFile(filePath, Buffer.from(data));
-            this.logger.debug('Saved', id, this.logger.ts(ts));
+            this.logger.info('Saved', id, this.logger.ts(ts));
         } catch (e) {
             this.logger.error('Error saving file', id, e);
             throw e;
@@ -48,12 +48,12 @@ export class IoFileCache extends IoCacheBase {
 
     async load(id: string): Promise<ArrayBuffer> {
         await this.init();
-        this.logger.debug('Load', id);
+        this.logger.info('Load', id);
         const ts = this.logger.ts();
         const filePath = this.resolvePath(id);
         try {
             const data = await fs.promises.readFile(filePath);
-            this.logger.debug('Loaded', id, this.logger.ts(ts));
+            this.logger.info('Loaded', id, this.logger.ts(ts));
             return kdbxweb.ByteUtils.arrayToBuffer(data);
         } catch (e) {
             this.logger.error('Error loading file', id, e);
@@ -63,12 +63,12 @@ export class IoFileCache extends IoCacheBase {
 
     async remove(id: string): Promise<void> {
         await this.init();
-        this.logger.debug('Remove', id);
+        this.logger.info('Remove', id);
         const ts = this.logger.ts();
         const filePath = this.resolvePath(id);
         try {
             await fs.promises.unlink(filePath);
-            this.logger.debug('Removed', id, this.logger.ts(ts));
+            this.logger.info('Removed', id, this.logger.ts(ts));
         } catch (e) {
             this.logger.error('Error removing file', id, e);
             throw e;

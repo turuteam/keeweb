@@ -41,13 +41,13 @@ class StorageFile extends StorageBase {
     }
 
     async load(path: string): Promise<StorageFileData> {
-        this._logger.debug('Load', path);
+        this._logger.info('Load', path);
         const ts = this._logger.ts();
 
         const data = await fs.promises.readFile(path);
         const stat = await fs.promises.stat(path);
         const rev = stat.mtime.getTime().toString();
-        this._logger.debug('Loaded', path, rev, this._logger.ts(ts));
+        this._logger.info('Loaded', path, rev, this._logger.ts(ts));
         return {
             data: kdbxweb.ByteUtils.arrayToBuffer(data),
             rev
@@ -55,12 +55,12 @@ class StorageFile extends StorageBase {
     }
 
     async stat(path: string): Promise<StorageFileStat> {
-        this._logger.debug('Stat', path);
+        this._logger.info('Stat', path);
         const ts = this._logger.ts();
 
         try {
             const stat = await fs.promises.stat(path);
-            this._logger.debug('Stat done', path, this._logger.ts(ts));
+            this._logger.info('Stat done', path, this._logger.ts(ts));
 
             const rev = stat.mtime.getTime().toString();
             return { rev };
@@ -80,7 +80,7 @@ class StorageFile extends StorageBase {
         opts?: StorageFileOptions,
         rev?: string
     ): Promise<StorageSaveResult> {
-        this._logger.debug('Save', path, rev);
+        this._logger.info('Save', path, rev);
         const ts = this._logger.ts();
 
         if (rev) {
@@ -89,7 +89,7 @@ class StorageFile extends StorageBase {
                 const fileRev = stat.mtime.getTime().toString();
 
                 if (fileRev !== rev) {
-                    this._logger.debug('Save mtime differs', rev, fileRev);
+                    this._logger.info('Save mtime differs', rev, fileRev);
                     throw new StorageRevConflictError(rev, fileRev);
                 }
             } catch (err) {
@@ -110,18 +110,18 @@ class StorageFile extends StorageBase {
         const stat = await fs.promises.stat(path);
         const newRev = stat.mtime.getTime().toString();
 
-        this._logger.debug('Saved', path, this._logger.ts(ts));
+        this._logger.info('Saved', path, this._logger.ts(ts));
 
         return { rev: newRev };
     }
 
     async mkdir(path: string): Promise<void> {
-        this._logger.debug('Make dir', path);
+        this._logger.info('Make dir', path);
         const ts = this._logger.ts();
 
         try {
             await fs.promises.mkdir(path);
-            this._logger.debug('Made dir', path, this._logger.ts(ts));
+            this._logger.info('Made dir', path, this._logger.ts(ts));
         } catch (err) {
             this._logger.error('Error making local dir', path, err);
             throw err;
@@ -131,7 +131,7 @@ class StorageFile extends StorageBase {
     watch(path: string, callback: () => void): void {
         const dir = NodePath.dirname(path);
         if (!fileWatchers.has(dir) && !dir.startsWith('\\')) {
-            this._logger.debug('Watch dir', dir);
+            this._logger.info('Watch dir', dir);
             try {
                 const fsWatcher = fs.watch(path, { persistent: false });
                 fsWatcher.on('change', this.fsWatcherChange.bind(this, dir));
@@ -163,7 +163,7 @@ class StorageFile extends StorageBase {
                 watcher.callbacks.splice(ix, 1);
             }
             if (!watcher.callbacks.length) {
-                this._logger.debug('Stop watch dir', dir);
+                this._logger.info('Stop watch dir', dir);
                 watcher.fsWatcher.close();
                 fileWatchers.delete(dir);
             }
@@ -175,7 +175,7 @@ class StorageFile extends StorageBase {
         if (watcher) {
             watcher.callbacks.forEach((cb) => {
                 if (cb.file === fileName && typeof cb.callback === 'function') {
-                    this._logger.debug('File changed', dir, evt, fileName);
+                    this._logger.info('File changed', dir, evt, fileName);
                     cb.callback();
                 }
             });

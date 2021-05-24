@@ -334,7 +334,7 @@ export class LauncherElectron {
 //
 // Launcher.remoteApp().on('remote-app-event', (e) => {
 //     if (window.debugRemoteAppEvents) {
-//         logger.debug('remote-app-event', e.name);
+//         logger.info('remote-app-event', e.name);
 //     }
 //     Events.emit(e.name, e.data);
 // });

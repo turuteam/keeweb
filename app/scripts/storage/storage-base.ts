@@ -358,7 +358,7 @@ abstract class StorageBase {
             throw new Error('OAuth: cannot open popup');
         }
 
-        this._logger.debug('OAuth: popup opened');
+        this._logger.info('OAuth: popup opened');
 
         return new Promise((resolve, reject) => {
             const processWindowMessage = (locationSearch: string) => {
@@ -379,7 +379,7 @@ abstract class StorageBase {
                         })
                     );
                 } else {
-                    this._logger.debug('Skipped OAuth message', data);
+                    this._logger.info('Skipped OAuth message', data);
                 }
             };
 
@@ -400,16 +400,16 @@ abstract class StorageBase {
                     return;
                 }
                 if (!e.data) {
-                    this._logger.debug('Skipped empty OAuth message', e.data);
+                    this._logger.info('Skipped empty OAuth message', e.data);
                     return;
                 }
                 const data = e.data as Record<string, unknown>;
                 if (!data.storage || typeof data.search !== 'string') {
-                    this._logger.debug('Skipped an empty OAuth message', e.data);
+                    this._logger.info('Skipped an empty OAuth message', e.data);
                     return;
                 }
                 if (data.storage !== this.name) {
-                    this._logger.debug('Skipped OAuth message for another storage', data.storage);
+                    this._logger.info('Skipped OAuth message for another storage', data.storage);
                     return;
                 }
                 processWindowMessage(data.search);
@@ -423,7 +423,7 @@ abstract class StorageBase {
     private oauthProcessReturn(message: unknown): void {
         this._oauthToken = this.oauthMsgToToken(message);
         this.setStoredToken(this._oauthToken);
-        this._logger.debug('OAuth token received');
+        this._logger.info('OAuth token received');
     }
 
     private oauthMsgToToken(data: unknown): StorageProviderOAuthToken {
@@ -533,7 +533,7 @@ abstract class StorageBase {
             throw new Error('OAuth result has no code');
         }
 
-        this._logger.debug('OAuth code received');
+        this._logger.info('OAuth code received');
 
         if (Launcher) {
             Launcher.ipcRenderer.invoke('show-main-window').catch(noop);
@@ -563,12 +563,12 @@ abstract class StorageBase {
             throw e;
         }
 
-        this._logger.debug('OAuth code exchanged', response);
+        this._logger.info('OAuth code exchanged', response);
         this.oauthProcessReturn(response);
     }
 
     private async oauthExchangeRefreshToken(): Promise<void> {
-        this._logger.debug('Exchanging refresh token');
+        this._logger.info('Exchanging refresh token');
         const refreshToken = this.getStoredOAuthToken()?.refreshToken;
         if (!refreshToken) {
             throw new Error('No refresh token');
@@ -601,7 +601,7 @@ abstract class StorageBase {
             }
         }
 
-        this._logger.debug('Refresh token exchanged');
+        this._logger.info('Refresh token exchanged');
         if (typeof res.data === 'object') {
             const rec = res.data as Record<string, unknown>;
             // eslint-disable-next-line camelcase

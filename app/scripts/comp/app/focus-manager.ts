@@ -1,18 +1,20 @@
 import { Logger } from 'util/logger';
 
-const logger = new Logger(
-    'focus-manager',
-    undefined,
-    localStorage.debugFocusManager ? Logger.Level.Debug : Logger.Level.Info
-);
+const logger = new Logger('focus-manager');
 
-const FocusManager = {
-    modal: undefined as string | undefined,
+class FocusManager {
+    private _modal?: string;
 
-    setModal(modal: string | undefined): void {
-        this.modal = modal;
-        logger.debug('Set modal', modal);
+    get modal() {
+        return this._modal;
     }
-};
 
-export { FocusManager };
+    set modal(value) {
+        this._modal = value;
+        logger.debug('Set modal', value);
+    }
+}
+
+const instance = new FocusManager();
+
+export { instance as FocusManager };

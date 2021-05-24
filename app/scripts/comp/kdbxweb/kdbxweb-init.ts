@@ -103,7 +103,7 @@ const KdbxwebInit = {
             version
         });
 
-        logger.debug('Hash computed', logger.ts(ts));
+        logger.info('Hash computed', logger.ts(ts));
         return hash;
     },
 
@@ -115,7 +115,7 @@ const KdbxwebInit = {
             return Promise.reject(new Error('WebAssembly is not supported'));
         }
         if (Features.isDesktop) {
-            logger.debug('Using native argon2');
+            logger.info('Using native argon2');
             runtimeModule = {
                 hash(args) {
                     const ts = logger.ts();
@@ -135,7 +135,7 @@ const KdbxwebInit = {
                             password.data.fill(0);
                             salt.data.fill(0);
 
-                            logger.debug('Argon2 hash calculated', logger.ts(ts));
+                            logger.info('Argon2 hash calculated', logger.ts(ts));
 
                             const pv = new kdbxweb.ProtectedValue(
                                 kdbxweb.ByteUtils.arrayToBuffer(new Uint8Array(res.data)),
@@ -193,10 +193,10 @@ const KdbxwebInit = {
                     const data = e.data as MessageFromWorkerWorker;
                     switch (data.op) {
                         case 'log':
-                            logger.debug(...data.args);
+                            logger.info(...data.args);
                             break;
                         case 'postRun':
-                            logger.debug('WebAssembly runtime loaded (web worker)', logger.ts(ts));
+                            logger.info('WebAssembly runtime loaded (web worker)', logger.ts(ts));
                             URL.revokeObjectURL(objectUrl);
                             clearTimeout(loadTimeout);
                             worker.removeEventListener('message', onMessage);

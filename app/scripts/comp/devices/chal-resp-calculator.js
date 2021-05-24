@@ -29,12 +29,12 @@ const ChalRespCalculator = {
                 const cacheKey = this.getCacheKey(params);
                 const respFromCache = this.cache[cacheKey]?.[hexChallenge];
                 if (respFromCache) {
-                    logger.debug('Found ChalResp in cache');
+                    logger.info('Found ChalResp in cache');
                     return resolve(Buffer.from(respFromCache, 'hex'));
                 }
 
                 if (!AppSettingsModel.enableUsb) {
-                    logger.debug('USB is disabled');
+                    logger.info('USB is disabled');
                     Alerts.error({
                         header: Locale.yubiKeyDisabledErrorHeader,
                         body: Locale.yubiKeyDisabledErrorBody,
@@ -49,7 +49,7 @@ const ChalRespCalculator = {
                     return;
                 }
 
-                logger.debug('Calculating ChalResp using a YubiKey', params);
+                logger.info('Calculating ChalResp using a YubiKey', params);
 
                 this._calc(params, challenge, (err, response) => {
                     if (err) {

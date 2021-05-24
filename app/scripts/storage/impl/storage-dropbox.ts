@@ -289,7 +289,7 @@ class StorageDropbox extends StorageBase {
             if (errData.path && typeof errData.path === 'object') {
                 const pathData = errData.path as Record<string, unknown>;
                 if (pathData['.tag'] === 'not_found') {
-                    this._logger.debug('File not found', args.method);
+                    this._logger.info('File not found', args.method);
                     throw new StorageFileNotFoundError();
                 }
             }
@@ -300,7 +300,7 @@ class StorageDropbox extends StorageBase {
     }
 
     async load(path: string): Promise<StorageFileData> {
-        this._logger.debug('Load', path);
+        this._logger.info('Load', path);
         const ts = this._logger.ts();
         path = this.toFullPath(path);
         const response = await this.apiCall({
@@ -322,13 +322,13 @@ class StorageDropbox extends StorageBase {
         const stat = JSON.parse(statStr) as Record<string, unknown>;
         const rev = typeof stat.rev === 'string' ? stat.rev : undefined;
 
-        this._logger.debug('Loaded', path, rev, this._logger.ts(ts));
+        this._logger.info('Loaded', path, rev, this._logger.ts(ts));
 
         return { data: response.data, rev };
     }
 
     async stat(path: string): Promise<StorageFileStat> {
-        this._logger.debug('Stat', path);
+        this._logger.info('Stat', path);
         const ts = this._logger.ts();
         path = this.toFullPath(path);
 
@@ -357,7 +357,7 @@ class StorageDropbox extends StorageBase {
             throw new Error(`Bad .tag: ${tag}`);
         }
 
-        this._logger.debug(
+        this._logger.info(
             'Stat complete',
             path,
             stat.folder ? 'folder' : stat.rev,
@@ -372,7 +372,7 @@ class StorageDropbox extends StorageBase {
         opts?: StorageFileOptions,
         rev?: string
     ): Promise<StorageSaveResult> {
-        this._logger.debug('Save', path, rev);
+        this._logger.info('Save', path, rev);
         const ts = this._logger.ts();
         path = this.toFullPath(path);
         const arg = {
@@ -390,23 +390,23 @@ class StorageDropbox extends StorageBase {
         const stat = result.data as Record<string, unknown>;
         const savedRev = typeof stat.rev === 'string' ? stat.rev : undefined;
 
-        this._logger.debug('Saved', path, savedRev, this._logger.ts(ts));
+        this._logger.info('Saved', path, savedRev, this._logger.ts(ts));
         return { rev: savedRev };
     }
 
     async remove(path: string): Promise<void> {
-        this._logger.debug('Remove', path);
+        this._logger.info('Remove', path);
         const ts = this._logger.ts();
         path = this.toFullPath(path);
         await this.apiCall({
             method: 'files/delete',
             data: JSON.stringify({ path })
         });
-        this._logger.debug('Removed', path, this._logger.ts(ts));
+        this._logger.info('Removed', path, this._logger.ts(ts));
     }
 
     async list(dir: string): Promise<StorageListItem[]> {
-        this._logger.debug('List');
+        this._logger.info('List');
         const ts = this._logger.ts();
         const response = await this.apiCall({
             method: 'files/list_folder',
@@ -422,7 +422,7 @@ class StorageDropbox extends StorageBase {
             throw new Error('Empty response');
         }
 
-        this._logger.debug('Listed', this._logger.ts(ts));
+        this._logger.info('Listed', this._logger.ts(ts));
 
         const result: StorageListItem[] = [];
         for (const ent of data.entries) {
@@ -448,14 +448,14 @@ class StorageDropbox extends StorageBase {
     }
 
     async mkdir(path: string): Promise<void> {
-        this._logger.debug('Make dir', path);
+        this._logger.info('Make dir', path);
         const ts = this._logger.ts();
         path = this.toFullPath(path);
         await this.apiCall({
             method: 'files/create_folder',
             data: JSON.stringify({ path })
         });
-        this._logger.debug('Made dir', path, this._logger.ts(ts));
+        this._logger.info('Made dir', path, this._logger.ts(ts));
     }
 
     async logout(): Promise<void> {

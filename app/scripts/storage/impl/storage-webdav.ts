@@ -1,7 +1,7 @@
 import * as kdbxweb from 'kdbxweb';
 import { StorageBase } from 'storage/storage-base';
 import { Locale } from 'util/locale';
-import { AppSettingsModel } from 'models/app-settings-model';
+import { AppSettings } from 'models/app-settings';
 import {
     HttpRequestError,
     StorageConfigFieldCheckbox,
@@ -29,7 +29,7 @@ class StorageWebDav extends StorageBase {
     }
 
     get enabled(): boolean {
-        return AppSettingsModel.webdav;
+        return AppSettings.webdav;
     }
 
     needShowOpenConfig(): boolean {
@@ -70,14 +70,14 @@ class StorageWebDav extends StorageBase {
             id: 'webdavSaveMethod',
             title: 'webdavSaveMethod',
             type: 'select',
-            value: AppSettingsModel.webdavSaveMethod,
+            value: AppSettings.webdavSaveMethod,
             options: { default: 'webdavSaveMove', put: 'webdavSavePut' }
         };
         const reloadField: StorageConfigFieldCheckbox = {
             id: 'webdavStatReload',
             title: 'webdavStatReload',
             type: 'checkbox',
-            value: AppSettingsModel.webdavStatReload ? 'true' : null
+            value: AppSettings.webdavStatReload ? 'true' : null
         };
 
         return {
@@ -88,10 +88,10 @@ class StorageWebDav extends StorageBase {
     applySetting(key: string, value: string): void {
         switch (key) {
             case 'webdavSaveMethod':
-                AppSettingsModel.set('webdavSaveMethod', value);
+                AppSettings.set('webdavSaveMethod', value);
                 break;
             case 'webdavStatReload':
-                AppSettingsModel.webdavStatReload = !!value;
+                AppSettings.webdavStatReload = !!value;
                 break;
         }
     }
@@ -103,8 +103,8 @@ class StorageWebDav extends StorageBase {
             path,
             user: opts?.user,
             password: opts?.password,
-            noStat: AppSettingsModel.webdavStatReload,
-            calcStat: AppSettingsModel.webdavStatReload
+            noStat: AppSettings.webdavStatReload,
+            calcStat: AppSettings.webdavStatReload
         });
     }
 
@@ -123,8 +123,8 @@ class StorageWebDav extends StorageBase {
             path,
             user: opts?.user,
             password: opts?.password,
-            noStat: AppSettingsModel.webdavStatReload,
-            calcStat: AppSettingsModel.webdavStatReload
+            noStat: AppSettings.webdavStatReload,
+            calcStat: AppSettings.webdavStatReload
         });
     }
 
@@ -142,7 +142,7 @@ class StorageWebDav extends StorageBase {
         };
 
         let stat: StorageFileStat = {};
-        let useTmpPath = AppSettingsModel.webdavSaveMethod !== 'put';
+        let useTmpPath = AppSettings.webdavSaveMethod !== 'put';
         try {
             stat = await this.statRequest(path, opts, 'Save:stat');
         } catch (err) {

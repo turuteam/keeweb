@@ -1,27 +1,27 @@
-import { AppSettingsFieldName, AppSettingsModel } from 'models/app-settings-model';
-import { RuntimeDataModel } from 'models/runtime-data-model';
+import { AppSettingsFieldName, AppSettings } from 'models/app-settings';
+import { RuntimeData } from 'models/runtime-data';
 
 const ExportApi = {
     settings: {
         get(key?: AppSettingsFieldName): unknown {
-            return key ? AppSettingsModel[key] : { ...AppSettingsModel };
+            return key ? AppSettings[key] : { ...AppSettings };
         },
         set(key: AppSettingsFieldName, value: unknown): boolean {
-            return AppSettingsModel.set(key, value);
+            return AppSettings.set(key, value);
         },
         del(key: AppSettingsFieldName): void {
-            AppSettingsModel.delete(key);
+            AppSettings.delete(key);
         }
     },
     runtimeData: {
         get(key?: string): unknown {
-            return key ? RuntimeDataModel.get(key) : { ...RuntimeDataModel };
+            return key ? RuntimeData.get(key) : { ...RuntimeData };
         },
         set(key: string, value: unknown): boolean {
-            return RuntimeDataModel.set(key, value);
+            return RuntimeData.set(key, value);
         },
         del(key: string): void {
-            RuntimeDataModel.delete(key);
+            RuntimeData.delete(key);
         }
     }
 };

@@ -1,4 +1,4 @@
-import { AppSettingsModel } from 'models/app-settings-model';
+import { AppSettings } from 'models/app-settings';
 import { Locale } from 'util/locale';
 import {
     PasswordGeneratorAppSetting,
@@ -92,7 +92,7 @@ export const GeneratorPresets = {
 
     get all(): PasswordGeneratorPreset[] {
         let presets = this.builtIn;
-        const setting = AppSettingsModel.generatorPresets;
+        const setting = AppSettings.generatorPresets;
         if (setting) {
             if (setting.user) {
                 presets = presets.concat(setting.user.map((item) => ({ ...item })));
@@ -123,7 +123,7 @@ export const GeneratorPresets = {
     },
 
     getOrCreateSetting(): PasswordGeneratorAppSetting {
-        let setting = AppSettingsModel.generatorPresets;
+        let setting = AppSettings.generatorPresets;
         if (!setting) {
             setting = { user: [], disabled: {} };
         }
@@ -177,6 +177,6 @@ export const GeneratorPresets = {
     },
 
     save(setting: PasswordGeneratorAppSetting): void {
-        AppSettingsModel.generatorPresets = { ...setting };
+        AppSettings.generatorPresets = { ...setting };
     }
 };

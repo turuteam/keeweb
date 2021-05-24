@@ -1,4 +1,4 @@
-import { AppSettingsModel } from 'models/app-settings-model';
+import { AppSettings } from 'models/app-settings';
 import { UrlFormat } from 'util/formatting/url-format';
 import { DropboxChooserAppKey } from 'const/cloud-storage-apps';
 
@@ -53,7 +53,7 @@ export class DropboxChooser {
     private buildUrl(): string {
         return UrlFormat.makeUrl('https://www.dropbox.com/chooser', {
             origin: window.location.protocol + '//' + window.location.host,
-            'app_key': AppSettingsModel.dropboxAppKey || DropboxChooserAppKey,
+            'app_key': AppSettings.dropboxAppKey || DropboxChooserAppKey,
             'link_type': 'direct',
             trigger: 'js',
             multiselect: 'false',

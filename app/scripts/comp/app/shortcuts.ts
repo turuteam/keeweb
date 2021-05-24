@@ -1,6 +1,6 @@
 import { Launcher } from 'comp/launcher';
 import { Keys } from 'const/keys';
-import { AppSettingsFieldName, AppSettingsModel } from 'models/app-settings-model';
+import { AppSettingsFieldName, AppSettings } from 'models/app-settings';
 import { Features } from 'util/features';
 import { Locale } from 'util/locale';
 
@@ -114,7 +114,7 @@ const Shortcuts = {
 
     globalShortcut(type: keyof typeof AllGlobalShortcuts): string | undefined {
         const setting = GlobalShortcutAppSettingsFields[type];
-        const appSettingsShortcut = AppSettingsModel[setting];
+        const appSettingsShortcut = AppSettings[setting];
         if (typeof appSettingsShortcut === 'string') {
             return appSettingsShortcut;
         }
@@ -134,9 +134,9 @@ const Shortcuts = {
         }
         const setting = GlobalShortcutAppSettingsFields[type];
         if (value) {
-            AppSettingsModel.set(setting, value);
+            AppSettings.set(setting, value);
         } else {
-            AppSettingsModel.delete(setting);
+            AppSettings.delete(setting);
         }
         Launcher?.ipcRenderer.invoke('set-global-shortcuts', { [setting]: value });
     },

@@ -1,7 +1,7 @@
 import { Events } from 'util/events';
 import { Logger } from 'util/logger';
 import { NativeModules } from 'comp/launcher/native-modules';
-import { AppSettingsModel } from 'models/app-settings-model';
+import { AppSettings } from 'models/app-settings';
 import { Features } from 'util/features';
 import { noop } from 'util/fn';
 
@@ -24,7 +24,7 @@ const UsbListener = {
             }
         });
 
-        AppSettingsModel.onChange('enableUsb', (enabled) => {
+        AppSettings.onChange('enableUsb', (enabled) => {
             if (enabled) {
                 this.start().catch(noop);
             } else {
@@ -32,7 +32,7 @@ const UsbListener = {
             }
         });
 
-        if (AppSettingsModel.enableUsb) {
+        if (AppSettings.enableUsb) {
             this.start().catch(noop);
         }
     },

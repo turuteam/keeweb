@@ -3,7 +3,7 @@ import { Locale } from 'util/locale';
 import { Features } from 'util/features';
 import { UrlFormat } from 'util/formatting/url-format';
 import { GDriveApps } from 'const/cloud-storage-apps';
-import { AppSettingsModel } from 'models/app-settings-model';
+import { AppSettings } from 'models/app-settings';
 import {
     StorageFileData,
     StorageFileNotFoundError,
@@ -32,7 +32,7 @@ class StorageGDrive extends StorageBase {
     }
 
     get enabled(): boolean {
-        return AppSettingsModel.gdrive;
+        return AppSettings.gdrive;
     }
 
     getPathForName(fileName: string): string {
@@ -371,8 +371,8 @@ class StorageGDrive extends StorageBase {
     }
 
     protected getOAuthConfig(): StorageOAuthConfig {
-        let clientId = AppSettingsModel.gdriveClientId;
-        let clientSecret = AppSettingsModel.gdriveClientSecret;
+        let clientId = AppSettings.gdriveClientId;
+        let clientSecret = AppSettings.gdriveClientSecret;
         if (!clientId || !clientSecret) {
             if (Features.isDesktop) {
                 ({ id: clientId, secret: clientSecret } = GDriveApps.Desktop);
@@ -391,7 +391,7 @@ class StorageGDrive extends StorageBase {
             width: 600,
             height: 400,
             pkce: true,
-            urlParams: AppSettingsModel.shortLivedStorageToken ? {} : { 'access_type': 'offline' }
+            urlParams: AppSettings.shortLivedStorageToken ? {} : { 'access_type': 'offline' }
         };
     }
 

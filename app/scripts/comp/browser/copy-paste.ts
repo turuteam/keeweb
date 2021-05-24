@@ -1,6 +1,6 @@
 import { Events } from 'util/events';
 import { Launcher } from 'comp/launcher';
-import { AppSettingsModel } from 'models/app-settings-model';
+import { AppSettings } from 'models/app-settings';
 
 interface CopyPasteResult {
     success: boolean;
@@ -11,7 +11,7 @@ const CopyPaste = {
     copy(text: string): CopyPasteResult {
         if (Launcher) {
             Launcher.setClipboardText(text);
-            const clipboardSeconds = AppSettingsModel.clipboardSeconds;
+            const clipboardSeconds = AppSettings.clipboardSeconds;
             if (clipboardSeconds > 0) {
                 const clearClipboard = () => {
                     if (Launcher?.getClipboardText() === text) {

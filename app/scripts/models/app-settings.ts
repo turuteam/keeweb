@@ -14,7 +14,7 @@ const logger = new Logger('app-settings');
 
 let changeListener: () => void;
 
-class AppSettingsModel extends Model {
+class AppSettings extends Model {
     theme: string | null = null; // UI theme
     autoSwitchTheme = false; // automatically switch between light and dark theme
     locale: string | null = null; // user interface language
@@ -127,11 +127,11 @@ class AppSettingsModel extends Model {
         const data = await SettingsStore.load('app-settings');
         if (data) {
             const record = data as Record<string, unknown>;
-            AppSettingsModel.upgrade(record);
+            AppSettings.upgrade(record);
 
             this.batchSet(() => {
                 for (const [key, value] of Object.entries(record)) {
-                    if (!this.set(key as NonFunctionPropertyNames<AppSettingsModel>, value)) {
+                    if (!this.set(key as NonFunctionPropertyNames<AppSettings>, value)) {
                         logger.warn('Bad setting', key, value);
                     }
                 }
@@ -159,9 +159,9 @@ class AppSettingsModel extends Model {
 
     toJSON(): Record<string, unknown> {
         const values: Record<string, unknown> = {};
-        const defaultValues = new AppSettingsModel();
+        const defaultValues = new AppSettings();
         for (const [key, value] of Object.entries(this)) {
-            if (defaultValues[key as keyof AppSettingsModel] !== value) {
+            if (defaultValues[key as keyof AppSettings] !== value) {
                 values[key] = value;
             }
         }
@@ -172,12 +172,12 @@ class AppSettingsModel extends Model {
         await SettingsStore.save('app-settings', this).catch(noop);
     }
 
-    set(key: NonFunctionPropertyNames<AppSettingsModel>, value: unknown): boolean {
+    set(key: NonFunctionPropertyNames<AppSettings>, value: unknown): boolean {
         // noinspection PointlessBooleanExpressionJS
         return !!this.setInternal(key, value);
     }
 
-    private setInternal(key: NonFunctionPropertyNames<AppSettingsModel>, value: unknown): boolean {
+    private setInternal(key: NonFunctionPropertyNames<AppSettings>, value: unknown): boolean {
         switch (key) {
             case 'theme':
                 return this.setOptionalString('theme', value);
@@ -361,16 +361,16 @@ class AppSettingsModel extends Model {
     }
 
     reset(): void {
-        const defaultValues = new AppSettingsModel();
+        const defaultValues = new AppSettings();
         this.batchSet(() => {
             for (const [key, value] of Object.entries(defaultValues)) {
-                this.set(key as NonFunctionPropertyNames<AppSettingsModel>, value);
+                this.set(key as NonFunctionPropertyNames<AppSettings>, value);
             }
         });
     }
 
-    delete(key: NonFunctionPropertyNames<AppSettingsModel>): void {
-        const defaultValues = new AppSettingsModel();
+    delete(key: NonFunctionPropertyNames<AppSettings>): void {
+        const defaultValues = new AppSettings();
         this.set(key, defaultValues[key]);
     }
 
@@ -449,7 +449,7 @@ class AppSettingsModel extends Model {
     }
 
     private setBoolean(
-        key: NonNullable<BooleanPropertyNames<AppSettingsModel>>,
+        key: NonNullable<BooleanPropertyNames<AppSettings>>,
         value: unknown
     ): boolean {
         if (typeof value === 'boolean') {
@@ -606,8 +606,8 @@ class AppSettingsModel extends Model {
     }
 }
 
-type AppSettingsFieldName = NonFunctionPropertyNames<AppSettingsModel>;
+type AppSettingsFieldName = NonFunctionPropertyNames<AppSettings>;
 
-const instance = new AppSettingsModel();
+const instance = new AppSettings();
 
-export { instance as AppSettingsModel, AppSettingsFieldName };
+export { instance as AppSettings, AppSettingsFieldName };

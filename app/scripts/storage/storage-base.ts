@@ -6,9 +6,9 @@ import { UrlFormat } from 'util/formatting/url-format';
 import { Launcher } from 'comp/launcher';
 import { Features } from 'util/features';
 import { createOAuthSession } from 'storage/pkce';
-import { RuntimeDataModel } from 'models/runtime-data-model';
+import { RuntimeData } from 'models/runtime-data';
 import { HttpRequestConfig, HttpResponse } from 'comp/launcher/desktop-ipc';
-import { AppSettingsModel } from 'models/app-settings-model';
+import { AppSettings } from 'models/app-settings';
 import { noop } from 'util/fn';
 import {
     HttpRequestError,
@@ -118,18 +118,18 @@ abstract class StorageBase {
     }
 
     private getStoredOAuthToken(): StorageProviderOAuthToken | undefined {
-        const token = RuntimeDataModel.get(`${this.name}OAuthToken`);
+        const token = RuntimeData.get(`${this.name}OAuthToken`);
         return isStorageProviderOAuthToken(token) ? token : undefined;
     }
 
     private setStoredToken(token: StorageProviderOAuthToken): void {
-        if (!AppSettingsModel.shortLivedStorageToken) {
-            RuntimeDataModel.set(`${this.name}OAuthToken`, token);
+        if (!AppSettings.shortLivedStorageToken) {
+            RuntimeData.set(`${this.name}OAuthToken`, token);
         }
     }
 
     private deleteStoredToken(): void {
-        RuntimeDataModel.delete(`${this.name}OAuthToken`);
+        RuntimeData.delete(`${this.name}OAuthToken`);
     }
 
     protected async xhr(config: HttpRequestConfig): Promise<HttpResponse> {

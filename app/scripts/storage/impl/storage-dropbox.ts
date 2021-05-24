@@ -3,7 +3,7 @@ import { Features } from 'util/features';
 import { UrlFormat } from 'util/formatting/url-format';
 import { DropboxApps } from 'const/cloud-storage-apps';
 import { Locale } from 'util/locale';
-import { AppSettingsModel } from 'models/app-settings-model';
+import { AppSettings } from 'models/app-settings';
 import { HttpResponse } from 'comp/launcher/desktop-ipc';
 import { noop } from 'util/fn';
 import {
@@ -35,11 +35,11 @@ class StorageDropbox extends StorageBase {
     }
 
     get enabled(): boolean {
-        return AppSettingsModel.dropbox;
+        return AppSettings.dropbox;
     }
 
     private toFullPath(path: string) {
-        const rootFolder = AppSettingsModel.dropboxFolder;
+        const rootFolder = AppSettings.dropboxFolder;
         if (rootFolder) {
             path = UrlFormat.fixSlashes('/' + rootFolder + '/' + path);
         }
@@ -47,7 +47,7 @@ class StorageDropbox extends StorageBase {
     }
 
     private toRelPath(path: string) {
-        const rootFolder = AppSettingsModel.dropboxFolder;
+        const rootFolder = AppSettings.dropboxFolder;
         if (rootFolder) {
             const ix = path.toLowerCase().indexOf(rootFolder.toLowerCase());
             if (ix === 0) {
@@ -69,7 +69,7 @@ class StorageDropbox extends StorageBase {
     }
 
     private getKey() {
-        return AppSettingsModel.dropboxAppKey || DropboxApps.AppFolder.id;
+        return AppSettings.dropboxAppKey || DropboxApps.AppFolder.id;
     }
 
     private getSecret() {
@@ -80,7 +80,7 @@ class StorageDropbox extends StorageBase {
         if (key === DropboxApps.FullDropbox.id) {
             return DropboxApps.FullDropbox.secret;
         }
-        return AppSettingsModel.dropboxSecret ?? null;
+        return AppSettings.dropboxSecret ?? null;
     }
 
     private isValidKey() {
@@ -103,9 +103,7 @@ class StorageDropbox extends StorageBase {
             pkce: true,
             width: 600,
             height: 400,
-            urlParams: AppSettingsModel.shortLivedStorageToken
-                ? {}
-                : { 'token_access_type': 'offline' }
+            urlParams: AppSettings.shortLivedStorageToken ? {} : { 'token_access_type': 'offline' }
         };
     }
 
@@ -169,14 +167,14 @@ class StorageDropbox extends StorageBase {
             type: 'password',
             required: true,
             pattern: '\\w+',
-            value: AppSettingsModel.dropboxSecret ?? ''
+            value: AppSettings.dropboxSecret ?? ''
         };
         const folderField: StorageConfigFieldText = {
             id: 'folder',
             title: 'dropboxFolder',
             desc: 'dropboxFolderSettingsDesc',
             type: 'text',
-            value: AppSettingsModel.dropboxFolder ?? ''
+            value: AppSettings.dropboxFolder ?? ''
         };
         const canUseBuiltInKeys = this.canUseBuiltInKeys();
         if (canUseBuiltInKeys) {
@@ -207,10 +205,10 @@ class StorageDropbox extends StorageBase {
         if (config.folder) {
             config.folder = this.fixConfigFolder(config.folder);
         }
-        AppSettingsModel.batchSet(() => {
-            AppSettingsModel.dropboxAppKey = config.key;
-            AppSettingsModel.dropboxSecret = config.secret;
-            AppSettingsModel.dropboxFolder = config.folder;
+        AppSettings.batchSet(() => {
+            AppSettings.dropboxAppKey = config.key;
+            AppSettings.dropboxSecret = config.secret;
+            AppSettings.dropboxFolder = config.folder;
         });
         return Promise.resolve();
     }
@@ -220,13 +218,13 @@ class StorageDropbox extends StorageBase {
             case 'link':
                 switch (value) {
                     case 'app':
-                        AppSettingsModel.dropboxAppKey = DropboxApps.AppFolder.id;
+                        AppSettings.dropboxAppKey = DropboxApps.AppFolder.id;
                         break;
                     case 'full':
-                        AppSettingsModel.dropboxAppKey = DropboxApps.FullDropbox.id;
+                        AppSettings.dropboxAppKey = DropboxApps.FullDropbox.id;
                         break;
                     case 'custom':
-                        AppSettingsModel.dropboxAppKey = `(${Locale.dropboxAppKeyHint})`;
+                        AppSettings.dropboxAppKey = `(${Locale.dropboxAppKeyHint})`;
                         break;
                     default:
                         return;
@@ -234,15 +232,15 @@ class StorageDropbox extends StorageBase {
                 this.logout().catch(noop);
                 break;
             case 'key':
-                AppSettingsModel.dropboxAppKey = value;
+                AppSettings.dropboxAppKey = value;
                 this.logout().catch(noop);
                 break;
             case 'secret':
-                AppSettingsModel.dropboxSecret = value;
+                AppSettings.dropboxSecret = value;
                 this.logout().catch(noop);
                 break;
             case 'folder':
-                AppSettingsModel.dropboxFolder = this.fixConfigFolder(value);
+                AppSettings.dropboxFolder = this.fixConfigFolder(value);
                 break;
         }
     }

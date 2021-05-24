@@ -1,47 +1,47 @@
 import { expect } from 'chai';
-import { AppSettingsFieldName, AppSettingsModel } from 'models/app-settings-model';
+import { AppSettings, AppSettingsFieldName } from 'models/app-settings';
 
-describe('AppSettingsModel', () => {
+describe('AppSettings', () => {
     afterEach(() => {
-        AppSettingsModel.reset();
+        AppSettings.reset();
     });
 
     it('does not set an unknown setting', () => {
-        expect(AppSettingsModel.set('unknown' as AppSettingsFieldName, 'x')).eql(false);
-        expect(AppSettingsModel.toJSON()).to.eql({});
+        expect(AppSettings.set('unknown' as AppSettingsFieldName, 'x')).eql(false);
+        expect(AppSettings.toJSON()).to.eql({});
     });
 
     it('sets a known setting', () => {
-        expect(AppSettingsModel.set('theme', 'x')).to.eql(true);
-        expect(AppSettingsModel.theme).to.eql('x');
-        expect(AppSettingsModel.toJSON()).to.eql({ theme: 'x' });
+        expect(AppSettings.set('theme', 'x')).to.eql(true);
+        expect(AppSettings.theme).to.eql('x');
+        expect(AppSettings.toJSON()).to.eql({ theme: 'x' });
     });
 
     it('resets all settings', () => {
-        expect(AppSettingsModel.set('locale', 'x')).to.eql(true);
-        expect(AppSettingsModel.locale).to.eql('x');
-        expect(AppSettingsModel.toJSON()).to.eql({ locale: 'x' });
+        expect(AppSettings.set('locale', 'x')).to.eql(true);
+        expect(AppSettings.locale).to.eql('x');
+        expect(AppSettings.toJSON()).to.eql({ locale: 'x' });
 
-        AppSettingsModel.reset();
-        expect(AppSettingsModel.locale).to.eql(null);
-        expect(AppSettingsModel.toJSON()).to.eql({});
+        AppSettings.reset();
+        expect(AppSettings.locale).to.eql(null);
+        expect(AppSettings.toJSON()).to.eql({});
     });
 
     it('deletes a setting', () => {
-        AppSettingsModel.theme = 'x';
-        AppSettingsModel.rememberKeyFiles = 'data';
+        AppSettings.theme = 'x';
+        AppSettings.rememberKeyFiles = 'data';
 
-        expect(AppSettingsModel.theme).to.eql('x');
-        expect(AppSettingsModel.rememberKeyFiles).to.eql('data');
-        expect(AppSettingsModel.toJSON()).to.eql({ theme: 'x', rememberKeyFiles: 'data' });
+        expect(AppSettings.theme).to.eql('x');
+        expect(AppSettings.rememberKeyFiles).to.eql('data');
+        expect(AppSettings.toJSON()).to.eql({ theme: 'x', rememberKeyFiles: 'data' });
 
-        AppSettingsModel.delete('theme');
-        AppSettingsModel.delete('rememberKeyFiles');
-        AppSettingsModel.delete('unknown' as AppSettingsFieldName);
+        AppSettings.delete('theme');
+        AppSettings.delete('rememberKeyFiles');
+        AppSettings.delete('unknown' as AppSettingsFieldName);
 
-        expect(AppSettingsModel.theme).to.eql(null);
-        expect(AppSettingsModel.rememberKeyFiles).to.eql('path');
-        expect(AppSettingsModel.toJSON()).to.eql({});
+        expect(AppSettings.theme).to.eql(null);
+        expect(AppSettings.rememberKeyFiles).to.eql('path');
+        expect(AppSettings.toJSON()).to.eql({});
     });
 
     it('sets all settings', () => {
@@ -157,30 +157,30 @@ describe('AppSettingsModel', () => {
         };
 
         for (const [key, value] of Object.entries(allSettings)) {
-            AppSettingsModel.set(key as AppSettingsFieldName, value);
+            AppSettings.set(key as AppSettingsFieldName, value);
         }
-        expect(AppSettingsModel.toJSON()).to.eql(allSettings);
+        expect(AppSettings.toJSON()).to.eql(allSettings);
     });
 
     it('loads settings and saves them on change', async () => {
         localStorage.setItem('appSettings', '{ "theme": "x" }');
 
-        expect(AppSettingsModel.theme).to.eql(null);
+        expect(AppSettings.theme).to.eql(null);
 
-        await AppSettingsModel.init();
+        await AppSettings.init();
 
-        expect(AppSettingsModel.theme).to.eql('x');
+        expect(AppSettings.theme).to.eql('x');
         expect(localStorage.getItem('appSettings')).to.eql('{ "theme": "x" }');
 
-        AppSettingsModel.theme = 'x';
+        AppSettings.theme = 'x';
         expect(localStorage.getItem('appSettings')).to.eql('{ "theme": "x" }');
 
-        AppSettingsModel.theme = 'y';
+        AppSettings.theme = 'y';
         expect(localStorage.getItem('appSettings')).to.eql('{"theme":"y"}');
 
-        AppSettingsModel.disableSaveOnChange();
+        AppSettings.disableSaveOnChange();
 
-        AppSettingsModel.theme = 'z';
+        AppSettings.theme = 'z';
         expect(localStorage.getItem('appSettings')).to.eql('{"theme":"y"}');
     });
 });

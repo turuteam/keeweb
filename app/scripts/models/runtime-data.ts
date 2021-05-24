@@ -8,7 +8,7 @@ const logger = new Logger('runtime-data');
 
 let changeListener: () => void;
 
-class RuntimeDataModel extends Model {
+class RuntimeData extends Model {
     skipFolderRightsWarning?: boolean;
 
     async init(): Promise<void> {
@@ -43,7 +43,7 @@ class RuntimeDataModel extends Model {
     }
 
     set(key: string, value: unknown): boolean {
-        switch (key as NonFunctionPropertyNames<RuntimeDataModel>) {
+        switch (key as NonFunctionPropertyNames<RuntimeData>) {
             case 'skipFolderRightsWarning':
                 return this.setBoolean('skipFolderRightsWarning', value);
         }
@@ -73,7 +73,7 @@ class RuntimeDataModel extends Model {
     }
 
     private setBoolean(
-        key: NonNullable<OptionalBooleanPropertyNames<RuntimeDataModel>>,
+        key: NonNullable<OptionalBooleanPropertyNames<RuntimeData>>,
         value: unknown
     ): boolean {
         if (typeof value === 'boolean') {
@@ -88,6 +88,6 @@ class RuntimeDataModel extends Model {
     }
 }
 
-const instance = new RuntimeDataModel();
+const instance = new RuntimeData();
 
-export { instance as RuntimeDataModel };
+export { instance as RuntimeData };

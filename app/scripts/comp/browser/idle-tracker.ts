@@ -1,5 +1,5 @@
 import { Events } from 'util/events';
-import { AppSettingsModel } from 'models/app-settings-model';
+import { AppSettings } from 'models/app-settings';
 
 const IdleTracker = {
     actionTime: Date.now(),
@@ -8,7 +8,7 @@ const IdleTracker = {
     },
     checkIdle(): void {
         const idleMinutes = (Date.now() - this.actionTime) / 1000 / 60;
-        const maxIdleMinutes = AppSettingsModel.idleMinutes;
+        const maxIdleMinutes = AppSettings.idleMinutes;
         if (maxIdleMinutes && idleMinutes > maxIdleMinutes) {
             Events.emit('before-user-idle');
             Events.emit('user-idle');

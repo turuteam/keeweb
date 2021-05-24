@@ -1,7 +1,7 @@
 import { StorageBase } from 'storage/storage-base';
 import { OneDriveApps } from 'const/cloud-storage-apps';
 import { Features } from 'util/features';
-import { AppSettingsModel } from 'models/app-settings-model';
+import { AppSettings } from 'models/app-settings';
 import {
     HttpRequestError,
     StorageFileData,
@@ -28,7 +28,7 @@ class StorageOneDrive extends StorageBase {
     }
 
     get enabled(): boolean {
-        return AppSettingsModel.onedrive;
+        return AppSettings.onedrive;
     }
 
     getPathForName(fileName: string): string {
@@ -293,8 +293,8 @@ class StorageOneDrive extends StorageBase {
     }
 
     protected getOAuthConfig(): StorageOAuthConfig {
-        let clientId = AppSettingsModel.onedriveClientId;
-        let clientSecret = AppSettingsModel.onedriveClientSecret;
+        let clientId = AppSettings.onedriveClientId;
+        let clientSecret = AppSettings.onedriveClientSecret;
         if (!clientId) {
             if (Features.isDesktop) {
                 ({ id: clientId, secret: clientSecret } = OneDriveApps.Desktop);
@@ -305,7 +305,7 @@ class StorageOneDrive extends StorageBase {
             }
         }
         let scope = 'files.readwrite';
-        if (!AppSettingsModel.shortLivedStorageToken) {
+        if (!AppSettings.shortLivedStorageToken) {
             scope += ' offline_access';
         }
         return {

@@ -16,8 +16,8 @@ import { KeyHandler } from 'comp/browser/key-handler';
 import { PopupNotifier } from 'comp/browser/popup-notifier';
 import { SettingsManager } from 'comp/settings/settings-manager';
 import { Alerts } from 'comp/ui/alerts';
-import { AppSettingsModel } from 'models/app-settings-model';
-import { RuntimeDataModel } from 'models/runtime-data-model';
+import { AppSettings } from 'models/app-settings';
+import { RuntimeData } from 'models/runtime-data';
 import { Features } from 'util/features';
 import { KdbxwebInit } from 'comp/kdbxweb/kdbxweb-init';
 import { Locale } from 'util/locale';
@@ -57,7 +57,7 @@ async function bootstrap() {
     }
 
     async function ensureCanRun() {
-        if (Features.isFrame && !AppSettingsModel.allowIframes) {
+        if (Features.isFrame && !AppSettings.allowIframes) {
             return Promise.reject(
                 'Running in iframe is not allowed (this can be changed in the app config).'
             );
@@ -82,8 +82,8 @@ async function bootstrap() {
 
     function loadConfigs() {
         return Promise.all([
-            AppSettingsModel.init(),
-            RuntimeDataModel.init()
+            AppSettings.init(),
+            RuntimeData.init()
             // UpdateModel.load(),
             // FileInfoCollection.load()
         ]).then(() => {
@@ -146,7 +146,7 @@ async function bootstrap() {
 
     function showApp() {
         return Promise.resolve().then(() => {
-            const skipHttpsWarning = AppSettingsModel.skipHttpsWarning;
+            const skipHttpsWarning = AppSettings.skipHttpsWarning;
             const protocolIsInsecure = ['https:', 'file:', 'app:'].indexOf(location.protocol) < 0;
             const hostIsInsecure = location.hostname !== 'localhost';
             if (protocolIsInsecure && hostIsInsecure && !skipHttpsWarning) {

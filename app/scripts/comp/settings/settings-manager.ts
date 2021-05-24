@@ -2,7 +2,7 @@ import { Events } from 'util/events';
 import { Features } from 'util/features';
 import { Locale } from 'util/locale';
 import { ThemeWatcher } from 'comp/browser/theme-watcher';
-import { AppSettingsModel } from 'models/app-settings-model';
+import { AppSettings } from 'models/app-settings';
 import { Logger } from 'util/logger';
 import { Launcher } from 'comp/launcher';
 import { noop } from 'util/fn';
@@ -94,12 +94,12 @@ const SettingsManager = {
     },
 
     setBySettings(): void {
-        this.setTheme(AppSettingsModel.theme);
-        this.setFontSize(AppSettingsModel.fontSize);
-        const locale = AppSettingsModel.locale;
+        this.setTheme(AppSettings.theme);
+        this.setFontSize(AppSettings.fontSize);
+        const locale = AppSettings.locale;
         try {
             if (locale) {
-                this.setLocale(AppSettingsModel.locale);
+                this.setLocale(AppSettings.locale);
             } else {
                 this.setLocale(this.getBrowserLocale());
             }
@@ -122,7 +122,7 @@ const SettingsManager = {
                 document.body.classList.remove(cls);
             }
         }
-        if (AppSettingsModel.autoSwitchTheme) {
+        if (AppSettings.autoSwitchTheme) {
             theme = this.selectDarkOrLightTheme(theme);
         }
         document.body.classList.add(this.getThemeClass(theme));
@@ -151,7 +151,7 @@ const SettingsManager = {
     },
 
     darkModeChanged(): void {
-        if (AppSettingsModel.autoSwitchTheme) {
+        if (AppSettings.autoSwitchTheme) {
             for (const config of this.autoSwitchedThemes) {
                 if (config.light === this.activeTheme || config.dark === this.activeTheme) {
                     const newTheme = ThemeWatcher.dark ? config.dark : config.light;

@@ -2,7 +2,7 @@ import { Launcher } from 'comp/launcher';
 import { Alert, Alerts } from 'comp/ui/alerts';
 import { Features } from 'util/features';
 import { Locale } from 'util/locale';
-import { RuntimeDataModel } from 'models/runtime-data-model';
+import { RuntimeData } from 'models/runtime-data';
 import * as fs from 'fs';
 
 const InstalledAppPath = '/Applications/KeeWeb.app';
@@ -13,7 +13,7 @@ const AppRightsChecker = {
         if (!Launcher || !Features.isMac) {
             return;
         }
-        if (RuntimeDataModel.skipFolderRightsWarning) {
+        if (RuntimeData.skipFolderRightsWarning) {
             return;
         }
         const appPath = await Launcher.ipcRenderer.invoke('get-app-path');
@@ -68,7 +68,7 @@ const AppRightsChecker = {
     async dontAskAnymore(): Promise<void> {
         const needRun = await this.needRunInstaller();
         if (needRun) {
-            RuntimeDataModel.skipFolderRightsWarning = true;
+            RuntimeData.skipFolderRightsWarning = true;
         }
     }
 };

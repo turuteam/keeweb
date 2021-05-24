@@ -9,8 +9,8 @@ interface EventSpec {
     'before-user-idle': () => void;
     'user-idle': () => void;
     'power-monitor-resume': () => void;
-    'theme-applied': () => void;
-    'set-locale': (locale: string) => void;
+    'theme-changed': () => void;
+    'locale-changed': (locale: string) => void;
     'native-modules-yubikeys': (numYubiKeys: number) => void;
     'second-instance': () => void;
     'usb-devices-changed': () => void;

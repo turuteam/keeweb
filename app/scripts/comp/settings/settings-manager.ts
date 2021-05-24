@@ -134,7 +134,7 @@ const SettingsManager = {
         }
         this.activeTheme = theme;
         logger.debug('Theme changed', theme);
-        Events.emit('theme-applied');
+        Events.emit('theme-changed');
     },
 
     getThemeClass(theme: string): string {
@@ -182,7 +182,7 @@ const SettingsManager = {
         }
         Locale.set(localeValues);
         this.activeLocale = loc;
-        Events.emit('set-locale', loc);
+        Events.emit('locale-changed', loc);
 
         if (Launcher) {
             const localeValuesForDesktopApp: Record<string, string> = {};

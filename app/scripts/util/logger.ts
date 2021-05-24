@@ -28,7 +28,7 @@ class Logger {
         this._prefix = name ? name + (id ? ':' + id : '') : 'default';
         this.level = Level.Info;
 
-        if (sessionStorage?.[`debug_${name}`]) {
+        if (sessionStorage?.[`debug-${name}`]) {
             this.level = Level.Debug;
         }
     }

@@ -1,8 +1,9 @@
 import { Features } from 'util/features';
 import { AppSettings } from 'models/app-settings';
+import { Events } from 'util/events';
 
 export const WindowClass = {
-    addWindowClasses(): void {
+    init(): void {
         const browserCssClass = Features.browserCssClass;
         if (browserCssClass) {
             document.body.classList.add(browserCssClass);
@@ -16,5 +17,8 @@ export const WindowClass = {
         if (Features.isMobile) {
             document.body.classList.add('mobile');
         }
+
+        Events.on('enter-full-screen', () => document.body.classList.add('fullscreen'));
+        Events.on('leave-full-screen', () => document.body.classList.remove('fullscreen'));
     }
 };

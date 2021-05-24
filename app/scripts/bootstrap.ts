@@ -116,7 +116,7 @@ async function bootstrap() {
     }
 
     function addWindowClasses() {
-        WindowClass.addWindowClasses();
+        WindowClass.init();
         StartProfiler.milestone('adding window classes');
     }
 

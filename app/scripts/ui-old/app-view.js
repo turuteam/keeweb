@@ -93,8 +93,6 @@ class AppView extends View {
         this.listenTo(Events, 'app-minimized', this.appMinimized);
         this.listenTo(Events, 'show-context-menu', this.showContextMenu);
         this.listenTo(Events, 'second-instance', this.showSingleInstanceAlert);
-        this.listenTo(Events, 'enter-full-screen', this.enterFullScreen);
-        this.listenTo(Events, 'leave-full-screen', this.leaveFullScreen);
         this.listenTo(Events, 'import-csv-requested', this.showImportCsv);
         this.listenTo(Events, 'launcher-before-quit', this.launcherBeforeQuit);
 
@@ -435,14 +433,6 @@ class AppView extends View {
         if (e.target === window) {
             Events.emit('page-blur');
         }
-    }
-
-    enterFullScreen() {
-        this.$el.addClass('fullscreen');
-    }
-
-    leaveFullScreen() {
-        this.$el.removeClass('fullscreen');
     }
 
     escPressed() {

@@ -23,6 +23,8 @@ interface EventSpec {
     'popup-closed': (win: Window, locationSearch?: string) => void;
     'qr-url-read': (url: string) => void;
     'qr-enter-manually': () => void;
+    'enter-full-screen': () => void;
+    'leave-full-screen': () => void;
 }
 
 class Events extends TypedEmitter<EventSpec> {

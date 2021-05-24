@@ -1,5 +1,5 @@
 import { Events } from 'util/events';
-import { Shortcuts } from 'comp/app/shortcuts';
+import { Shortcuts } from 'comp/browser/shortcuts';
 import { Alert, Alerts } from 'comp/ui/alerts';
 import { Features } from 'util/features';
 import { Locale } from 'util/locale';

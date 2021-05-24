@@ -5,10 +5,10 @@ if (process.env.NODE_ENV === 'development') {
 import { h, render } from 'preact';
 import { App } from 'ui/app';
 import { Events } from 'util/events';
-import { StartProfiler } from 'comp/app/start-profiler';
-import { AppRightsChecker } from 'comp/app/app-rights-checker';
+import { StartProfiler } from 'util/logging/start-profiler';
+import { AppRightsChecker } from 'comp/launcher/app-rights-checker';
 import { ExportApi } from 'comp/app/export-api';
-import { SingleInstanceChecker } from 'comp/app/single-instance-checker';
+import { SingleInstanceChecker } from 'comp/browser/single-instance-checker';
 import { FocusDetector } from 'comp/browser/focus-detector';
 import { IdleTracker } from 'comp/browser/idle-tracker';
 import { ThemeWatcher } from 'comp/browser/theme-watcher';

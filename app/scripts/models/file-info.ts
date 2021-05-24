@@ -7,6 +7,7 @@ export interface FileBackupConfig {
     storage: string;
     path: string;
     schedule: string;
+    lastTime?: number;
 }
 
 export interface FileChalRespConfig {

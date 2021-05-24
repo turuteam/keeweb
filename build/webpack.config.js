@@ -206,6 +206,8 @@ function config(options) {
             crypto: 'null',
             fs: 'null',
             path: 'null',
+            http: 'null',
+            https: 'null',
             electron: 'null'
         },
         devtool: devMode ? 'source-map' : undefined

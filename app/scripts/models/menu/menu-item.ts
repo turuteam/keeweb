@@ -3,6 +3,7 @@ import { MenuOption } from './menu-option';
 import { Keys } from 'const/keys';
 import { AlertConfig } from 'comp/ui/alerts';
 import { Locale } from 'util/locale';
+import { InitWithFieldsOf } from 'util/types';
 
 class MenuItem extends Model {
     id?: string;
@@ -30,7 +31,7 @@ class MenuItem extends Model {
     // file: null; // TODO(ts): files in the menu
     section?: string;
 
-    constructor(values: Partial<MenuItem>) {
+    constructor(values: InitWithFieldsOf<MenuItem>) {
         super();
         Object.assign(this, values);
 

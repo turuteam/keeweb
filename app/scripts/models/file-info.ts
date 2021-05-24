@@ -8,6 +8,13 @@ export interface FileBackupConfig {
     schedule: string;
 }
 
+export interface FileChalRespConfig {
+    vid: number;
+    pid: number;
+    serial: number;
+    slot: number;
+}
+
 export class FileInfo extends Model {
     id: string;
     name: string;
@@ -23,7 +30,7 @@ export class FileInfo extends Model {
     keyFilePath?: string;
     // opts?: StorageFileOptions; // TODO(ts): file storage options
     backup?: FileBackupConfig;
-    // chalResp: null; // TODO(ts): yubikey
+    chalResp?: FileChalRespConfig;
     encryptedPassword?: string;
     encryptedPasswordDate?: Date;
 

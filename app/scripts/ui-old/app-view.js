@@ -115,24 +115,7 @@ class AppView extends View {
             );
         }
 
-        this.setWindowClass();
         this.setupAutoSave();
-    }
-
-    setWindowClass() {
-        const browserCssClass = Features.browserCssClass;
-        if (browserCssClass) {
-            document.body.classList.add(browserCssClass);
-        }
-        if (this.titlebarStyle !== 'default') {
-            document.body.classList.add('titlebar-' + this.titlebarStyle);
-            if (Features.renderCustomTitleBar) {
-                document.body.classList.add('titlebar-custom');
-            }
-        }
-        if (Features.isMobile) {
-            document.body.classList.add('mobile');
-        }
     }
 
     render() {

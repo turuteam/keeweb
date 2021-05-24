@@ -27,7 +27,8 @@ import { Logger } from 'util/logger';
 import { FeatureTester } from 'util/browser/feature-tester';
 import { UsbListener } from 'comp/devices/usb-listener';
 import { noop } from 'util/fn';
-import { ConfigLoader } from './comp/settings/config-loader';
+import { ConfigLoader } from 'comp/settings/config-loader';
+import { WindowClass } from 'comp/browser/window-class';
 /* eslint-enable */
 
 declare global {
@@ -52,6 +53,7 @@ async function bootstrap() {
         initModules();
         await loadRemoteConfig();
         await ensureCanRun();
+        addWindowClasses();
         initUsbListener();
         await showApp();
         postInit();
@@ -111,6 +113,11 @@ async function bootstrap() {
         }
 
         StartProfiler.milestone('loading remote config');
+    }
+
+    function addWindowClasses() {
+        WindowClass.addWindowClasses();
+        StartProfiler.milestone('adding window classes');
     }
 
     function initUsbListener() {

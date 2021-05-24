@@ -12,3 +12,11 @@ export type BooleanPropertyNames<T> = {
 export type OptionalBooleanPropertyNames<T> = {
     [K in keyof T]: T[K] extends boolean | undefined ? K : never;
 }[keyof T];
+
+export type OptionalStringPropertyNames<T> = {
+    [K in keyof T]: T[K] extends string | undefined ? K : never;
+}[keyof T];
+
+export type OptionalDatePropertyNames<T> = {
+    [K in keyof T]: T[K] extends Date | undefined ? K : never;
+}[keyof T];

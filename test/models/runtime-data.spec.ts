@@ -63,4 +63,27 @@ describe('RuntimeData', () => {
         model.x = 'z';
         expect(localStorage.getItem('runtimeData')).to.eql('{"x":"y"}');
     });
+
+    it('sets a date', () => {
+        const dt = new Date();
+
+        RuntimeData.lastUpdateCheckDate = dt;
+        RuntimeData.set('lastUpdateVersionReleaseDate', dt);
+        RuntimeData.set('lastSuccessUpdateCheckDate', dt.toISOString());
+
+        expect(RuntimeData.lastUpdateCheckDate).to.eql(dt);
+        expect(RuntimeData.lastUpdateVersionReleaseDate).to.eql(dt);
+        expect(RuntimeData.lastSuccessUpdateCheckDate).to.eql(dt);
+
+        RuntimeData.lastUpdateCheckDate = undefined;
+        RuntimeData.set('lastUpdateVersionReleaseDate', undefined);
+        RuntimeData.set('lastSuccessUpdateCheckDate', 'boo');
+
+        expect(RuntimeData.lastUpdateCheckDate).to.eql(undefined);
+        expect(RuntimeData.lastUpdateVersionReleaseDate).to.eql(undefined);
+        expect(RuntimeData.lastSuccessUpdateCheckDate).to.eql(dt);
+
+        RuntimeData.set('lastUpdateCheckDate', dt.getTime());
+        expect(RuntimeData.lastUpdateCheckDate).to.eql(dt);
+    });
 });

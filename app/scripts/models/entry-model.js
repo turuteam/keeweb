@@ -4,7 +4,7 @@ import { AppSettingsModel } from 'models/app-settings-model';
 import { KdbxToHtml } from 'comp/format/kdbx-to-html';
 import { IconMap } from 'const/icon-map';
 import { BuiltInFields } from 'const/entry-fields';
-import { AttachmentModel } from 'models/attachment-model';
+import { Attachment } from 'models/attachment-model';
 import { Color } from 'util/data/color';
 import { Otp } from 'util/data/otp';
 import { Ranking } from 'util/data/ranking';
@@ -175,7 +175,7 @@ class EntryModel extends Model {
                 data = data.value;
             }
             if (data) {
-                att.push(AttachmentModel.fromAttachment({ data, title }));
+                att.push(Attachment.fromAttachment({ data, title }));
             }
         }
         return att;

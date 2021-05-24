@@ -1,7 +1,7 @@
 import * as kdbxweb from 'kdbxweb';
 import { IconMap } from 'const/icon-map';
 import { EntryModel } from 'models/entry-model';
-import { MenuItemModel } from 'models/menu/menu-item-model';
+import { MenuItem } from 'models/menu/menu-item-model';
 import { IconUrlFormat } from 'util/formatting/icon-url-format';
 import { GroupCollection } from 'collections/group-collection';
 import { EntryCollection } from 'collections/entry-collection';
@@ -10,7 +10,7 @@ const KdbxIcons = kdbxweb.Consts.Icons;
 
 const DefaultAutoTypeSequence = '{USERNAME}{TAB}{PASSWORD}{ENTER}';
 
-class GroupModel extends MenuItemModel {
+class GroupModel extends MenuItem {
     setGroup(group, file, parentGroup) {
         const isRecycleBin = group.uuid.equals(file.db.meta.recycleBinUuid);
         const id = file.subId(group.uuid.id);

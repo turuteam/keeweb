@@ -1,5 +1,6 @@
 import * as kdbxweb from 'kdbxweb';
 import { Model } from 'util/model';
+import { InitWithFieldsOf } from 'util/types';
 
 export interface FileBackupConfig {
     enabled: boolean;
@@ -34,7 +35,7 @@ export class FileInfo extends Model {
     encryptedPassword?: string;
     encryptedPasswordDate?: Date;
 
-    constructor(values: FileInfo) {
+    constructor(values: InitWithFieldsOf<FileInfo> & { id: string; name: string }) {
         super();
         this.id = values.id;
         this.name = values.name;

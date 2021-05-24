@@ -14,8 +14,6 @@ import { FileModel } from 'models/file-model';
 import { GroupModel } from 'models/group-model';
 import { YubiKeyOtpModel } from 'models/otp-device/yubikey-otp-model';
 import { MenuModel } from 'models/menu/menu-model';
-import { PluginManager } from 'plugins/plugin-manager';
-import { Features } from 'util/features';
 import { DateFormat } from 'comp/i18n/date-format';
 import { Launcher } from 'comp/launcher';
 import { UrlFormat } from 'util/formatting/url-format';
@@ -60,104 +58,6 @@ class AppModel {
 
         this.appLogger = new Logger('app');
         AppModel.instance = this;
-    }
-
-    loadConfig(configLocation) {
-        return new Promise((resolve, reject) => {
-            this.ensureCanLoadConfig(configLocation);
-            this.applogger.info('Loading config from', configLocation);
-            const ts = this.appLogger.ts();
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', configLocation);
-            xhr.responseType = 'json';
-            xhr.send();
-            xhr.addEventListener('load', () => {
-                let response = xhr.response;
-                if (!response) {
-                    const errorDesc = xhr.statusText === 'OK' ? 'Malformed JSON' : xhr.statusText;
-                    this.appLogger.error('Error loading app config', errorDesc);
-                    return reject('Error loading app config');
-                }
-                if (typeof response === 'string') {
-                    try {
-                        response = JSON.parse(response);
-                    } catch (e) {
-                        this.appLogger.error('Error parsing response', e, response);
-                        return reject('Error parsing response');
-                    }
-                }
-                if (!response.settings) {
-                    this.appLogger.error('Invalid app config, no settings section', response);
-                    return reject('Invalid app config, no settings section');
-                }
-                this.appLogger.info(
-                    'Loaded app config from',
-                    configLocation,
-                    this.appLogger.ts(ts)
-                );
-                resolve(response);
-            });
-            xhr.addEventListener('error', () => {
-                this.appLogger.error('Error loading app config', xhr.statusText, xhr.status);
-                reject('Error loading app config');
-            });
-        }).then((config) => {
-            return this.applyUserConfig(config);
-        });
-    }
-
-    ensureCanLoadConfig(url) {
-        if (!Features.isSelfHosted) {
-            throw 'Configs are supported only in self-hosted installations';
-        }
-        const link = document.createElement('a');
-        link.href = url;
-        const isExternal = link.host && link.host !== location.host;
-        if (isExternal) {
-            throw 'Loading config from this location is not allowed';
-        }
-    }
-
-    applyUserConfig(config) {
-        this.settings.set(config.settings);
-        if (config.files) {
-            if (config.showOnlyFilesFromConfig) {
-                this.fileInfos.length = 0;
-            }
-            config.files
-                .filter(
-                    (file) =>
-                        file &&
-                        file.storage &&
-                        file.name &&
-                        file.path &&
-                        !this.fileInfos.getMatch(file.storage, file.name, file.path)
-                )
-                .map(
-                    (file) =>
-                        new FileInfoModel({
-                            id: IdGenerator.uuid(),
-                            name: file.name,
-                            storage: file.storage,
-                            path: file.path,
-                            opts: file.options
-                        })
-                )
-                .reverse()
-                .forEach((fi) => this.fileInfos.unshift(fi));
-        }
-        if (config.plugins) {
-            const pluginsPromises = config.plugins.map((plugin) =>
-                PluginManager.installIfNew(plugin.url, plugin.manifest, true)
-            );
-            return Promise.all(pluginsPromises).then(() => {
-                this.settings.set(config.settings);
-            });
-        }
-        if (config.advancedSearch) {
-            this.advancedSearch = config.advancedSearch;
-            this.addFilter({ advanced: this.advancedSearch });
-        }
     }
 
     addFile(file) {

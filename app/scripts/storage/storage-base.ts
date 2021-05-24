@@ -71,7 +71,7 @@ abstract class StorageBase {
         backup?: boolean;
     }) {
         if (!props.name) {
-            throw 'Failed to init provider: no name';
+            throw new Error('Failed to init provider: no name');
         }
         this.name = props.name;
         this.icon = props.icon;

@@ -102,7 +102,7 @@
         ],
         "one-var": "off",
         "space-before-function-paren": "off",
-        "no-throw-literal": "off",
+        "no-throw-literal": "error",
         "camelcase": [
           "error",
           {

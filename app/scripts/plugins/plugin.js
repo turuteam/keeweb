@@ -655,7 +655,7 @@ class Plugin extends Model {
                     commonLogger.error('Failed to parse manifest', manifest);
                     throw 'Failed to parse manifest';
                 }
-                commonlogger.info('Loaded manifest', manifest);
+                commonLogger.info('Loaded manifest', manifest);
                 if (expectedManifest) {
                     if (expectedManifest.name !== manifest.name) {
                         throw 'Bad plugin name';
@@ -692,29 +692,29 @@ Plugin.defineModelProperties({
 Object.assign(Plugin, PluginStatus);
 
 function httpGet(url, binary) {
-    commonlogger.info('GET', url);
+    commonLogger.info('GET', url);
     const ts = commonLogger.ts();
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.addEventListener('load', () => {
             if (xhr.status === 200) {
-                commonlogger.info('GET OK', url, commonLogger.ts(ts));
+                commonLogger.info('GET OK', url, commonLogger.ts(ts));
                 resolve(xhr.response);
             } else {
-                commonlogger.info('GET error', url, xhr.status);
+                commonLogger.info('GET error', url, xhr.status);
                 reject(xhr.status ? `HTTP status ${xhr.status}` : 'network error');
             }
         });
         xhr.addEventListener('error', () => {
-            commonlogger.info('GET error', url, xhr.status);
+            commonLogger.info('GET error', url, xhr.status);
             reject(xhr.status ? `HTTP status ${xhr.status}` : 'network error');
         });
         xhr.addEventListener('abort', () => {
-            commonlogger.info('GET aborted', url);
+            commonLogger.info('GET aborted', url);
             reject('Network request timeout');
         });
         xhr.addEventListener('timeout', () => {
-            commonlogger.info('GET timeout', url);
+            commonLogger.info('GET timeout', url);
             reject('Network request timeout');
         });
         if (binary) {

@@ -1,4 +1,6 @@
 /* eslint-disable import/first */
+import { Updater } from './comp/app/updater';
+
 if (process.env.NODE_ENV === 'development') {
     require('preact/debug');
 }
@@ -25,6 +27,7 @@ import { Logger } from 'util/logger';
 import { FeatureTester } from 'util/browser/feature-tester';
 import { UsbListener } from 'comp/devices/usb-listener';
 import { noop } from 'util/fn';
+import { ConfigLoader } from './comp/settings/config-loader';
 /* eslint-enable */
 
 declare global {
@@ -47,7 +50,7 @@ async function bootstrap() {
     try {
         await loadConfigs();
         initModules();
-        // await loadRemoteConfig();
+        await loadRemoteConfig();
         await ensureCanRun();
         initUsbListener();
         await showApp();
@@ -81,12 +84,7 @@ async function bootstrap() {
     }
 
     function loadConfigs() {
-        return Promise.all([
-            AppSettings.init(),
-            RuntimeData.init()
-            // UpdateModel.load(),
-            // FileInfoCollection.load()
-        ]).then(() => {
+        return Promise.all([AppSettings.init(), RuntimeData.init()]).then(() => {
             StartProfiler.milestone('loading configs');
         });
     }
@@ -96,48 +94,24 @@ async function bootstrap() {
         PopupNotifier.init();
         KdbxwebInit.init();
         FocusDetector.init();
-        // AutoType.init();
+        // AutoType.init(); // TODO(ts)
         ThemeWatcher.init();
         SettingsManager.init();
         window.kw = ExportApi;
-        // await PluginManager.init()
+        // await PluginManager.init() // TODO(ts)
         StartProfiler.milestone('initializing modules');
     }
 
-    // function showSettingsLoadError() {
-    //     Alerts.error({
-    //         header: Locale.appSettingsError,
-    //         body: Locale.appSettingsErrorBody,
-    //         buttons: [],
-    //         esc: undefined,
-    //         enter: undefined,
-    //         click: undefined
-    //     });
-    // }
-    //
-    // function loadRemoteConfig() {
-    //     return Promise.resolve()
-    //         .then(() => {
-    //             SettingsManager.setBySettings();
-    //             const configParam = getConfigParam();
-    //             if (configParam) {
-    //                 return appModel
-    //                     .loadConfig(configParam)
-    //                     .then(() => {
-    //                         SettingsManager.setBySettings();
-    //                     })
-    //                     .catch((e) => {
-    //                         if (!appModel.settings.cacheConfigSettings) {
-    //                             showSettingsLoadError();
-    //                             throw e;
-    //                         }
-    //                     });
-    //             }
-    //         })
-    //         .then(() => {
-    //             StartProfiler.milestone('loading remote config');
-    //         });
-    // }
+    async function loadRemoteConfig() {
+        SettingsManager.setBySettings();
+
+        const loaded = await ConfigLoader.loadConfig();
+        if (loaded) {
+            SettingsManager.setBySettings();
+        }
+
+        StartProfiler.milestone('loading remote config');
+    }
 
     function initUsbListener() {
         UsbListener.init();
@@ -173,12 +147,12 @@ async function bootstrap() {
     }
 
     function postInit() {
-        // Updater.init();
+        Updater.init();
         SingleInstanceChecker.init();
         AppRightsChecker.init().catch(noop);
         IdleTracker.init();
-        // BrowserExtensionConnector.init(appModel);
-        // PluginManager.runAutoUpdate(); // TODO: timeout
+        // BrowserExtensionConnector.init(appModel); // TODO(ts)
+        // PluginManager.runAutoUpdate(); // TODO(ts): timeout
     }
 
     function showView() {
@@ -196,15 +170,4 @@ async function bootstrap() {
 
         return Promise.resolve();
     }
-
-    // function getConfigParam() {
-    //     const metaConfig = document.head.querySelector('meta[name=kw-config]');
-    //     if (metaConfig && metaConfig.content && metaConfig.content[0] !== '(') {
-    //         return metaConfig.content;
-    //     }
-    //     const match = location.search.match(/[?&]config=([^&]+)/i);
-    //     if (match && match[1]) {
-    //         return match[1];
-    //     }
-    // }
 }

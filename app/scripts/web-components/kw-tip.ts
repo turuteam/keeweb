@@ -111,10 +111,6 @@ class KwTip extends HTMLElement {
         }, Timeouts.ShowTip);
     }
 
-    private parentMouseDown() {
-        this.hideTip();
-    }
-
     private hideTip() {
         if (this._showTimeout) {
             clearTimeout(this._showTimeout);

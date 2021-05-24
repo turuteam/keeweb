@@ -1,7 +1,14 @@
 import * as kdbxweb from 'kdbxweb';
 import { Model } from 'util/model';
 
-class FileInfo extends Model {
+export interface FileBackupConfig {
+    enabled: boolean;
+    storage: string;
+    path: string;
+    schedule: string;
+}
+
+export class FileInfo extends Model {
     id: string;
     name: string;
     storage?: string;
@@ -15,7 +22,7 @@ class FileInfo extends Model {
     keyFileHash?: string;
     keyFilePath?: string;
     // opts?: StorageFileOptions; // TODO(ts): file storage options
-    // backup?: null; // TODO(ts): file backups
+    backup?: FileBackupConfig;
     // chalResp: null; // TODO(ts): yubikey
     encryptedPassword?: string;
     encryptedPasswordDate?: Date;
@@ -27,5 +34,3 @@ class FileInfo extends Model {
         Object.assign(this, values);
     }
 }
-
-export { FileInfo };

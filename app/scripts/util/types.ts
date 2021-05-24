@@ -5,18 +5,6 @@ export type NonFunctionPropertyNames<T> = NonNullable<
     }[Extract<keyof T, string>]
 >;
 
-export type BooleanPropertyNames<T> = {
-    [K in keyof T]: T[K] extends boolean ? K : never;
-}[keyof T];
-
-export type OptionalBooleanPropertyNames<T> = {
-    [K in keyof T]: T[K] extends boolean | undefined ? K : never;
-}[keyof T];
-
-export type OptionalStringPropertyNames<T> = {
-    [K in keyof T]: T[K] extends string | undefined ? K : never;
-}[keyof T];
-
-export type OptionalDatePropertyNames<T> = {
-    [K in keyof T]: T[K] extends Date | undefined ? K : never;
+export type PropertiesOfType<T, PropType> = {
+    [K in keyof T]: T[K] extends PropType ? K : never;
 }[keyof T];

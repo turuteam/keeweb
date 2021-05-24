@@ -2,7 +2,7 @@ import { Model } from 'util/model';
 import { SettingsStore } from 'comp/settings/settings-store';
 import { noop } from 'util/fn';
 import { Logger } from 'util/logger';
-import { BooleanPropertyNames, NonFunctionPropertyNames } from 'util/types';
+import { NonFunctionPropertyNames, PropertiesOfType } from 'util/types';
 import {
     CharRange,
     CharRanges,
@@ -449,7 +449,7 @@ class AppSettings extends Model {
     }
 
     private setBoolean(
-        key: NonNullable<BooleanPropertyNames<AppSettings>>,
+        key: NonNullable<PropertiesOfType<AppSettings, boolean | undefined>>,
         value: unknown
     ): boolean {
         if (typeof value === 'boolean') {

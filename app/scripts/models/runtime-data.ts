@@ -2,12 +2,7 @@ import { Model } from 'util/model';
 import { SettingsStore } from 'comp/settings/settings-store';
 import { noop } from 'util/fn';
 import { Logger } from 'util/logger';
-import {
-    NonFunctionPropertyNames,
-    OptionalBooleanPropertyNames,
-    OptionalDatePropertyNames,
-    OptionalStringPropertyNames
-} from 'util/types';
+import { NonFunctionPropertyNames, PropertiesOfType } from 'util/types';
 
 const logger = new Logger('runtime-data');
 
@@ -102,7 +97,7 @@ class RuntimeData extends Model {
     }
 
     private setBoolean(
-        key: NonNullable<OptionalBooleanPropertyNames<RuntimeData>>,
+        key: NonNullable<PropertiesOfType<RuntimeData, boolean | undefined>>,
         value: unknown
     ): boolean {
         if (typeof value === 'boolean') {
@@ -117,7 +112,7 @@ class RuntimeData extends Model {
     }
 
     private setString(
-        key: NonNullable<OptionalStringPropertyNames<RuntimeData>>,
+        key: NonNullable<PropertiesOfType<RuntimeData, string | undefined>>,
         value: unknown
     ): boolean {
         if (typeof value === 'string') {
@@ -132,7 +127,7 @@ class RuntimeData extends Model {
     }
 
     private setDate(
-        key: NonNullable<OptionalDatePropertyNames<RuntimeData>>,
+        key: NonNullable<PropertiesOfType<RuntimeData, Date | undefined>>,
         value: unknown
     ): boolean {
         if (!value) {

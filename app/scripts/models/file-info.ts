@@ -18,7 +18,7 @@ export interface FileChalRespConfig {
 }
 
 export interface FileStorageExtraOptions {
-    user: string;
+    user?: string;
     encpass?: string;
 }
 

@@ -1,5 +1,8 @@
 Release notes
 -------------
+##### v2.0.0 (WIP)
+`*` KeeWeb rewritten on TypeScript + Preact
+
 ##### v1.18.6 (2021-05-19)
 `-` fix #1824: saving KDBX3 files with compression disabled  
 `-` fix #1818: extension connection error if browser cannot be identified  

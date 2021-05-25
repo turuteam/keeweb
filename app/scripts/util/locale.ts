@@ -1,7 +1,7 @@
 const BaseLocale = require('locales/base.json') as Record<string, string>;
 const BaseLocaleName = 'en-US';
 
-interface LocWithReplace {
+export interface LocWithReplace {
     with(value: string): string;
 }
 
@@ -756,6 +756,7 @@ export const Locale = {
     get exportHtmlDate(): string { return get('exportHtmlDate'); },
     get exportGenerator(): string { return get('exportGenerator'); },
     exportDescription: withReplace('exportDescription'),
+    get exportEntries(): string { return get('exportEntries'); },
     get importCsvTitle(): string { return get('importCsvTitle'); },
     get importCsvRun(): string { return get('importCsvRun'); },
     get importIgnoreField(): string { return get('importIgnoreField'); },

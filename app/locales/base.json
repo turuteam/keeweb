@@ -725,6 +725,7 @@
   "exportHtmlDate": "Export date",
   "exportGenerator": "Software",
   "exportDescription": "This file is generated with {}.",
+  "exportEntries": "Entries",
   "importCsvTitle": "Import from CSV",
   "importCsvRun": "Import",
   "importIgnoreField": "Ignore",

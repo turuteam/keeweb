@@ -42,7 +42,7 @@ export class KwSecureInput extends HTMLElement {
     }
 
     protected static get observedAttributes(): string[] {
-        return ['autofocus', 'readonly', 'size', 'placeholder', 'tabindex'];
+        return ['autofocus', 'readonly', 'disabled', 'size', 'placeholder', 'tabindex'];
     }
 
     protected attributeChangedCallback(

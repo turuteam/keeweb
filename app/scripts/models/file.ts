@@ -333,7 +333,7 @@ class File extends Model<FileEvents> {
     ): Promise<void> {
         let credentials: kdbxweb.Credentials;
         if (remoteKey) {
-            // TODO(ts): chall-resp
+            // TODO(ts): chal-resp
             credentials = new kdbxweb.Credentials(null);
             await credentials.ready;
             if (remoteKey.password) {

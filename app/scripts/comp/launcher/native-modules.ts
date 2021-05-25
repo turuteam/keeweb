@@ -188,13 +188,13 @@ class NativeModules {
     //     ykChalRespCallbacks[callId] = callback;
     //     return this.call('yubiKeyChallengeResponse', yubiKey, challenge, slot, callId);
     // }
-    //
-    // yubiKeyCancelChallengeResponse(): Promise<void> {
-    //     if (this._hostRunning) {
-    //         return this.call('yubikey-cancel-chal-resp');
-    //     }
-    //     return Promise.resolve();
-    // }
+
+    yubiKeyCancelChallengeResponse(): Promise<void> {
+        if (this._hostRunning) {
+            return this.call('yubikey-cancel-chal-resp');
+        }
+        return Promise.resolve();
+    }
 
     argon2(
         password: NativeDataWithSalt,

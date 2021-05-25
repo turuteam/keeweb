@@ -254,6 +254,8 @@ export class LauncherElectron {
         cmd: string;
         args: string[];
         noStdOutLogging?: boolean;
+        throwOnStdErr?: boolean;
+        name?: string;
     }): Promise<{ code?: number; stdout?: string; stderr?: string }> {
         const ts = logger.ts();
         const res = await this.ipcRenderer.invoke('spawn-process', {
@@ -270,9 +272,16 @@ export class LauncherElectron {
                 throw new Error(`Exit code ${res.code}`);
             } else {
                 logger.info(msg + (res.stdout && !config.noStdOutLogging ? '\n' + res.stdout : ''));
+                if (res.stderr && config.throwOnStdErr) {
+                    throw new Error(`Error returned: ${res.stderr.trim()}`);
+                }
             }
             return res;
         }
+    }
+
+    async killProcess(name: string): Promise<void> {
+        await this.ipcRenderer.invoke('kill-process', name);
     }
 
     // checkOpenFiles() {

@@ -1,7 +1,11 @@
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 export interface YubiKeyInfo {
-    id: string;
+    vid: number;
+    pid: number;
+    serial: number;
+    slots: number;
+    version: string;
 }
 
 export interface NativeDataWithSalt {
@@ -109,6 +113,7 @@ export interface DesktopIpcMainCalls {
     'get-user-data-path': () => string;
     'resolve-proxy': (url: string) => { host: string; port: string } | undefined;
     'spawn-process': (arg: ProcessSpawnArg) => ProcessSpawnResult;
+    'kill-process': (name: string) => void;
     'http-request': (arg: HttpRequestConfig) => HttpResponse;
     'show-main-window': () => void;
 }

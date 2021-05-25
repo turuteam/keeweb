@@ -21,20 +21,20 @@ declare module 'preact' {
     }
 }
 
-class KwTip extends HTMLElement {
+export class KwTip extends HTMLElement {
     private _removeListeners?: () => void;
     private _removeWindowResizeListener?: () => void;
     private _tipEl?: HTMLElement;
     private _showTimeout?: number;
     private _hideTimeout?: number;
 
-    connectedCallback() {
+    protected connectedCallback(): void {
         if (TipsEnabled) {
             this.listen();
         }
     }
 
-    disconnectedCallback() {
+    protected disconnectedCallback(): void {
         if (TipsEnabled) {
             this._removeListeners?.();
             this.removeTip();

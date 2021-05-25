@@ -23,5 +23,6 @@ export const Timeouts = {
     AutoTypeCopyPaste: 300,
     KeeWebConnectRequest: 60000,
     UpdateInterval: 1000 * 60 * 60 * 24,
-    MinUpdateTimeout: 500
+    MinUpdateTimeout: 500,
+    InputShake: 1000
 };

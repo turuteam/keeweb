@@ -17,6 +17,11 @@ export interface FileChalRespConfig {
     slot: number;
 }
 
+export interface FileStorageExtraOptions {
+    user: string;
+    encpass: string;
+}
+
 export class FileInfo extends Model {
     id: string;
     name: string;
@@ -30,7 +35,7 @@ export class FileInfo extends Model {
     keyFileName?: string;
     keyFileHash?: string;
     keyFilePath?: string;
-    // opts?: StorageFileOptions; // TODO(ts): file storage options
+    opts?: FileStorageExtraOptions;
     backup?: FileBackupConfig;
     chalResp?: FileChalRespConfig;
     encryptedPassword?: string;

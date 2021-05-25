@@ -10,7 +10,7 @@ import { Timeouts } from 'const/timeouts';
 import { AppSettingsModel } from 'models/app-settings-model';
 import { EntryModel } from 'models/entry-model';
 import { FileInfoModel } from 'models/file-info-model';
-import { FileModel } from 'models/file-model';
+import { File } from 'models/file-model';
 import { GroupModel } from 'models/group-model';
 import { YubiKeyOtpModel } from 'models/otp-device/yubikey-otp-model';
 import { Menu } from 'models/menu/menu-model';
@@ -399,7 +399,7 @@ class AppModel {
 
     createDemoFile() {
         if (!this.files.getByName('Demo')) {
-            const demoFile = new FileModel({ id: IdGenerator.uuid() });
+            const demoFile = new File({ id: IdGenerator.uuid() });
             demoFile.openDemo(() => {
                 this.addFile(demoFile);
             });
@@ -418,7 +418,7 @@ class AppModel {
                 }
             }
         }
-        const newFile = new FileModel({ id: IdGenerator.uuid() });
+        const newFile = new File({ id: IdGenerator.uuid() });
         newFile.create(name, () => {
             this.addFile(newFile);
             callback?.(newFile);
@@ -598,7 +598,7 @@ class AppModel {
         if (!params.keyFileData && fileInfo && fileInfo.keyFileName) {
             params.keyFileName = fileInfo.keyFileName;
             if (this.settings.rememberKeyFiles === 'data' && fileInfo.keyFileHash) {
-                params.keyFileData = FileModel.createKeyFileWithHash(fileInfo.keyFileHash);
+                params.keyFileData = File.createKeyFileWithHash(fileInfo.keyFileHash);
             } else if (this.settings.rememberKeyFiles === 'path' && fileInfo.keyFilePath) {
                 params.keyFilePath = fileInfo.keyFilePath;
                 if (Storage.file.enabled) {
@@ -608,7 +608,7 @@ class AppModel {
         } else if (params.keyFilePath && !params.keyFileData && !fileInfo) {
             needLoadKeyFile = true;
         }
-        const file = new FileModel({
+        const file = new File({
             id: fileInfo ? fileInfo.id : IdGenerator.uuid(),
             name: params.name,
             storage: params.storage,
@@ -672,7 +672,7 @@ class AppModel {
     importFileWithXml(params, callback) {
         const logger = new Logger('import', params.name);
         logger.info('File import request with supplied xml');
-        const file = new FileModel({
+        const file = new File({
             id: IdGenerator.uuid(),
             name: params.name,
             storage: params.storage,

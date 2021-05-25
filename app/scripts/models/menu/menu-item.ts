@@ -31,7 +31,7 @@ class MenuItem extends Model {
     // file: null; // TODO(ts): files in the menu
     section?: string;
 
-    constructor(values: InitWithFieldsOf<MenuItem>) {
+    constructor(values?: InitWithFieldsOf<MenuItem>) {
         super();
         Object.assign(this, values);
 

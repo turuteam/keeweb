@@ -7,4 +7,4 @@ export const BuiltInFields = [
     'TOTP Seed',
     'TOTP Settings',
     '_etm_template_uuid'
-] as const;
+];

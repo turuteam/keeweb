@@ -211,7 +211,7 @@ class Otp {
         return !!Otp.fromBase32(str);
     }
 
-    static makeUrl(secret: string, period: number, digits: number): string {
+    static makeUrl(secret: string, period?: number, digits?: number): string {
         const periodParam = period ? `&period=${period}` : '';
         const digitsParam = digits ? `&digits=${digits}` : '';
         return `otpauth://totp/default?secret=${secret}${periodParam}${digitsParam}`;

@@ -1,6 +1,5 @@
 import * as kdbxweb from 'kdbxweb';
 import { RuntimeInfo } from 'const/runtime-info';
-import { Transport } from 'comp/launcher/transport';
 import { Launcher } from 'comp/launcher';
 import { Links } from 'const/links';
 import { AppSettings } from 'models/app-settings';
@@ -11,7 +10,11 @@ import { Model } from 'util/model';
 import { Timeouts } from 'const/timeouts';
 import { RuntimeData } from 'models/runtime-data';
 import { noop } from 'util/fn';
+import { StringFormat } from 'util/formatting/string-format';
+import { ClientRequestArgs } from 'http';
 import * as fs from 'fs';
+import path from 'path';
+import https from 'https';
 
 const logger = new Logger('updater');
 
@@ -108,7 +111,7 @@ class Updater extends Model {
 
         let data: Buffer | undefined;
         try {
-            const httpRes = await Transport.httpGet({
+            const httpRes = await this.httpGet({
                 url: Links.UpdateJson
             });
             data = httpRes.data;
@@ -205,7 +208,7 @@ class Updater extends Model {
 
         let assetFilePath: string;
         try {
-            const httpRes = await Transport.httpGet({
+            const httpRes = await this.httpGet({
                 url: updateAssetUrl,
                 file: updateAssetName,
                 cleanupOldFiles: true,
@@ -228,7 +231,7 @@ class Updater extends Model {
 
         let assetFileSignaturePath: string;
         try {
-            const httpRes = await Transport.httpGet({
+            const httpRes = await this.httpGet({
                 url: updateUrlBasePath + 'Verify.sign.sha256',
                 file: updateAssetName + '.sign',
                 cleanupOldFiles: true,
@@ -328,8 +331,134 @@ class Updater extends Model {
             return;
         }
         const updateAssetName = this.getUpdateAssetName(RuntimeData.lastUpdateVersion);
-        const updateFilePath = await Transport.cacheFilePath(updateAssetName);
+        const updateFilePath = await this.cacheFilePath(updateAssetName);
         Launcher.requestRestartAndUpdate(updateFilePath);
+    }
+
+    async cacheFilePath(fileName?: string): Promise<string> {
+        const tempPath = await Launcher?.ipcRenderer.invoke('get-temp-path');
+        if (!tempPath) {
+            throw new Error('Failed to get temp path');
+        }
+        return fileName ? path.join(tempPath, fileName) : tempPath;
+    }
+
+    async httpGet(config: {
+        url: string;
+        file?: string;
+        cache?: boolean;
+        cleanupOldFiles?: boolean;
+        noRedirect?: boolean;
+    }): Promise<{ fileName?: string; data?: Buffer }> {
+        let tmpFile: string;
+        if (config.file) {
+            const baseTempPath = await this.cacheFilePath();
+            if (config.cleanupOldFiles) {
+                const allFiles = await fs.promises.readdir(baseTempPath);
+                for (const file of allFiles) {
+                    if (
+                        file !== config.file &&
+                        StringFormat.replaceVersion(file, '0') ===
+                            StringFormat.replaceVersion(config.file, '0')
+                    ) {
+                        await fs.promises.unlink(path.join(baseTempPath, file));
+                    }
+                }
+            }
+            tmpFile = path.join(baseTempPath, config.file);
+            let tmpFileExists = true;
+            try {
+                await fs.promises.access(tmpFile);
+            } catch {
+                tmpFileExists = false;
+            }
+            if (tmpFileExists) {
+                try {
+                    if (config.cache && (await fs.promises.stat(tmpFile)).size > 0) {
+                        logger.info('File already downloaded', config.url);
+                        return Promise.resolve({ fileName: tmpFile });
+                    } else {
+                        await fs.promises.unlink(tmpFile);
+                    }
+                } catch (e) {
+                    fs.promises.unlink(tmpFile).catch(noop);
+                }
+            }
+        }
+
+        logger.info('GET ' + config.url);
+
+        const proxy = await Launcher?.ipcRenderer.invoke('resolve-proxy', config.url);
+
+        const url = new URL(config.url);
+        const opts: ClientRequestArgs = {
+            host: url.host,
+            port: url.port,
+            path: url.pathname + url.search
+        };
+        opts.headers = { 'User-Agent': navigator.userAgent };
+
+        logger.info(
+            'Request to ' +
+                config.url +
+                ' ' +
+                (proxy ? `using proxy ${proxy.host}:${proxy.port}` : 'without proxy')
+        );
+        if (proxy) {
+            opts.headers.Host = url.host;
+            opts.host = proxy.host;
+            opts.port = proxy.port;
+            opts.path = config.url;
+        }
+
+        return new Promise((resolve, reject) => {
+            https
+                .get(opts, (res) => {
+                    logger.info(`Response from ${config.url}: `, res.statusCode);
+                    if (res.statusCode === 200) {
+                        if (config.file) {
+                            const file = fs.createWriteStream(tmpFile);
+                            res.pipe(file);
+                            file.on('finish', () => {
+                                file.on('close', () => {
+                                    resolve({ fileName: tmpFile });
+                                });
+                                file.close();
+                            });
+                            file.on('error', (err) => {
+                                reject(err);
+                            });
+                        } else {
+                            const chunks: Buffer[] = [];
+                            res.on('data', (chunk) => {
+                                chunks.push(chunk);
+                            });
+                            res.on('end', () => {
+                                resolve({ data: Buffer.concat(chunks) });
+                            });
+                        }
+                    } else if (
+                        res.headers.location &&
+                        (res.statusCode === 301 || res.statusCode === 302)
+                    ) {
+                        if (config.noRedirect) {
+                            return reject(new Error('Too many redirects'));
+                        }
+                        config.url = res.headers.location;
+                        config.noRedirect = true;
+                        resolve(this.httpGet(config));
+                    } else {
+                        reject(new Error(`HTTP status ${res.statusCode ?? 0}`));
+                    }
+                })
+                .on('error', (e) => {
+                    logger.error('Cannot GET ' + config.url, e);
+                    if (tmpFile) {
+                        fs.unlink(tmpFile, noop);
+                    }
+                    reject(e);
+                });
+        });
     }
 }
 

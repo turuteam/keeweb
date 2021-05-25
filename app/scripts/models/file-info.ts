@@ -19,7 +19,7 @@ export interface FileChalRespConfig {
 
 export interface FileStorageExtraOptions {
     user: string;
-    encpass: string;
+    encpass?: string;
 }
 
 export class FileInfo extends Model {

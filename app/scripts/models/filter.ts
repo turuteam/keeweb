@@ -1,7 +1,7 @@
 import { Model } from 'util/model';
 import { InitWithFieldsOf } from 'util/types';
 
-export interface AdvancedFilter {
+export interface AdvancedFilter extends Model {
     cs?: boolean;
     regex?: boolean;
     user?: boolean;

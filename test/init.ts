@@ -16,6 +16,7 @@ const jsdom = new JSDOM('', { url: 'https://app.keeweb.info' }).window;
 
 global.crypto = new Crypto();
 global.localStorage = jsdom.localStorage;
+global.sessionStorage = jsdom.sessionStorage;
 global.navigator = jsdom.navigator;
 global.screen = jsdom.screen;
 global.location = jsdom.location;

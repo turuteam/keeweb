@@ -1,9 +1,9 @@
-import { SettingsManager } from 'comp/settings/settings-manager';
+import { Locale } from 'util/locale';
 import { StringFormat } from 'util/formatting/string-format';
 
 const DateFormat = {
     months(): string[] {
-        const format = new Intl.DateTimeFormat(SettingsManager.activeLocale, { month: 'long' });
+        const format = new Intl.DateTimeFormat(Locale.localeName, { month: 'long' });
         const months = [];
         for (let month = 0; month < 12; month++) {
             months.push(format.format(new Date(2008, month)));
@@ -12,7 +12,7 @@ const DateFormat = {
     },
 
     weekDays(): string[] {
-        const format = new Intl.DateTimeFormat(SettingsManager.activeLocale, { weekday: 'long' });
+        const format = new Intl.DateTimeFormat(Locale.localeName, { weekday: 'long' });
         const weekdays = [];
         for (let day = 1; day < 8; day++) {
             weekdays.push(format.format(new Date(2007, 9, 6 + day)));
@@ -21,7 +21,7 @@ const DateFormat = {
     },
 
     shortWeekDays(): string[] {
-        const format = new Intl.DateTimeFormat(SettingsManager.activeLocale, { weekday: 'short' });
+        const format = new Intl.DateTimeFormat(Locale.localeName, { weekday: 'short' });
         const weekdays = [];
         for (let day = 1; day < 8; day++) {
             weekdays.push(format.format(new Date(2007, 9, 6 + day)));
@@ -34,7 +34,7 @@ const DateFormat = {
             dt = new Date(dt);
         }
         return dt
-            ? new Intl.DateTimeFormat(SettingsManager.activeLocale, {
+            ? new Intl.DateTimeFormat(Locale.localeName, {
                   dateStyle: 'medium',
                   timeStyle: 'medium'
               }).format(dt)
@@ -46,7 +46,7 @@ const DateFormat = {
             dt = new Date(dt);
         }
         return dt
-            ? new Intl.DateTimeFormat(SettingsManager.activeLocale, {
+            ? new Intl.DateTimeFormat(Locale.localeName, {
                   year: 'numeric',
                   month: 'short',
                   day: 'numeric'

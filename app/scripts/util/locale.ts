@@ -1,17 +1,22 @@
-const baseLocale = require('locales/base.json') as Record<string, string>;
+const BaseLocale = require('locales/base.json') as Record<string, string>;
+const BaseLocaleName = 'en-US';
 
 interface LocWithReplace {
     with(value: string): string;
 }
 
 let activeLocale: Record<string, string> | undefined;
+let activeLocaleName = BaseLocaleName;
 
-function set(values: Record<string, string> | undefined): void {
+function set(values: Record<string, string>, localeName: string): void;
+function set(values: undefined): void;
+function set(values?: Record<string, string>, localeName?: string): void {
     activeLocale = values;
+    activeLocaleName = localeName ?? BaseLocaleName;
 }
 
 function get(name: string): string {
-    return activeLocale?.[name] ?? baseLocale[name] ?? '';
+    return activeLocale?.[name] ?? BaseLocale[name] ?? '';
 }
 
 function withReplace(name: string): LocWithReplace {
@@ -19,9 +24,10 @@ function withReplace(name: string): LocWithReplace {
 }
 
 // prettier-ignore
-const Locale = {
+export const Locale = {
     set,
     get,
+    get localeName(): string { return activeLocaleName; },
 
     // this code is generated using npm run generate-locale
     get retToApp(): string { return get('retToApp'); },
@@ -802,4 +808,4 @@ const Locale = {
     // end of generated code
 };
 
-export { Locale };
+export type LocaleKey = Exclude<keyof typeof Locale, 'set' | 'get' | 'localeName'>;

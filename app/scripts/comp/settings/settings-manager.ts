@@ -29,7 +29,6 @@ const DesktopLocaleKeys = [
 ];
 
 const SettingsManager = {
-    activeLocale: 'en-US',
     activeTheme: null as string | null,
 
     allLocales: {
@@ -170,18 +169,18 @@ const SettingsManager = {
     },
 
     setLocale(loc: string | undefined | null): void {
-        if (!loc || loc === this.activeLocale) {
+        if (!loc || loc === Locale.localeName) {
             return;
         }
-        let localeValues;
-        if (loc !== 'en-US') {
-            localeValues = this.customLocales.get(loc);
+        if (loc === 'en-US') {
+            Locale.set(undefined);
+        } else {
+            let localeValues = this.customLocales.get(loc);
             if (!localeValues) {
                 localeValues = require('locales/' + loc + '.json') as Record<string, string>;
             }
+            Locale.set(localeValues, loc);
         }
-        Locale.set(localeValues);
-        this.activeLocale = loc;
         Events.emit('locale-changed', loc);
 
         if (Launcher) {

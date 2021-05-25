@@ -16,11 +16,13 @@ describe('Locale', () => {
         expect(Locale.name).to.eql('name');
         expect(Locale.minutes.with('3')).to.eql('3 minutes');
 
-        Locale.set({ name: 'hello', minutes: '{}m' });
+        Locale.set({ name: 'hello', minutes: '{}m' }, 'xx');
+        expect(Locale.localeName).to.eql('xx');
         expect(Locale.name).to.eql('hello');
         expect(Locale.minutes.with('2')).to.eql('2m');
 
         Locale.set(undefined);
+        expect(Locale.localeName).to.eql('en-US');
         expect(Locale.name).to.eql('name');
         expect(Locale.minutes.with('4')).to.eql('4 minutes');
     });

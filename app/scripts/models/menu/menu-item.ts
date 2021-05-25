@@ -2,13 +2,13 @@ import { Model } from 'util/model';
 import { MenuOption } from './menu-option';
 import { Keys } from 'const/keys';
 import { AlertConfig } from 'comp/ui/alerts';
-import { Locale } from 'util/locale';
+import { LocaleKey } from 'util/locale';
 import { InitWithFieldsOf } from 'util/types';
 
 class MenuItem extends Model {
     id?: string;
     title?: string;
-    locTitle?: keyof typeof Locale;
+    locTitle?: LocaleKey;
     icon?: string;
     // customIcon?: null; // TODO(ts): custom icons
     active = false;

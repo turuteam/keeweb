@@ -29,6 +29,7 @@ import { UsbListener } from 'comp/devices/usb-listener';
 import { noop } from 'util/fn';
 import { ConfigLoader } from 'comp/settings/config-loader';
 import { WindowClass } from 'comp/browser/window-class';
+import { FileManager } from 'comp/app/file-manager';
 /* eslint-enable */
 
 declare global {
@@ -86,9 +87,11 @@ async function bootstrap() {
     }
 
     function loadConfigs() {
-        return Promise.all([AppSettings.init(), RuntimeData.init()]).then(() => {
-            StartProfiler.milestone('loading configs');
-        });
+        return Promise.all([AppSettings.init(), RuntimeData.init(), FileManager.init()]).then(
+            () => {
+                StartProfiler.milestone('loading configs');
+            }
+        );
     }
 
     function initModules() {
@@ -99,7 +102,6 @@ async function bootstrap() {
         // AutoType.init(); // TODO(ts)
         ThemeWatcher.init();
         SettingsManager.init();
-        window.kw = ExportApi;
         // await PluginManager.init() // TODO(ts)
         StartProfiler.milestone('initializing modules');
     }

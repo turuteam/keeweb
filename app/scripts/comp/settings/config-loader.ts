@@ -3,6 +3,9 @@ import { Logger } from 'util/logger';
 import { AppSettings, AppSettingsFieldName } from 'models/app-settings';
 import { Alerts } from 'comp/ui/alerts';
 import { Locale } from 'util/locale';
+import { FileManager } from 'comp/app/file-manager';
+import { FileInfo, FileStorageExtraOptions } from 'models/file-info';
+import { IdGenerator } from 'util/generators/id-generator';
 
 const logger = new Logger('config-loader');
 
@@ -98,32 +101,44 @@ class ConfigLoader {
             }
         }
 
-        if (config.files) {
-            // TODO(ts): set files
-            // if (config.showOnlyFilesFromConfig) {
-            //     this.fileInfos.length = 0;
-            // }
-            // config.files
-            //     .filter(
-            //         (file) =>
-            //             file &&
-            //             file.storage &&
-            //             file.name &&
-            //             file.path &&
-            //             !this.fileInfos.getMatch(file.storage, file.name, file.path)
-            //     )
-            //     .map(
-            //         (file) =>
-            //             new FileInfoModel({
-            //                 id: IdGenerator.uuid(),
-            //                 name: file.name,
-            //                 storage: file.storage,
-            //                 path: file.path,
-            //                 opts: file.options
-            //             })
-            //     )
-            //     .reverse()
-            //     .forEach((fi) => this.fileInfos.unshift(fi));
+        if (Array.isArray(config.files)) {
+            if (config.showOnlyFilesFromConfig === true) {
+                FileManager.reset();
+            }
+            for (const file of config.files.reverse()) {
+                if (!file || typeof file !== 'object') {
+                    continue;
+                }
+                const fileRec = file as Record<string, unknown>;
+                if (typeof fileRec.storage !== 'string' || !fileRec.storage) {
+                    continue;
+                }
+                if (typeof fileRec.name !== 'string' || !fileRec.name) {
+                    continue;
+                }
+                if (typeof fileRec.path !== 'string' || !fileRec.path) {
+                    continue;
+                }
+                let opts: FileStorageExtraOptions | undefined;
+                if (typeof fileRec.opts === 'object' && fileRec.opts) {
+                    const optsRec = fileRec.opts as Record<string, unknown>;
+                    opts = {
+                        user: typeof optsRec.user === 'string' ? optsRec.user : undefined,
+                        encpass: typeof optsRec.encpass === 'string' ? optsRec.encpass : undefined
+                    };
+                }
+                if (FileManager.getFileInfo(fileRec.storage, fileRec.name, fileRec.path)) {
+                    continue;
+                }
+                const fi = new FileInfo({
+                    id: IdGenerator.uuid(),
+                    name: fileRec.name,
+                    storage: fileRec.storage,
+                    path: fileRec.path,
+                    opts
+                });
+                FileManager.addFileInfo(fi, true);
+            }
         }
 
         if (config.plugins) {

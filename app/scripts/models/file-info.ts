@@ -47,4 +47,26 @@ export class FileInfo extends Model {
         this.name = values.name;
         Object.assign(this, values);
     }
+
+    static fromStored(data: unknown): FileInfo | undefined {
+        if (!data || typeof data !== 'object') {
+            return undefined;
+        }
+        const rec = data as Record<string, unknown>;
+        if (!rec.id || typeof rec.id !== 'string') {
+            return undefined;
+        }
+        if (!rec.name || typeof rec.name !== 'string') {
+            return undefined;
+        }
+        for (const [key, value] of Object.entries(rec)) {
+            if (key.endsWith('Date') && value) {
+                rec[key] = new Date(String(value));
+            }
+            if (value === null) {
+                rec[key] = undefined;
+            }
+        }
+        return new FileInfo(rec as { id: string; name: string });
+    }
 }

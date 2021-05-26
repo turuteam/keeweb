@@ -1,8 +1,6 @@
 import { Events } from 'framework/events';
 import { Storage } from 'storage';
 import { SearchResultCollection } from 'collections/search-result-collection';
-import { FileCollection } from 'collections/file-collection';
-import { FileInfoCollection } from 'collections/file-info-collection';
 import { RuntimeInfo } from 'const/runtime-info';
 import { UsbListener } from 'comp/app/usb-listener';
 import { NativeModules } from 'comp/launcher/native-modules';
@@ -26,8 +24,6 @@ import 'util/kdbxweb/protected-value';
 
 class AppModel {
     tags = [];
-    files = new FileCollection();
-    fileInfos = FileInfoCollection;
     menu = new Menu();
     filter = {};
     sort = 'title';

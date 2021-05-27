@@ -232,7 +232,7 @@ class StorageWebDav extends StorageBase {
         }
     }
 
-    // TODO(ts): remove from here
+    // TODO: remove from here
     // fileOptsToStoreOpts(opts: StorageFileOptions, file: { uuid: string }) {
     //     const result = { user: opts.user, encpass: opts.encpass };
     //     if (opts.password) {

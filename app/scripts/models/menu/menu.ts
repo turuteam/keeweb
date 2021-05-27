@@ -203,14 +203,14 @@ class Menu extends Model {
                 sel.item === this.colorsItem && sel.option
                     ? `${sel.option.value}-color`
                     : undefined;
-            // TODO(ts): set the filter
+            // TODO: set the filter
             // const filterKey = sel.item.filterKey;
             // const filterValue = (sel.option || sel.item).filterValue;
             // const filter = {};
             // filter[filterKey] = filterValue;
             // Events.emit('set-filter', filter);
         } else if (sections === this._menus.settings && sel.item.page) {
-            // TODO(ts): switch settings page
+            // TODO: switch settings page
             // Events.emit('set-page', {
             //     page: sel.item.page,
             //     section: sel.item.section,

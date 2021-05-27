@@ -12,7 +12,7 @@ class MenuItem extends Model {
     title?: string;
     locTitle?: LocaleKey;
     icon?: string;
-    // customIcon?: null; // TODO(ts): custom icons
+    // customIcon?: null; // TODO: custom icons
     active = false;
     expanded = true;
     items: MenuItem[] = [];

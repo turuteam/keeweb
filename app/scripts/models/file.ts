@@ -48,7 +48,7 @@ class File extends Model<FileEvents> {
     uuid?: string;
     keyFileName?: string;
     keyFilePath?: string;
-    // chalResp = null; // TODO(ts): chal-resp
+    // chalResp = null; // TODO: chal-resp
     passwordLength?: number;
     path?: string;
     opts?: StorageFileOptions;
@@ -102,11 +102,11 @@ class File extends Model<FileEvents> {
         keyFileData?: ArrayBuffer
     ): Promise<File> {
         try {
-            // const challengeResponse = ChalRespCalculator.build(this.chalResp); // TODO(ts): chal-resp
+            // const challengeResponse = ChalRespCalculator.build(this.chalResp); // TODO: chal-resp
             const credentials = new kdbxweb.Credentials(
                 password,
                 keyFileData
-                // , challengeResponse // TODO(ts): chal-resp
+                // , challengeResponse // TODO: chal-resp
             );
             const ts = logger.ts();
 
@@ -334,7 +334,7 @@ class File extends Model<FileEvents> {
     ): Promise<void> {
         let credentials: kdbxweb.Credentials;
         if (remoteKey) {
-            // TODO(ts): chal-resp
+            // TODO: chal-resp
             credentials = new kdbxweb.Credentials(null);
             await credentials.ready;
             if (remoteKey.password) {
@@ -407,7 +407,7 @@ class File extends Model<FileEvents> {
             this.keyFileChanged = false;
             this.syncing = false;
         });
-        // TODO(ts): chal-resp
+        // TODO: chal-resp
         // if (this.chalResp && !AppSettings.yubiKeyRememberChalResp) {
         //     ChalRespCalculator.clearCache(this.chalResp);
         // }
@@ -622,7 +622,7 @@ class File extends Model<FileEvents> {
         return daysDiff > expiryDays;
     }
 
-    // setChallengeResponse(chalResp) { // TODO(ts): chal-resp
+    // setChallengeResponse(chalResp) { // TODO: chal-resp
     //     if (this.chalResp && !AppSettingsModel.yubiKeyRememberChalResp) {
     //         ChalRespCalculator.clearCache(this.chalResp);
     //     }

@@ -100,10 +100,10 @@ async function bootstrap() {
         PopupNotifier.init();
         KdbxwebInit.init();
         FocusDetector.init();
-        // AutoType.init(); // TODO(ts)
+        // AutoType.init(); // TODO
         ThemeWatcher.init();
         SettingsManager.init();
-        // await PluginManager.init() // TODO(ts)
+        // await PluginManager.init() // TODO
         StartProfiler.milestone('initializing modules');
     }
 
@@ -161,8 +161,8 @@ async function bootstrap() {
         SingleInstanceChecker.init();
         AppRightsChecker.init().catch(noop);
         IdleTracker.init();
-        // BrowserExtensionConnector.init(appModel); // TODO(ts)
-        // PluginManager.runAutoUpdate(); // TODO(ts): timeout
+        // BrowserExtensionConnector.init(appModel); // TODO
+        // PluginManager.runAutoUpdate(); // TODO: timeout
     }
 
     function showView() {

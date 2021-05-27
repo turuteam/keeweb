@@ -142,7 +142,7 @@ class ConfigLoader {
         }
 
         if (config.plugins) {
-            // TODO(ts): set plugins
+            // TODO: set plugins
             // const pluginsPromises = config.plugins.map((plugin) =>
             //     PluginManager.installIfNew(plugin.url, plugin.manifest, true)
             // );
@@ -152,7 +152,7 @@ class ConfigLoader {
         }
 
         if (config.advancedSearch) {
-            // TODO(ts): set advanced search
+            // TODO: set advanced search
             // this.advancedSearch = config.advancedSearch;
             // this.addFilter({ advanced: this.advancedSearch });
         }

@@ -79,7 +79,7 @@ class Workspace extends Model {
     }
 
     lockWorkspace(): void {
-        this.closeAllFiles(); // TODO(ts): implement locking from app-view
+        this.closeAllFiles(); // TODO: implement locking from app-view
         this.mode = 'open';
     }
 
@@ -184,10 +184,10 @@ class Workspace extends Model {
         this.prepareFilter(filter);
         this.filter = filter;
         this.filter.subGroups = AppSettings.expandGroups;
-        // if (!this.filter.advanced && this.advancedSearch) { // TODO(ts): advanced search
+        // if (!this.filter.advanced && this.advancedSearch) { // TODO: advanced search
         //     this.filter.advanced = this.advancedSearch;
         // }
-        // const entries = this.getEntries(); // TODO(ts): filtering
+        // const entries = this.getEntries(); // TODO: filtering
         // if (!this.activeEntryId || !entries.get(this.activeEntryId)) {
         //     const firstEntry = entries[0];
         //     this.activeEntryId = firstEntry ? firstEntry.id : null;

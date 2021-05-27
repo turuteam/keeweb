@@ -297,7 +297,7 @@ const YubiKey = {
         const paddedChallenge = Buffer.alloc(YubiKeyChallengeSize, padLen);
         challengeBuffer.copy(paddedChallenge);
 
-        throw new Error('Not implemented'); // TODO(ts): chal-resp
+        throw new Error('Not implemented'); // TODO: chal-resp
 
         // NativeModules.yubiKeyChallengeResponse(
         //     yubiKey,

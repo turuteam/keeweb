@@ -14,6 +14,11 @@ const logger = new Logger('app-settings');
 
 let changeListener: () => void;
 
+export type AppSettingsAutoUpdate = 'install' | 'check';
+export type AppSettingsRememberKeyFiles = 'path' | 'data';
+export type AppSettingsTitlebarStyle = 'default' | 'hidden' | 'hidden-inset';
+export type AppSettingsDeviceOwnerAuth = 'memory' | 'file';
+
 class AppSettings extends Model {
     theme: string | null = null; // UI theme
     autoSwitchTheme = false; // automatically switch between light and dark theme
@@ -22,11 +27,11 @@ class AppSettings extends Model {
     listViewWidth: number | null = null; // width of the entry list representation
     menuViewWidth: number | null = null; // width of the left menu
     tagsViewHeight: number | null = null; // tags menu section height
-    autoUpdate: 'install' | 'check' | null = 'install'; // auto-update options
+    autoUpdate: AppSettingsAutoUpdate | null = 'install'; // auto-update options
     clipboardSeconds = 0; // number of seconds after which the clipboard will be cleared
     autoSave = true; // auto-save open files
     autoSaveInterval = 0; // interval between performing automatic sync, minutes, -1: on every change
-    rememberKeyFiles: 'path' | 'data' = 'path'; // remember keyfiles selected on the Open screen
+    rememberKeyFiles: AppSettingsRememberKeyFiles = 'path'; // remember keyfiles selected on the Open screen
     idleMinutes = 15; // app lock timeout after inactivity, minutes
     minimizeOnClose = false; // minimise the app instead of closing
     minimizeOnFieldCopy = false; // minimise the app on copy
@@ -35,7 +40,7 @@ class AppSettings extends Model {
     useMarkdown = true; // use Markdown in Notes field
     directAutotype = true; // if only one matching entry is found, select that one automatically
     autoTypeTitleFilterEnabled = true; // enable the title filtering in auto-type by default
-    titlebarStyle: 'default' | 'hidden' | 'hidden-inset' = 'default'; // window titlebar style
+    titlebarStyle: AppSettingsTitlebarStyle = 'default'; // window titlebar style
     lockOnMinimize = true; // lock the app when it's minimized
     lockOnCopy = false; // lock the app after a password was copied
     lockOnAutoType = false; // lock the app after performing auto-type
@@ -60,7 +65,7 @@ class AppSettings extends Model {
     excludePinsFromAudit = true; // exclude PIN codes from audit
     checkPasswordsOnHIBP = false; // check passwords on Have I Been Pwned
     auditPasswordAge = 0; // show warnings about old passwords, number of years, 0 = disabled
-    deviceOwnerAuth: 'memory' | 'file' | null = null; // where to save password encrypted with Touch ID
+    deviceOwnerAuth: AppSettingsDeviceOwnerAuth | null = null; // where to save password encrypted with Touch ID
     deviceOwnerAuthTimeoutMinutes = 0; // how often master password is required with Touch ID
     disableOfflineStorage = false; // don't cache loaded files in offline storage
     shortLivedStorageToken = false; // short-lived sessions in cloud storage providers

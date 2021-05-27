@@ -29,7 +29,7 @@ import { UsbListener } from 'comp/devices/usb-listener';
 import { noop } from 'util/fn';
 import { ConfigLoader } from 'comp/settings/config-loader';
 import { WindowClass } from 'comp/browser/window-class';
-import { FileManager } from 'comp/app/file-manager';
+import { FileManager } from 'models/file-manager';
 /* eslint-enable */
 
 declare global {

@@ -1,38 +1,35 @@
 import { FunctionComponent } from 'preact';
-import { useRef, useState } from 'preact/hooks';
-import { KwSecureInput } from 'web-components/kw-secure-input';
+import { Locale } from 'util/locale';
+import { AppSettingsTitlebarStyle } from 'models/app-settings';
 
-export const AppView: FunctionComponent = () => {
-    const [counter, setCounter] = useState(10);
-
-    if (counter > 0) {
-        setTimeout(() => setCounter(counter - 1), 1000);
-    }
-
-    const inputRef = useRef<KwSecureInput>();
-
-    const inputChanged = () => {
-        // eslint-disable-next-line no-console
-        console.log('changed', inputRef.current.value.getText());
-    };
-
+export const AppView: FunctionComponent<{
+    beta: boolean;
+    customTitlebar: boolean;
+    titlebarStyle: AppSettingsTitlebarStyle;
+}> = ({ beta, customTitlebar, titlebarStyle }) => {
     return (
         <div class="app">
-            <p>
-                Hello, world! Counter={counter}
-                {counter > 0 ? <kw-tip text="This is a tooltip" /> : null}
-            </p>
-            <p>
-                <kw-secure-input
-                    class="sec-input"
-                    value="Hello!"
-                    onInput={inputChanged}
-                    ref={inputRef}
-                    autofocus
-                    readonly={counter === 0}
-                    placeholder={`Enter text: ${counter}`}
-                />
-            </p>
+            {beta ? (
+                <div class="app__beta">
+                    <i class="fa fa-exclamation-triangle" /> {Locale.appBeta}
+                </div>
+            ) : null}
+            {customTitlebar ? (
+                <div class="app__titlebar" />
+            ) : titlebarStyle === 'hidden' ? (
+                <div class="app__titlebar-drag" />
+            ) : null}
+            <div class="app__body">
+                <div class="app__menu" />
+                <div class="app__menu-drag" />
+                <div class="app__list-wrap">
+                    <div class="app__list" />
+                    <div class="app__list-drag" />
+                    <div class="app__details" />
+                </div>
+                <div class="app__panel hide" />
+            </div>
+            <div class="app__footer" />
         </div>
     );
 };

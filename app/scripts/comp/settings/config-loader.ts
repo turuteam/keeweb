@@ -3,7 +3,7 @@ import { Logger } from 'util/logger';
 import { AppSettings, AppSettingsFieldName } from 'models/app-settings';
 import { Alerts } from 'comp/ui/alerts';
 import { Locale } from 'util/locale';
-import { FileManager } from 'comp/app/file-manager';
+import { FileManager } from 'models/file-manager';
 import { FileInfo, FileStorageExtraOptions } from 'models/file-info';
 import { IdGenerator } from 'util/generators/id-generator';
 

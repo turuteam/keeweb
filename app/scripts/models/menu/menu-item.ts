@@ -9,7 +9,7 @@ import { File } from 'models/file';
 import { IdGenerator } from 'util/generators/id-generator';
 
 class MenuItem extends Model {
-    id: string;
+    readonly id: string;
     title?: string;
     locTitle?: LocaleKey;
     icon?: string;

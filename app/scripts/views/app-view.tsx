@@ -4,6 +4,7 @@ import { AppSettingsTitlebarStyle } from 'models/app-settings';
 import { Titlebar } from 'ui/titlebar';
 import { Open } from 'ui/open';
 import { Footer } from 'ui/footer';
+import { AppMenu } from 'ui/menu/app-menu';
 
 export const AppView: FunctionComponent<{
     beta: boolean;
@@ -28,7 +29,9 @@ export const AppView: FunctionComponent<{
             <div class="app__body">
                 {listVisible ? (
                     <>
-                        <div class="app__menu" />
+                        <div class="app__menu">
+                            <AppMenu />
+                        </div>
                         <div class="app__menu-drag" />
                         <div class="app__list-wrap">
                             <div class="app__list" />

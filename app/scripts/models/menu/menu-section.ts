@@ -1,7 +1,9 @@
 import { Model } from 'util/model';
 import { MenuItem } from './menu-item';
+import { IdGenerator } from 'util/generators/id-generator';
 
 class MenuSection extends Model {
+    id = IdGenerator.uuid();
     defaultItems?: MenuItem[];
     items: MenuItem[];
     scrollable = false;

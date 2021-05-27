@@ -61,17 +61,9 @@ class MenuView extends View {
         }
     }
 
-    menuChanged() {
-        this.render();
-    }
-
     viewResized = throttle((size) => {
         AppSettingsModel.menuViewWidth = size;
     }, 1000);
-
-    switchVisibility(visible) {
-        this.$el.toggleClass('menu-visible', visible);
-    }
 
     selectPreviousSection() {
         Events.emit('select-previous-menu-item');

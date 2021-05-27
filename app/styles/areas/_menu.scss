@@ -113,6 +113,9 @@
             cursor: pointer;
             display: inline-block;
             .menu__item-colors & {
+                &.fa {
+                    margin-right: .8em;
+                }
                 &:before {
                     content: $fa-var-bookmark-o;
                 }

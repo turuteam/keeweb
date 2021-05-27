@@ -9,8 +9,8 @@ import { AppSettings } from 'models/app-settings';
 export type WorkspaceMode = 'open' | 'list' | 'settings' | 'panel';
 
 class Workspace extends Model {
+    readonly menu = new Menu();
     mode: WorkspaceMode = 'open';
-    menu = new Menu();
     filter = new Filter();
     tags: string[] = [];
     activeEntryId?: string;
@@ -163,8 +163,8 @@ class Workspace extends Model {
     private tagsChanged() {
         if (this.tags.length) {
             this.menu.tagsSection.scrollable = true;
-            for (const tag of this.tags) {
-                this.menu.tagsSection.addItem(
+            this.menu.tagsSection.items = this.tags.map(
+                (tag) =>
                     new MenuItem({
                         title: tag,
                         icon: 'tag',
@@ -172,8 +172,7 @@ class Workspace extends Model {
                         filterValue: tag,
                         editable: true
                     })
-                );
-            }
+            );
         } else {
             this.menu.tagsSection.scrollable = false;
             this.menu.tagsSection.removeAllItems();

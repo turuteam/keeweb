@@ -20,7 +20,7 @@ import { GrpView } from 'views/grp-view';
 import { KeyChangeView } from 'views/key-change-view';
 import { ListView } from 'views/list-view';
 import { ListWrapView } from 'views/list-wrap-view';
-import { MenuView } from 'views/menu/menu-view';
+import { AppMenuView } from 'views/menu/menu-view';
 import { OpenView } from 'views/open-view';
 import { SettingsView } from 'views/settings/settings-view';
 import { TagView } from 'views/tag-view';
@@ -49,7 +49,7 @@ class AppView extends View {
 
         this.titlebarStyle = this.model.settings.titlebarStyle;
 
-        this.views.menu = new MenuView(this.model.menu, { ownParent: true });
+        this.views.menu = new AppMenuView(this.model.menu, { ownParent: true });
         this.views.menuDrag = new DragView('x', { parent: '.app__menu-drag' });
         this.views.footer = new FooterView(this.model, { ownParent: true });
         this.views.listWrap = new ListWrapView(this.model, { ownParent: true });

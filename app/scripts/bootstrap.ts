@@ -1,9 +1,8 @@
 /* eslint-disable import/first */
-import { Updater } from './comp/app/updater';
-
 if (process.env.NODE_ENV === 'development') {
     require('preact/debug');
 }
+import 'util/kdbxweb/protected-value';
 import { h, render } from 'preact';
 import { App } from 'ui/app';
 import { Events } from 'util/events';
@@ -30,6 +29,7 @@ import { noop } from 'util/fn';
 import { ConfigLoader } from 'comp/settings/config-loader';
 import { WindowClass } from 'comp/browser/window-class';
 import { FileManager } from 'models/file-manager';
+import { Updater } from './comp/app/updater';
 /* eslint-enable */
 
 declare global {

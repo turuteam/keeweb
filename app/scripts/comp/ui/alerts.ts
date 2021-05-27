@@ -199,6 +199,7 @@ export class Alert {
         }
         render(null, this._el);
         this._el?.remove();
+        this._el = undefined;
     }
 }
 

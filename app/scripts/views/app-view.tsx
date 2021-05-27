@@ -3,6 +3,7 @@ import { Locale } from 'util/locale';
 import { AppSettingsTitlebarStyle } from 'models/app-settings';
 import { Titlebar } from 'ui/titlebar';
 import { Open } from 'ui/open';
+import { Footer } from 'ui/footer';
 
 export const AppView: FunctionComponent<{
     beta: boolean;
@@ -39,7 +40,9 @@ export const AppView: FunctionComponent<{
                 {panelVisible ? <div class="app__panel" /> : null}
                 {openVisible ? <Open /> : null}
             </div>
-            <div class="app__footer" />
+            <div class="app__footer">
+                <Footer />
+            </div>
         </div>
     );
 };

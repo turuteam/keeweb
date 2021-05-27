@@ -36,24 +36,10 @@ class FooterView extends View {
         this.listenTo(UpdateModel, 'change:updateStatus', this.render);
     }
 
-    render() {
-        super.render({
-            files: this.model.files,
-            updateAvailable: ['ready', 'found'].indexOf(UpdateModel.updateStatus) >= 0
-        });
-    }
-
     viewHidden() {
         if (this.views.gen) {
             this.views.gen.remove();
             delete this.views.gen;
-        }
-    }
-
-    lockWorkspace(e) {
-        if (this.model.files.hasOpenFiles()) {
-            e.preventDefault();
-            Events.emit('lock-workspace');
         }
     }
 
@@ -81,10 +67,6 @@ class FooterView extends View {
         if (fileId) {
             Events.emit('show-file', { fileId });
         }
-    }
-
-    openFile() {
-        Events.emit('open-file');
     }
 
     saveAll() {

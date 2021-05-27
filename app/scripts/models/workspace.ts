@@ -78,6 +78,15 @@ class Workspace extends Model {
         this.setFilter(this.filter);
     }
 
+    lockWorkspace(): void {
+        this.closeAllFiles(); // TODO(ts): implement locking from app-view
+        this.mode = 'open';
+    }
+
+    toggleOpen(): void {
+        this.mode = this.mode === 'open' ? 'list' : 'open';
+    }
+
     private filesChanged() {
         this.updateTags();
 

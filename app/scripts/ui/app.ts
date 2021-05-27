@@ -13,9 +13,7 @@ export const App: FunctionComponent = () => {
 
     useEffect(() => {
         Workspace.onChange('mode', setMode);
-        return () => {
-            Workspace.offChange('mode', setMode);
-        };
+        return () => Workspace.offChange('mode', setMode);
     }, []);
 
     const listVisible = mode === 'list';

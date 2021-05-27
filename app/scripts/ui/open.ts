@@ -68,7 +68,7 @@ export const Open: FunctionComponent = () => {
         showCreate: AppSettings.canCreate,
         showYubiKey,
         canUseChalRespYubiKey,
-        showDemoInFirstRow: AppSettings.canOpenDemo && !AppSettings.demoOpened,
+        showDemoInFirstRow: true, // AppSettings.canOpenDemo && !AppSettings.demoOpened, // TODO(ts)
         showDemoInSecondRow: AppSettings.canOpenDemo && AppSettings.demoOpened,
         showMore,
         showLogo,

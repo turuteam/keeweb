@@ -107,7 +107,7 @@ export class Alert {
         return this._promise;
     }
 
-    closeWithResult(result: string): void {
+    closeWithResult(result: string, immediate?: boolean): void {
         this._visible = false;
         alertDisplayed = false;
 
@@ -127,19 +127,20 @@ export class Alert {
 
         this._resolve?.(result);
 
-        this._emitter?.emit('hide');
-        setTimeout(() => {
+        if (immediate) {
             this._el?.remove();
-        }, Timeouts.HideAlert);
+        } else {
+            this._emitter?.emit('hide');
+            setTimeout(() => {
+                this._el?.remove();
+            }, Timeouts.HideAlert);
+        }
     }
 
     closeImmediate(): void {
-        if (!this._el) {
-            return;
+        if (this._el) {
+            this.closeWithResult('', true);
         }
-        this._el?.remove();
-        this.config.cancel?.();
-        this._resolve?.('');
     }
 
     change(config: { header?: string }): void {

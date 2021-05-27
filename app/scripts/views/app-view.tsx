@@ -1,6 +1,7 @@
 import { FunctionComponent } from 'preact';
 import { Locale } from 'util/locale';
 import { AppSettingsTitlebarStyle } from 'models/app-settings';
+import { Titlebar } from 'ui/titlebar';
 
 export const AppView: FunctionComponent<{
     beta: boolean;
@@ -15,7 +16,7 @@ export const AppView: FunctionComponent<{
                 </div>
             ) : null}
             {customTitlebar ? (
-                <div class="app__titlebar" />
+                <Titlebar />
             ) : titlebarStyle === 'hidden' ? (
                 <div class="app__titlebar-drag" />
             ) : null}

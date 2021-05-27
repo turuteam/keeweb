@@ -32,6 +32,7 @@ export class LauncherElectron {
     name = 'electron';
     version = process.versions.electron;
     pendingUpdateFile?: string;
+    mainWindowMaximized?: boolean;
 
     constructor() {
         this.ipcRenderer.on('log', (e, name, level, ...args) => {

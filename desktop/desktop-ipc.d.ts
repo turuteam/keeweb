@@ -116,4 +116,7 @@ export interface DesktopIpcMainCalls {
     'kill-process': (name: string) => void;
     'http-request': (arg: HttpRequestConfig) => HttpResponse;
     'show-main-window': () => void;
+    'minimize-main-window': () => void;
+    'maximize-main-window': () => void;
+    'restore-main-window': () => void;
 }

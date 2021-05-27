@@ -6,6 +6,8 @@ import { FileManager } from 'models/file-manager';
 import { MenuItem } from 'models/menu/menu-item';
 import { AppSettings } from 'models/app-settings';
 import { IdGenerator } from 'util/generators/id-generator';
+import { KeyHandler } from 'comp/browser/key-handler';
+import { Keys } from 'const/keys';
 
 export type WorkspaceMode = 'open' | 'list' | 'settings' | 'panel';
 
@@ -21,6 +23,8 @@ class Workspace extends Model {
         super();
 
         FileManager.onChange('files', () => this.filesChanged());
+
+        this.setKeyHandlers();
     }
 
     addFile(file: File): void {
@@ -91,11 +95,17 @@ class Workspace extends Model {
     }
 
     lockWorkspace(): void {
+        if (!FileManager.hasOpenFiles) {
+            return;
+        }
         this.closeAllFiles(); // TODO: implement locking from app-view
         this.mode = 'open';
     }
 
     toggleOpen(): void {
+        if (!FileManager.hasOpenFiles && this.mode === 'open') {
+            return;
+        }
         this.mode = this.mode === 'open' ? 'list' : 'open';
     }
 
@@ -222,6 +232,25 @@ class Workspace extends Model {
         }
 
         filter.tagLower = filter.tag ? filter.tag.toLowerCase() : '';
+    }
+
+    private setKeyHandlers(): void {
+        KeyHandler.onKey(
+            Keys.DOM_VK_L,
+            () => this.lockWorkspace(),
+            KeyHandler.SHORTCUT_ACTION,
+            undefined,
+            true
+        );
+        KeyHandler.onKey(
+            Keys.DOM_VK_L,
+            () => this.lockWorkspace(),
+            KeyHandler.SHORTCUT_OPT,
+            undefined,
+            true
+        );
+
+        KeyHandler.onKey(Keys.DOM_VK_O, () => this.toggleOpen(), KeyHandler.SHORTCUT_ACTION);
     }
 }
 

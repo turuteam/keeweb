@@ -4,28 +4,12 @@ import { KeyHandler } from 'comp/browser/key-handler';
 import { Keys } from 'const/keys';
 import { UpdateModel } from 'models/update-model';
 import { GeneratorView } from 'views/generator-view';
-import template from 'templates/footer.hbs';
 
 class FooterView extends View {
-    parent = '.app__footer';
-
-    template = template;
-
-    events = {
-        'click .footer__db-item': 'showFile',
-        'click .footer__db-open': 'openFile',
-        'click .footer__btn-help': 'toggleHelp',
-        'click .footer__btn-settings': 'toggleSettings',
-        'click .footer__btn-generate': 'genPass',
-        'click .footer__btn-lock': 'lockWorkspace'
-    };
-
     constructor(model, options) {
         super(model, options);
 
-        this.onKey(Keys.DOM_VK_L, this.lockWorkspace, KeyHandler.SHORTCUT_ACTION, false, true);
         this.onKey(Keys.DOM_VK_G, this.genPass, KeyHandler.SHORTCUT_ACTION);
-        this.onKey(Keys.DOM_VK_O, this.openFile, KeyHandler.SHORTCUT_ACTION);
         this.onKey(Keys.DOM_VK_S, this.saveAll, KeyHandler.SHORTCUT_ACTION);
         this.onKey(Keys.DOM_VK_COMMA, this.toggleSettings, KeyHandler.SHORTCUT_ACTION);
 

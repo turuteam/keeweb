@@ -176,7 +176,7 @@
             "trailingUnderscore": "forbid"
           },
           {
-            "selector": ["objectLiteralProperty", "classProperty", "typeProperty"],
+            "selector": ["classProperty", "typeProperty"],
             "modifiers": ["public"],
             "format": ["camelCase", "PascalCase", "UPPER_CASE", "snake_case"],
             "leadingUnderscore": "forbid",

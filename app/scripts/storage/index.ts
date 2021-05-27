@@ -9,18 +9,26 @@ import { StorageWebDav } from 'storage/impl/storage-webdav';
 import { createOAuthSession } from 'storage/pkce';
 import { StorageBase } from './storage-base';
 
-const Storage = {
+const AllStorageProviders = {
     file: new StorageFile(),
     cache: Launcher ? new StorageFileCache() : new StorageCache(),
     dropbox: new StorageDropbox(),
     gdrive: new StorageGDrive(),
     onedrive: new StorageOneDrive(),
-    webdav: new StorageWebDav(),
+    webdav: new StorageWebDav()
+};
+
+const Storage = {
+    ...AllStorageProviders,
 
     get(name: string): StorageBase | undefined {
         const allStorages = Storage as Record<string, unknown>;
         const storage = allStorages[name];
         return storage instanceof StorageBase ? storage : undefined;
+    },
+
+    getAll(): Record<string, StorageBase> {
+        return AllStorageProviders;
     }
 };
 

@@ -9,6 +9,7 @@ interface SecureInputEvent {
 }
 
 export const SecureInput: FunctionComponent<{
+    name?: string;
     inputClass?: string;
     autofocus?: boolean;
     shake?: boolean;
@@ -16,10 +17,11 @@ export const SecureInput: FunctionComponent<{
     disabled?: boolean;
     size?: number;
     placeholder?: string;
-    tabindex?: number;
+    tabIndex?: number;
 
     onInput?: (e: SecureInputEvent) => void;
 }> = ({
+    name,
     inputClass,
     autofocus,
     shake,
@@ -27,7 +29,7 @@ export const SecureInput: FunctionComponent<{
     disabled,
     size,
     placeholder,
-    tabindex,
+    tabIndex,
     onInput
 }) => {
     const minChar = useRef(0x1400 + Math.round(Math.random() * 100));
@@ -115,12 +117,13 @@ export const SecureInput: FunctionComponent<{
 
     return (
         <input
+            name={name}
             class={`secure-input ${inputClass || ''} ${shake ? 'input-shake' : ''}`}
             type="password"
             autocomplete="new-password"
             maxLength={MaxLength}
             autofocus={autofocus}
-            tabIndex={tabindex}
+            tabIndex={tabIndex}
             placeholder={placeholder}
             readonly={readonly}
             disabled={disabled}

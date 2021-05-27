@@ -14,6 +14,7 @@ class Workspace extends Model {
     filter = new Filter();
     tags: string[] = [];
     activeEntryId?: string;
+    unlockMessage?: string;
 
     constructor() {
         super();

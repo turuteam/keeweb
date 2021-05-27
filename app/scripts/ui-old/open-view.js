@@ -78,9 +78,6 @@ class OpenView extends View {
         this.listenTo(Events, 'main-window-focus', this.windowFocused.bind(this));
         this.listenTo(Events, 'usb-devices-changed', this.usbDevicesChanged.bind(this));
         this.listenTo(Events, 'unlock-message-changed', this.unlockMessageChanged.bind(this));
-        this.once('remove', () => {
-            this.passwordInput.reset();
-        });
         this.listenTo(Events, 'user-idle', this.userIdle);
     }
 
@@ -88,52 +85,6 @@ class OpenView extends View {
         if (this.dragTimeout) {
             clearTimeout(this.dragTimeout);
         }
-        const storageProviders = [];
-        if (this.model.settings.canOpenStorage) {
-            Object.keys(Storage).forEach((name) => {
-                const prv = Storage[name];
-                if (!prv.system && prv.enabled) {
-                    storageProviders.push(prv);
-                }
-            });
-        }
-        storageProviders.sort((x, y) => (x.uipos || Infinity) - (y.uipos || Infinity));
-        const showMore =
-            storageProviders.length ||
-            this.model.settings.canOpenSettings ||
-            this.model.settings.canOpenGenerator;
-        const showLogo =
-            !showMore &&
-            !this.model.settings.canOpen &&
-            !this.model.settings.canCreate &&
-            !(this.model.settings.canOpenDemo && !this.model.settings.demoOpened);
-        const hasYubiKeys = !!UsbListener.attachedYubiKeys;
-        const canOpenYubiKey =
-            hasYubiKeys &&
-            this.model.settings.canOpenOtpDevice &&
-            this.model.settings.yubiKeyShowIcon &&
-            !this.model.files.get('yubikey');
-        const canUseChalRespYubiKey = hasYubiKeys && this.model.settings.yubiKeyShowChalResp;
-
-        super.render({
-            lastOpenFiles: this.getLastOpenFiles(),
-            canOpenKeyFromDropbox: !Launcher && Storage.dropbox.enabled,
-            demoOpened: this.model.settings.demoOpened,
-            storageProviders,
-            unlockMessageRes: this.model.unlockMessageRes,
-            canOpen: this.model.settings.canOpen,
-            canOpenDemo: this.model.settings.canOpenDemo,
-            canOpenSettings: this.model.settings.canOpenSettings,
-            canOpenGenerator: this.model.settings.canOpenGenerator,
-            canCreate: this.model.settings.canCreate,
-            canRemoveLatest: this.model.settings.canRemoveLatest,
-            canOpenYubiKey,
-            canUseChalRespYubiKey,
-            showMore,
-            showLogo
-        });
-        this.inputEl = this.$el.find('.open__pass-input');
-        this.passwordInput.setElement(this.inputEl);
     }
 
     resetParams() {
@@ -161,30 +112,6 @@ class OpenView extends View {
         if (FocusDetector.hasFocus() && (focusOnMobile || !Features.isMobile)) {
             this.inputEl.focus();
         }
-    }
-
-    getLastOpenFiles() {
-        return this.model.fileInfos.map((fileInfo) => {
-            let icon = 'file-alt';
-            const storage = Storage[fileInfo.storage];
-            if (storage && storage.icon) {
-                icon = storage.icon;
-            }
-            return {
-                id: fileInfo.id,
-                name: fileInfo.name,
-                path: this.getDisplayedPath(fileInfo),
-                icon
-            };
-        });
-    }
-
-    getDisplayedPath(fileInfo) {
-        const storage = fileInfo.storage;
-        if (storage === 'file' || storage === 'webdav') {
-            return fileInfo.path;
-        }
-        return null;
     }
 
     showLocalFileAlert() {

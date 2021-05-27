@@ -6,9 +6,10 @@ import { LocaleKey } from 'util/locale';
 import { InitWithFieldsOf, NonFunctionPropertyNames } from 'util/types';
 import { Filter } from 'models/filter';
 import { File } from 'models/file';
+import { IdGenerator } from 'util/generators/id-generator';
 
 class MenuItem extends Model {
-    id?: string;
+    id = IdGenerator.uuid();
     title?: string;
     locTitle?: LocaleKey;
     icon?: string;

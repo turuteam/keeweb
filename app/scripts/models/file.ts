@@ -36,6 +36,7 @@ type FileKdfParams = FileKdfParamsAes | FileKdfParamsArgon2;
 
 interface FileEvents {
     'reload': () => void;
+    'ejected': () => void;
 }
 
 const FilterIncludingDisabled = new Filter({ includeDisabled: true });

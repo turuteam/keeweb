@@ -12,6 +12,7 @@ export interface AdvancedFilter extends Model {
     other?: boolean;
     protect?: boolean;
     history?: boolean;
+    exact?: boolean;
 }
 
 export class Filter extends Model {
@@ -19,6 +20,7 @@ export class Filter extends Model {
     textParts?: string[];
     textLower?: string;
     textLowerParts?: string[];
+    tag?: string;
     tagLower?: string;
     advanced?: AdvancedFilter;
     color?: string;

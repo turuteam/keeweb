@@ -3,7 +3,9 @@ import { MenuOption } from './menu-option';
 import { Keys } from 'const/keys';
 import { AlertConfig } from 'comp/ui/alerts';
 import { LocaleKey } from 'util/locale';
-import { InitWithFieldsOf } from 'util/types';
+import { InitWithFieldsOf, NonFunctionPropertyNames } from 'util/types';
+import { Filter } from 'models/filter';
+import { File } from 'models/file';
 
 class MenuItem extends Model {
     id?: string;
@@ -22,22 +24,24 @@ class MenuItem extends Model {
     visible = true;
     drag = false;
     drop = false;
-    filterKey?: string;
+    filterKey?: NonFunctionPropertyNames<Filter>;
     filterValue?: string | true;
     collapsible = false;
     defaultItem = false;
     page?: string;
     editable = false;
-    // file: null; // TODO(ts): files in the menu
+    file?: File;
     section?: string;
 
     constructor(values?: InitWithFieldsOf<MenuItem>) {
         super();
         Object.assign(this, values);
 
-        // if (model && model.file) { // TODO(ts): files in the menu
-        //     model.file.on('change:name', () => this.title = newName);
-        // }
+        if (this.file) {
+            this.file.onChange('name', (name) => {
+                this.title = name;
+            });
+        }
     }
 
     addItem(item: MenuItem): void {

@@ -37,49 +37,7 @@ class AppModel {
     hardwareDecryptInProgress = false;
     mainWindowBlurTimer = null;
 
-    constructor() {
-        Events.on('refresh', this.refresh.bind(this));
-        Events.on('set-filter', this.setFilter.bind(this));
-        Events.on('add-filter', this.addFilter.bind(this));
-        Events.on('set-sort', this.setSort.bind(this));
-        Events.on('empty-trash', this.emptyTrash.bind(this));
-        Events.on('select-entry', this.selectEntry.bind(this));
-        Events.on('unset-keyfile', this.unsetKeyFile.bind(this));
-        Events.on('usb-devices-changed', this.usbDevicesChanged.bind(this));
-        Events.on('main-window-blur', this.mainWindowBlur.bind(this));
-        Events.on('main-window-focus', this.mainWindowFocus.bind(this));
-        Events.on('main-window-will-close', this.mainWindowWillClose.bind(this));
-        Events.on('hardware-decrypt-started', this.hardwareDecryptStarted.bind(this));
-        Events.on('hardware-decrypt-finished', this.hardwareDecryptFinished.bind(this));
-
-        this.appLogger = new Logger('app');
-        AppModel.instance = this;
-    }
-
     addFile(file) {
-        if (this.files.get(file.id)) {
-            return false;
-        }
-        this.files.push(file);
-        for (const group of file.groups) {
-            this.menu.groupsSection.addItem(group);
-        }
-        this._addTags(file);
-        this._tagsChanged();
-        this.menu.filesSection.addItem({
-            icon: 'lock',
-            title: file.name,
-            page: 'file',
-            file
-        });
-
-        this.refresh();
-
-        file.on('reload', this.reloadFile.bind(this));
-        file.on('change', () => {
-            Events.emit('file-changed', file);
-        });
-        file.on('ejected', () => this.closeFile(file));
         file.on('change:dirty', (file, dirty) => {
             if (dirty && this.settings.autoSaveInterval === -1) {
                 this.syncFile(file);
@@ -94,124 +52,6 @@ class AppModel {
             this.fileUnlockPromise = null;
             Events.emit('unlock-message-changed', null);
         }
-
-        return true;
-    }
-
-    reloadFile(file) {
-        this.menu.groupsSection.replaceByFile(file, file.groups[0]);
-        this.updateTags();
-    }
-
-    _addTags(file) {
-        const tagsHash = {};
-        this.tags.forEach((tag) => {
-            tagsHash[tag.toLowerCase()] = true;
-        });
-        file.forEachEntry({}, (entry) => {
-            for (const tag of entry.tags) {
-                if (!tagsHash[tag.toLowerCase()]) {
-                    tagsHash[tag.toLowerCase()] = true;
-                    this.tags.push(tag);
-                }
-            }
-        });
-        this.tags.sort();
-    }
-
-    _tagsChanged() {
-        if (this.tags.length) {
-            this.menu.tagsSection.scrollable = true;
-            this.menu.tagsSection.setItems(
-                this.tags.map((tag) => {
-                    return {
-                        title: tag,
-                        icon: 'tag',
-                        filterKey: 'tag',
-                        filterValue: tag,
-                        editable: true
-                    };
-                })
-            );
-        } else {
-            this.menu.tagsSection.scrollable = false;
-            this.menu.tagsSection.removeAllItems();
-        }
-    }
-
-    updateTags() {
-        const oldTags = this.tags.slice();
-        this.tags.splice(0, this.tags.length);
-        for (const file of this.files) {
-            this._addTags(file);
-        }
-        if (oldTags.join(',') !== this.tags.join(',')) {
-            this._tagsChanged();
-        }
-    }
-
-    renameTag(from, to) {
-        this.files.forEach((file) => file.renameTag && file.renameTag(from, to));
-        this.updateTags();
-    }
-
-    closeAllFiles() {
-        if (!this.files.hasOpenFiles()) {
-            return;
-        }
-        for (const file of this.files) {
-            file.close();
-            this.fileClosed(file);
-        }
-        this.files.length = 0;
-        this.menu.groupsSection.removeAllItems();
-        this.menu.tagsSection.scrollable = false;
-        this.menu.tagsSection.removeAllItems();
-        this.menu.filesSection.removeAllItems();
-        this.tags.splice(0, this.tags.length);
-        this.filter = {};
-        this.menu.select({ item: this.menu.allItemsItem });
-        Events.emit('all-files-closed');
-    }
-
-    closeFile(file) {
-        file.close();
-        this.fileClosed(file);
-        this.files.remove(file);
-        this.updateTags();
-        this.menu.groupsSection.removeByFile(file);
-        this.menu.filesSection.removeByFile(file);
-        this.menu.select({ item: this.menu.allItemsSection.items[0] });
-        Events.emit('one-file-closed');
-    }
-
-    emptyTrash() {
-        this.files.forEach((file) => file.emptyTrash && file.emptyTrash());
-        this.refresh();
-    }
-
-    setFilter(filter) {
-        this.filter = this.prepareFilter(filter);
-        this.filter.subGroups = this.settings.expandGroups;
-        if (!this.filter.advanced && this.advancedSearch) {
-            this.filter.advanced = this.advancedSearch;
-        }
-        const entries = this.getEntries();
-        if (!this.activeEntryId || !entries.get(this.activeEntryId)) {
-            const firstEntry = entries[0];
-            this.activeEntryId = firstEntry ? firstEntry.id : null;
-        }
-        Events.emit('filter', { filter: this.filter, sort: this.sort, entries });
-        Events.emit('entry-selected', entries.get(this.activeEntryId));
-    }
-
-    refresh() {
-        this.setFilter(this.filter);
-    }
-
-    selectEntry(entry) {
-        this.activeEntryId = entry.id;
-        this.refresh();
     }
 
     addFilter(filter) {
@@ -278,27 +118,6 @@ class AppModel {
                 });
             }
         });
-    }
-
-    prepareFilter(filter) {
-        filter = { ...filter };
-
-        filter.textLower = filter.text ? filter.text.toLowerCase() : '';
-        filter.textParts = null;
-        filter.textLowerParts = null;
-
-        const exact = filter.advanced && filter.advanced.exact;
-        if (!exact && filter.text) {
-            const textParts = filter.text.split(/\s+/).filter((s) => s);
-            if (textParts.length) {
-                filter.textParts = textParts;
-                filter.textLowerParts = filter.textLower.split(/\s+/).filter((s) => s);
-            }
-        }
-
-        filter.tagLower = filter.tag ? filter.tag.toLowerCase() : '';
-
-        return filter;
     }
 
     getFirstSelectedGroupForCreation() {
@@ -391,18 +210,6 @@ class AppModel {
         const file = this.getFirstSelectedGroupForCreation().file;
         const group = file.getEntryTemplatesGroup() || file.createEntryTemplatesGroup();
         return EntryModel.newEntry(group, file);
-    }
-
-    createDemoFile() {
-        if (!this.files.getByName('Demo')) {
-            const demoFile = new File({ id: IdGenerator.uuid() });
-            demoFile.openDemo(() => {
-                this.addFile(demoFile);
-            });
-            return true;
-        } else {
-            return false;
-        }
     }
 
     createNewFile(name, callback) {
@@ -769,12 +576,6 @@ class AppModel {
         }
         if (this.settings.deviceOwnerAuth) {
             this.saveEncryptedPassword(file, params);
-        }
-    }
-
-    fileClosed(file) {
-        if (file.storage === 'file') {
-            Storage.file.unwatch(file.path);
         }
     }
 

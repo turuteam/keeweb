@@ -43,8 +43,8 @@ class Menu extends Model {
             locTitle: 'menuAllItems',
             icon: 'th-large',
             active: true,
-            shortcut: Keys.DOM_VK_A,
-            filterKey: '*'
+            shortcut: Keys.DOM_VK_A
+            // filterKey: '*'
         });
         this.allItemsSection = new MenuSection(this.allItemsItem);
 

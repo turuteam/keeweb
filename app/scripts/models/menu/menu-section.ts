@@ -26,31 +26,6 @@ class MenuSection extends Model {
     setDefaultItems(...items: MenuItem[]): void {
         this.defaultItems = [...items];
     }
-
-    // TODO(ts): files in the menu
-    // removeByFile(file) {
-    //     const items = this.items;
-    //     items.find((item) => {
-    //         if (item.file === file) {
-    //             items.remove(item);
-    //             return true;
-    //         }
-    //         return false;
-    //     });
-    //     this.emit('change-items');
-    // }
-    //
-    // replaceByFile(file, newItem) {
-    //     const items = this.items;
-    //     items.find((item, ix) => {
-    //         if (item.file === file) {
-    //             items[ix] = newItem;
-    //             return true;
-    //         }
-    //         return false;
-    //     });
-    //     this.emit('change-items');
-    // }
 }
 
 export { MenuSection };

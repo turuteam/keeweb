@@ -7,6 +7,9 @@ import { Launcher } from 'comp/launcher';
 import { UsbListener } from 'comp/devices/usb-listener';
 import { FileManager } from 'models/file-manager';
 import { Workspace } from 'models/workspace';
+import { Logger } from 'util/logger';
+
+const logger = new Logger('open');
 
 export const Open: FunctionComponent = () => {
     const [secondRowVisible, setSecondRowVisible] = useState(false);
@@ -54,6 +57,10 @@ export const Open: FunctionComponent = () => {
 
     const moreClicked = () => setSecondRowVisible(!secondRowVisible);
 
+    const openDemoClicked = () => {
+        Workspace.createDemoFile().catch((e) => logger.error(e));
+    };
+
     return h(OpenView, {
         unlockMessage: Workspace.unlockMessage,
         secondRowVisible,
@@ -72,6 +79,7 @@ export const Open: FunctionComponent = () => {
         canRemoveLatest: AppSettings.canRemoveLatest,
         canOpenKeyFromDropbox: !Launcher && Storage.dropbox.enabled,
 
-        moreClicked
+        moreClicked,
+        openDemoClicked
     });
 };

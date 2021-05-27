@@ -48,6 +48,7 @@ class Workspace extends Model {
             const demoFile = await File.openDemo();
             FileManager.addFile(demoFile);
         }
+        this.mode = 'list';
     }
 
     selectShowAllMenuItem(): void {

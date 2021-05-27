@@ -35,6 +35,7 @@ export const OpenView: FunctionComponent<{
     canUseChalRespYubiKey: boolean;
 
     moreClicked: () => void;
+    openDemoClicked: () => void;
 }> = ({
     unlockMessage,
     secondRowVisible,
@@ -53,13 +54,9 @@ export const OpenView: FunctionComponent<{
     canRemoveLatest,
     canUseChalRespYubiKey,
 
-    moreClicked
+    moreClicked,
+    openDemoClicked
 }) => {
-    const [state, set] = useState(10);
-    if (state > 0) {
-        setTimeout(() => set(state - 1), 1000);
-    }
-
     let tabIndex = 0;
 
     return (
@@ -94,7 +91,11 @@ export const OpenView: FunctionComponent<{
                     </div>
                 ) : null}
                 {showDemoInFirstRow ? (
-                    <div class="open__icon open__icon-demo" tabIndex={++tabIndex}>
+                    <div
+                        class="open__icon open__icon-demo"
+                        tabIndex={++tabIndex}
+                        onClick={openDemoClicked}
+                    >
                         <i class="fa fa-magic open__icon-i" />
                         <div class="open__icon-text">{Locale.openDemo}</div>
                     </div>
@@ -129,7 +130,11 @@ export const OpenView: FunctionComponent<{
                         </div>
                     ))}
                     {showDemoInSecondRow ? (
-                        <div class="open__icon open__icon-demo" tabIndex={++tabIndex}>
+                        <div
+                            class="open__icon open__icon-demo"
+                            tabIndex={++tabIndex}
+                            onClick={openDemoClicked}
+                        >
                             <i class="fa fa-magic open__icon-i" />
                             <div class="open__icon-text">{Locale.openDemo}</div>
                         </div>

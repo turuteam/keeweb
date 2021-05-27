@@ -12,7 +12,7 @@ import { IdGenerator } from 'util/generators/id-generator';
 import { Filter } from 'models/filter';
 // import { ChalRespCalculator } from 'comp/app/chal-resp-calculator';
 
-const DemoFileData = require('demo.kdbx') as { default: string };
+const DemoFileData = require('demo.kdbx') as string;
 
 const logger = new Logger('file');
 
@@ -182,7 +182,7 @@ class File extends Model<FileEvents> {
         const password = kdbxweb.ProtectedValue.fromString('demo');
         const credentials = new kdbxweb.Credentials(password);
         const demoFile = kdbxweb.ByteUtils.arrayToBuffer(
-            kdbxweb.ByteUtils.base64ToBytes(DemoFileData.default)
+            kdbxweb.ByteUtils.base64ToBytes(DemoFileData)
         );
         const db = await kdbxweb.Kdbx.load(demoFile, credentials);
 

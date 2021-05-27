@@ -19,10 +19,13 @@ export const AppMenuItemView: FunctionComponent<{
     customIcon?: string;
     isTrash?: boolean;
     collapsible?: boolean;
+    expanded?: boolean;
     items?: MenuItem[];
 
-    itemClicked: () => void;
-    optionClicked: (option: MenuOption) => void;
+    itemClicked?: () => void;
+    itemDblClicked?: () => void;
+    optionClicked?: (option: MenuOption) => void;
+    actionClicked?: () => void;
 }> = ({
     title,
     active,
@@ -36,10 +39,13 @@ export const AppMenuItemView: FunctionComponent<{
     customIcon,
     isTrash,
     collapsible,
+    expanded,
     items,
 
     itemClicked,
-    optionClicked
+    itemDblClicked,
+    optionClicked,
+    actionClicked
 }) => {
     const [hover, setHover] = useState(false);
 
@@ -53,9 +59,24 @@ export const AppMenuItemView: FunctionComponent<{
         setHover(false);
     };
 
+    const itemClickedStopPropagation = (e: Event) => {
+        e.stopPropagation();
+        itemClicked?.();
+    };
+
+    const itemDblClickedStopPropagation = (e: Event) => {
+        e.stopPropagation();
+        itemDblClicked?.();
+    };
+
     const optionClickedStopPropagation = (e: Event, option: MenuOption) => {
         e.stopPropagation();
-        optionClicked(option);
+        optionClicked?.(option);
+    };
+
+    const actionClickedStopPropagation = (e: Event) => {
+        e.stopPropagation();
+        actionClicked?.();
     };
 
     return (
@@ -66,11 +87,13 @@ export const AppMenuItemView: FunctionComponent<{
                 'menu__item--disabled': disabled,
                 'menu__item--with-options': !!options?.length,
                 'menu__item--hover': hover,
+                'menu__item--collapsed': !expanded,
                 ...(cls ? { [cls]: true } : null)
             })}
             onMouseOver={(e) => mouseOver(e)}
             onMouseOut={(e) => mouseOut(e)}
-            onClick={itemClicked}
+            onClick={itemClickedStopPropagation}
+            onDblClick={itemDblClickedStopPropagation}
         >
             {collapsible ? (
                 <i class="menu__item-collapse fa fa-ellipsis-v muted-color">
@@ -107,14 +130,24 @@ export const AppMenuItemView: FunctionComponent<{
                         ))}
                     </div>
                 ) : null}
-                {editable ? <i class="menu__item-edit fa fa-cog" /> : null}
+                {editable ? (
+                    <i class="menu__item-edit fa fa-cog" onClick={actionClickedStopPropagation} />
+                ) : null}
                 {isTrash ? (
-                    <i class="menu__item-empty-trash fa fa-minus-circle" tip-placement="right">
+                    <i
+                        class="menu__item-empty-trash fa fa-minus-circle"
+                        tip-placement="right"
+                        onClick={actionClickedStopPropagation}
+                    >
                         <kw-tip text={Locale.menuEmptyTrash} />
                     </i>
                 ) : null}
             </div>
-            {items ? items.map((item) => <AppMenuItem item={item} key={item.id} />) : null}
+            {items
+                ? items
+                      .filter((item) => item.visible)
+                      .map((item) => <AppMenuItem item={item} key={item.id} />)
+                : null}
         </div>
     );
 };

@@ -1,5 +1,4 @@
 import { FunctionComponent } from 'preact';
-import { useState } from 'preact/hooks';
 import { Locale } from 'util/locale';
 import { SecureInput } from 'views/components/secure-input';
 import { classes } from 'util/ui/classes';
@@ -35,6 +34,7 @@ export const OpenView: FunctionComponent<{
     canUseChalRespYubiKey: boolean;
 
     moreClicked: () => void;
+    newClicked: () => void;
     openDemoClicked: () => void;
 }> = ({
     unlockMessage,
@@ -55,6 +55,7 @@ export const OpenView: FunctionComponent<{
     canUseChalRespYubiKey,
 
     moreClicked,
+    newClicked,
     openDemoClicked
 }) => {
     let tabIndex = 0;
@@ -79,7 +80,11 @@ export const OpenView: FunctionComponent<{
                     </div>
                 ) : null}
                 {showCreate ? (
-                    <div class="open__icon open__icon-new" tabIndex={++tabIndex}>
+                    <div
+                        class="open__icon open__icon-new"
+                        tabIndex={++tabIndex}
+                        onClick={newClicked}
+                    >
                         <i class="fa fa-plus open__icon-i" />
                         <div class="open__icon-text">{Locale.openNew}</div>
                     </div>

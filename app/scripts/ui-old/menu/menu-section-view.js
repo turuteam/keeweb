@@ -62,15 +62,6 @@ class MenuSectionView extends View {
         return this.$el.parent().height() - 116;
     }
 
-    removeInnerViews() {
-        this.itemViews.forEach((itemView) => itemView.remove());
-        this.itemViews = [];
-    }
-
-    itemsChanged() {
-        this.render();
-    }
-
     viewResized(size) {
         this.$el.css('flex', '0 0 ' + (size ? size + 'px' : 'auto'));
         this.saveViewHeight(size);

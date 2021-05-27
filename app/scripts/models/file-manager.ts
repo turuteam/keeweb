@@ -3,6 +3,7 @@ import { FileInfo } from 'models/file-info';
 import { SettingsStore } from 'comp/settings/settings-store';
 import { Model } from 'util/model';
 import { Storage } from 'storage';
+import { Locale } from 'util/locale';
 
 interface FileManagerEvents {
     'file-info-added': (id: string) => void;
@@ -48,6 +49,10 @@ class FileManager extends Model<FileManagerEvents> {
         return this.files.find((file) => file.name.toLowerCase() === name.toLowerCase());
     }
 
+    getFileInfoByName(name: string): FileInfo | undefined {
+        return this.fileInfos.find((f) => f.name.toLowerCase() === name.toLowerCase());
+    }
+
     getFileInfo(
         name: string,
         storage: string | undefined,
@@ -56,6 +61,15 @@ class FileManager extends Model<FileManagerEvents> {
         return this.fileInfos.find((fi) => {
             return fi.name === name && fi.storage === storage && fi.path === path;
         });
+    }
+
+    getNewFileName(): string {
+        for (let i = 0; ; i++) {
+            const name = `${Locale.openNewFile}${i || ''}`;
+            if (!this.getFileByName(name) && !this.getFileInfoByName(name)) {
+                return name;
+            }
+        }
     }
 
     addFileInfo(fi: FileInfo, asFirst?: boolean): void {

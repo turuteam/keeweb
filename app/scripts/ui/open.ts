@@ -55,6 +55,10 @@ export const Open: FunctionComponent = () => {
         };
     });
 
+    const newClicked = () => {
+        Workspace.createNewFile().catch((e) => logger.error(e));
+    };
+
     const moreClicked = () => setSecondRowVisible(!secondRowVisible);
 
     const openDemoClicked = () => {
@@ -79,6 +83,7 @@ export const Open: FunctionComponent = () => {
         canRemoveLatest: AppSettings.canRemoveLatest,
         canOpenKeyFromDropbox: !Launcher && Storage.dropbox.enabled,
 
+        newClicked,
         moreClicked,
         openDemoClicked
     });

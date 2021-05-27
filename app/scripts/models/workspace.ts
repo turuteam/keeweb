@@ -5,6 +5,7 @@ import { Menu } from 'models/menu/menu';
 import { FileManager } from 'models/file-manager';
 import { MenuItem } from 'models/menu/menu-item';
 import { AppSettings } from 'models/app-settings';
+import { IdGenerator } from 'util/generators/id-generator';
 
 export type WorkspaceMode = 'open' | 'list' | 'settings' | 'panel';
 
@@ -48,6 +49,17 @@ class Workspace extends Model {
             const demoFile = await File.openDemo();
             FileManager.addFile(demoFile);
         }
+        this.mode = 'list';
+    }
+
+    async createNewFile(name?: string): Promise<void> {
+        if (!name) {
+            name = FileManager.getNewFileName();
+        }
+
+        const newFile = await File.create(IdGenerator.uuid(), name);
+        FileManager.addFile(newFile);
+
         this.mode = 'list';
     }
 

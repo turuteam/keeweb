@@ -212,22 +212,6 @@ class AppModel {
         return EntryModel.newEntry(group, file);
     }
 
-    createNewFile(name, callback) {
-        if (!name) {
-            for (let i = 0; ; i++) {
-                name = Locale.openNewFile + (i || '');
-                if (!this.files.getByName(name) && !this.fileInfos.getByName(name)) {
-                    break;
-                }
-            }
-        }
-        const newFile = new File({ id: IdGenerator.uuid() });
-        newFile.create(name, () => {
-            this.addFile(newFile);
-            callback?.(newFile);
-        });
-    }
-
     openFile(params, callback) {
         const logger = new Logger('open', params.name);
         logger.info('File open request');

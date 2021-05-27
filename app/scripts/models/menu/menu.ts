@@ -287,6 +287,7 @@ class Menu extends Model {
             title: StringFormat.capFirst(Locale.tags),
             icon: 'tags',
             defaultItem: true,
+            disabled: true,
             disabledAlert: {
                 header: Locale.menuAlertNoTags,
                 body: Locale.menuAlertNoTagsBody,

@@ -9,7 +9,7 @@ import { AppSettings } from 'models/app-settings';
 export type WorkspaceMode = 'open' | 'list' | 'settings' | 'panel';
 
 class Workspace extends Model {
-    mode = 'open';
+    mode: WorkspaceMode = 'open';
     menu = new Menu();
     filter = new Filter();
     tags: string[] = [];

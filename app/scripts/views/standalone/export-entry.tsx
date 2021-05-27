@@ -65,10 +65,10 @@ export const ExportEntry: FunctionComponent<ExportEntryParameters> = ({
                         <td>
                             {attachments.map((att, ix) => (
                                 <span key={att.name}>
+                                    {ix ? ', ' : ''}
                                     <a href={att.dataHref} download={att.name}>
                                         {att.name}
                                     </a>
-                                    {ix < attachments?.length - 1 ? ', ' : ''}
                                 </span>
                             ))}
                         </td>

@@ -15,3 +15,5 @@ export type InitWithFieldsOf<T> = {
     // eslint-disable-next-line @typescript-eslint/ban-types
     [K in Extract<keyof T, string>]?: T[K] extends Function ? never : T[K];
 };
+
+export type Callback = () => void;

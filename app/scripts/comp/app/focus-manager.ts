@@ -3,15 +3,21 @@ import { Logger } from 'util/logger';
 const logger = new Logger('focus-manager');
 
 class FocusManager {
-    private _modal?: string;
+    private readonly _modalStack: string[] = [];
 
-    get modal() {
-        return this._modal;
+    get modal(): string | undefined {
+        return this._modalStack[this._modalStack.length - 1];
     }
 
-    set modal(value) {
-        this._modal = value;
-        logger.debug('Set modal', value);
+    pushModal(value: string): void {
+        this._modalStack.push(value);
+        logger.debug('Push modal', value);
+    }
+
+    popModal(): string | undefined {
+        const lastModal = this._modalStack.pop();
+        logger.debug('Pop modal', lastModal);
+        return lastModal;
     }
 }
 

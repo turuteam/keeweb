@@ -1,14 +1,23 @@
+import { h, render } from 'preact';
 import { Locale } from 'util/locale';
+import { Modal, ModalEmitterEvents } from 'ui/modal';
+import { TypedEmitter } from 'tiny-typed-emitter';
+import { Timeouts } from 'const/timeouts';
+import { KeyHandler } from 'comp/browser/key-handler';
+import { Keys } from 'const/keys';
+import { Callback } from 'util/types';
+import { FocusManager } from 'comp/app/focus-manager';
 
 export interface AlertButton {
     result: string;
     title: string;
     error?: boolean;
+    silent?: boolean;
 }
 
 export interface AlertConfig {
     header: string;
-    body: string;
+    body: string | string[];
     icon?: string;
     buttons?: AlertButton[];
     esc?: string;
@@ -16,34 +25,171 @@ export interface AlertConfig {
     enter?: string;
     skipIfAlertDisplayed?: boolean;
     pre?: string;
+    hint?: string;
+    opaque?: boolean;
+    wide?: boolean;
+    checkbox?: string;
 
     success?: (result: string, checked?: boolean) => void;
     complete?: (result: string, checked?: boolean) => void;
     cancel?: () => void;
 }
 
-const alertDisplayed = false;
+let alertDisplayed = false;
 
 export class Alert {
-    visible = false;
-    result: string | undefined;
+    readonly config: AlertConfig;
+    private _promise?: Promise<string>;
+    private _resolve?: (result: string) => void;
+    private _emitter?: TypedEmitter<ModalEmitterEvents>;
+    private _result: string | undefined;
+    private _checked: boolean | undefined;
+    private _visible = false;
+    private _el?: HTMLElement;
+    private _listeners: Callback[] = [];
 
-    wait(): Promise<string> {
-        throw new Error('Not implemented');
+    constructor(config: AlertConfig) {
+        this.config = config;
+    }
+
+    get result(): string | undefined {
+        return this._result;
+    }
+
+    get visible(): boolean {
+        return this._visible;
+    }
+
+    show(): void {
+        this._emitter = new TypedEmitter<ModalEmitterEvents>();
+        const vnode = h(Modal, {
+            emitter: this._emitter,
+            header: this.config.header,
+            body: typeof this.config.body === 'string' ? [this.config.body] : this.config.body,
+            opaque: this.config.opaque,
+            wide: this.config.wide,
+            icon: this.config.icon,
+            pre: this.config.pre,
+            link: this.config.checkbox,
+            hint: this.config.hint,
+            checkbox: this.config.checkbox,
+            buttons: this.config.buttons ?? [],
+
+            modalClicked: () => this.modalClicked(),
+            buttonClicked: (result) => this.buttonClicked(result),
+            checkboxChanged: () => this.checkboxChanged()
+        });
+
+        if (document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur();
+        }
+
+        this._el = document.createElement('div');
+        document.body.appendChild(this._el);
+        render(vnode, document.body, this._el);
+
+        this.listenKeys();
+        FocusManager.pushModal('alert');
+
+        this._visible = true;
+        alertDisplayed = true;
+    }
+
+    wait(): Promise<string | undefined> {
+        if (!this._visible) {
+            return Promise.resolve(this._result);
+        }
+        if (!this._promise) {
+            this._promise = new Promise((resolve) => {
+                this._resolve = resolve;
+            });
+        }
+        return this._promise;
     }
 
     closeWithResult(result: string): void {
-        this.result = result;
-        throw new Error('Not implemented');
+        this._visible = false;
+        alertDisplayed = false;
+
+        for (const off of this._listeners) {
+            off();
+        }
+
+        FocusManager.popModal();
+
+        this._result = result;
+        if (result) {
+            this.config.success?.(result, this._checked);
+        } else {
+            this.config.cancel?.();
+        }
+        this.config.complete?.(result, this._checked);
+
+        this._resolve?.(result);
+
+        this._emitter?.emit('hide');
+        setTimeout(() => {
+            this._el?.remove();
+        }, Timeouts.HideAlert);
     }
 
     closeImmediate(): void {
-        // todo
+        if (!this._el) {
+            return;
+        }
+        this._el?.remove();
+        this.config.cancel?.();
+        this._resolve?.('');
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     change(config: { header?: string }): void {
-        throw new Error('Not implemented');
+        this._emitter?.emit('change-config', config);
+    }
+
+    private modalClicked() {
+        if (typeof this.config.click === 'string') {
+            this.closeWithResult('');
+        }
+    }
+
+    private buttonClicked(result: string) {
+        this.closeWithResult(result);
+    }
+
+    private checkboxChanged() {
+        this._checked = !this._checked;
+    }
+
+    private escPressed() {
+        this.closeWithResult(this.config.esc || '');
+    }
+
+    private enterPressed(e: Event) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        this.closeWithResult(this.config.enter || '');
+    }
+
+    private listenKeys() {
+        if (typeof this.config.esc === 'string') {
+            const offKey = KeyHandler.onKey(
+                Keys.DOM_VK_ESCAPE,
+                () => this.escPressed(),
+                undefined,
+                'alert'
+            );
+            this._listeners.push(offKey);
+        }
+
+        if (typeof this.config.enter === 'string') {
+            const offKey = KeyHandler.onKey(
+                Keys.DOM_VK_RETURN,
+                (e) => this.enterPressed(e),
+                undefined,
+                'alert'
+            );
+            this._listeners.push(offKey);
+        }
     }
 }
 
@@ -92,30 +238,12 @@ export const Alerts = {
     } as Record<string, AlertButton>,
 
     alert(config: AlertConfig): Alert {
-        const alert = new Alert();
+        const alert = new Alert(config);
         if (config.skipIfAlertDisplayed && Alerts.alertDisplayed) {
-            alert.visible = false;
             return alert;
         }
-        throw new Error('Not implemented');
-        // Alerts.alertDisplayed = true;
-        // const view = new ModalView(config);
-        // view.render();
-        // view.once('result', (res, check) => {
-        //     if (res && config.success) {
-        //         config.success(res, check);
-        //     }
-        //     if (!res && config.cancel) {
-        //         config.cancel();
-        //     }
-        //     if (config.complete) {
-        //         config.complete(res, check);
-        //     }
-        // });
-        // view.on('will-close', () => {
-        //     Alerts.alertDisplayed = false;
-        // });
-        // return view;
+        alert.show();
+        return alert;
     },
 
     notImplemented(): Alert {

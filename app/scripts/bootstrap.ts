@@ -68,6 +68,7 @@ async function bootstrap() {
                 'Running in iframe is not allowed (this can be changed in the app config).'
             );
         }
+
         try {
             await FeatureTester.test();
             StartProfiler.milestone('checking features');

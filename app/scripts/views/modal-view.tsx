@@ -1,6 +1,5 @@
 import { Fragment, FunctionComponent } from 'preact';
 import { classes } from 'util/ui/classes';
-import { useState } from 'preact/hooks';
 
 export interface ModalViewButton {
     title: string;

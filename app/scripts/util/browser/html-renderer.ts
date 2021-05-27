@@ -9,6 +9,8 @@ const HtmlRenderer = {
 
         const html = (fragment.firstChild as HTMLElement)?.outerHTML;
 
+        render(null, fragment);
+
         return html ? HtmlDoctype + html : html;
     }
 };

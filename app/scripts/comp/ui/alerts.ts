@@ -128,11 +128,11 @@ export class Alert {
         this._resolve?.(result);
 
         if (immediate) {
-            this._el?.remove();
+            this.destroy();
         } else {
             this._emitter?.emit('hide');
             setTimeout(() => {
-                this._el?.remove();
+                this.destroy();
             }, Timeouts.HideAlert);
         }
     }
@@ -191,6 +191,14 @@ export class Alert {
             );
             this._listeners.push(offKey);
         }
+    }
+
+    private destroy() {
+        if (!this._el) {
+            return;
+        }
+        render(null, this._el);
+        this._el?.remove();
     }
 }
 

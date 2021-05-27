@@ -6,14 +6,10 @@ import { FileManager } from 'models/file-manager';
 import { MenuItem } from 'models/menu/menu-item';
 import { AppSettings } from 'models/app-settings';
 
-export enum WorkspaceMode {
-    Open = 'open',
-    List = 'list',
-    Settings = 'settings'
-}
+export type WorkspaceMode = 'open' | 'list' | 'settings' | 'panel';
 
 class Workspace extends Model {
-    mode = WorkspaceMode.Open;
+    mode = 'open';
     menu = new Menu();
     filter = new Filter();
     tags: string[] = [];

@@ -120,7 +120,10 @@ export class Model<EventSpec extends ListenerSignature<EventSpec> = DefaultModel
         return this;
     }
 
-    offChange(prop: NonFunctionPropertyNames<this>, listener: () => void): this {
+    offChange<PropName extends NonFunctionPropertyNames<this>>(
+        prop: PropName,
+        listener: (value: this[PropName], prevValue: this[PropName]) => void
+    ): this {
         const emitter = this.emitter() as TypedEmitter;
         emitter.off(`change:${prop}`, listener);
         return this;

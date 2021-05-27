@@ -1,5 +1,4 @@
 import 'web-components/kw-tip';
-import 'web-components/kw-secure-input';
 
 import { FunctionComponent, h } from 'preact';
 import { AppView } from 'views/app-view';

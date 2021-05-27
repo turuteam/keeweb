@@ -9,7 +9,7 @@ import { File } from 'models/file';
 import { IdGenerator } from 'util/generators/id-generator';
 
 class MenuItem extends Model {
-    id = IdGenerator.uuid();
+    id: string;
     title?: string;
     locTitle?: LocaleKey;
     icon?: string;
@@ -38,6 +38,8 @@ class MenuItem extends Model {
     constructor(values?: InitWithFieldsOf<MenuItem>) {
         super();
         Object.assign(this, values);
+
+        this.id = values?.id ?? IdGenerator.uuid();
 
         if (this.file) {
             this.file.onChange('name', (name) => {

@@ -25,5 +25,6 @@ export const Timeouts = {
     KeeWebConnectRequest: 60000,
     UpdateInterval: 1000 * 60 * 60 * 24,
     MinUpdateTimeout: 500,
-    InputShake: 1000
+    InputShake: 1000,
+    WindowResizeUpdateDebounce: 200
 };

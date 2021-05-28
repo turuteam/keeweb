@@ -1,6 +1,7 @@
 import { FunctionComponent } from 'preact';
 import { MenuItem } from 'models/menu/menu-item';
 import { AppMenuItem } from 'ui/menu/app-menu-item';
+import { Scrollable } from 'views/components/scrollable';
 import { classes } from 'util/ui/classes';
 
 export const AppMenuSectionView: FunctionComponent<{
@@ -21,16 +22,7 @@ export const AppMenuSectionView: FunctionComponent<{
                     'menu__section--drag': drag
                 })}
             >
-                {scrollable ? (
-                    <>
-                        <div class="scroller">{menuItems}</div>
-                        <div class="scroller__bar-wrapper">
-                            <div class="scroller__bar" />
-                        </div>
-                    </>
-                ) : (
-                    <>{menuItems}</>
-                )}
+                {scrollable ? <Scrollable>{menuItems}</Scrollable> : menuItems}
             </div>
             {drag ? <div class="menu__drag-section" /> : null}
         </>

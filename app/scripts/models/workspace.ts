@@ -8,6 +8,7 @@ import { AppSettings } from 'models/app-settings';
 import { IdGenerator } from 'util/generators/id-generator';
 import { KeyHandler } from 'comp/browser/key-handler';
 import { Keys } from 'const/keys';
+import { OpenState } from 'models/open-state';
 
 export type WorkspaceMode = 'open' | 'list' | 'settings' | 'panel';
 
@@ -15,6 +16,7 @@ class Workspace extends Model {
     readonly menu = new Menu();
     mode: WorkspaceMode = 'open';
     filter = new Filter();
+    openState = new OpenState();
     tags: string[] = [];
     activeEntryId?: string;
     unlockMessage?: string;
@@ -53,7 +55,7 @@ class Workspace extends Model {
             const demoFile = await File.openDemo();
             FileManager.addFile(demoFile);
         }
-        this.mode = 'list';
+        this.showList();
     }
 
     async createNewFile(name?: string): Promise<void> {
@@ -64,7 +66,7 @@ class Workspace extends Model {
         const newFile = await File.create(IdGenerator.uuid(), name);
         FileManager.addFile(newFile);
 
-        this.mode = 'list';
+        this.showList();
     }
 
     selectShowAllMenuItem(): void {
@@ -99,14 +101,26 @@ class Workspace extends Model {
             return;
         }
         this.closeAllFiles(); // TODO: implement locking from app-view
-        this.mode = 'open';
+        this.showOpen();
     }
 
     toggleOpen(): void {
-        if (!FileManager.hasOpenFiles && this.mode === 'open') {
-            return;
+        if (this.mode === 'open') {
+            this.showList();
+        } else {
+            this.showOpen();
         }
-        this.mode = this.mode === 'open' ? 'list' : 'open';
+    }
+
+    showList() {
+        if (FileManager.hasOpenFiles) {
+            this.mode = 'list';
+        }
+    }
+
+    showOpen(): void {
+        this.openState = new OpenState();
+        this.mode = 'open';
     }
 
     private filesChanged() {

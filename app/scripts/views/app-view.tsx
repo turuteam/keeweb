@@ -2,7 +2,7 @@ import { FunctionComponent } from 'preact';
 import { Locale } from 'util/locale';
 import { AppSettingsTitlebarStyle } from 'models/app-settings';
 import { Titlebar } from 'ui/titlebar';
-import { Open } from 'ui/open';
+import { OpenScreen } from 'ui/open/open-screen';
 import { Footer } from 'ui/footer';
 import { AppMenu } from 'ui/menu/app-menu';
 import { DragHandle } from 'views/components/drag-handle';
@@ -81,7 +81,7 @@ export const AppView: FunctionComponent<{
                     </>
                 ) : null}
                 {panelVisible ? <div class="app__panel" /> : null}
-                {openVisible ? <Open /> : null}
+                {openVisible ? <OpenScreen /> : null}
             </div>
             <div class="app__footer">
                 <Footer />

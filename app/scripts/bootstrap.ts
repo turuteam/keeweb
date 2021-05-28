@@ -101,6 +101,8 @@ async function bootstrap() {
         ThemeWatcher.init();
         SettingsManager.init();
         await PluginManager.init();
+        window.kw = ExportApi;
+
         StartProfiler.milestone('initializing modules');
     }
 

@@ -12,8 +12,10 @@ import { useAppSetting, useModelField } from 'util/ui/hooks';
 
 export const App: FunctionComponent = () => {
     const mode = useModelField(Workspace, 'mode');
+
     const menuWidth = useAppSetting('menuViewWidth');
     const listWidth = useAppSetting('listViewWidth');
+    const tableView = useAppSetting('tableView');
 
     useEffect(() => {
         const dragHandleSet = (name: string, size: number | null) => {
@@ -41,6 +43,7 @@ export const App: FunctionComponent = () => {
         listVisible,
         panelVisible,
         openVisible,
+        tableView,
         menuWidth,
         listWidth
     });

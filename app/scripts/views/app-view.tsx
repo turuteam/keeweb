@@ -7,6 +7,7 @@ import { Footer } from 'ui/footer';
 import { AppMenu } from 'ui/menu/app-menu';
 import { DragHandle } from 'views/components/drag-handle';
 import { useRef } from 'preact/hooks';
+import { classes } from 'util/ui/classes';
 
 export const AppView: FunctionComponent<{
     beta: boolean;
@@ -15,6 +16,7 @@ export const AppView: FunctionComponent<{
     listVisible: boolean;
     panelVisible: boolean;
     openVisible: boolean;
+    tableView: boolean;
     menuWidth: number | null;
     listWidth: number | null;
 }> = ({
@@ -24,6 +26,7 @@ export const AppView: FunctionComponent<{
     listVisible,
     panelVisible,
     openVisible,
+    tableView,
     menuWidth,
     listWidth
 }) => {
@@ -57,7 +60,12 @@ export const AppView: FunctionComponent<{
                                 max={300}
                             />
                         </div>
-                        <div class="app__list-wrap">
+                        <div
+                            class={classes({
+                                'app__list-wrap': true,
+                                'app__list-wrap--table': tableView
+                            })}
+                        >
                             <div class="app__list" ref={appList} style={{ width: listWidth }} />
                             <div class="app__list-drag">
                                 <DragHandle

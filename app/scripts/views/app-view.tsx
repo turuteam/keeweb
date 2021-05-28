@@ -5,6 +5,8 @@ import { Titlebar } from 'ui/titlebar';
 import { Open } from 'ui/open';
 import { Footer } from 'ui/footer';
 import { AppMenu } from 'ui/menu/app-menu';
+import { DragHandle } from 'views/components/drag-handle';
+import { useRef } from 'preact/hooks';
 
 export const AppView: FunctionComponent<{
     beta: boolean;
@@ -13,7 +15,21 @@ export const AppView: FunctionComponent<{
     listVisible: boolean;
     panelVisible: boolean;
     openVisible: boolean;
-}> = ({ beta, customTitlebar, titlebarStyle, listVisible, panelVisible, openVisible }) => {
+    menuWidth: number | null;
+    listWidth: number | null;
+}> = ({
+    beta,
+    customTitlebar,
+    titlebarStyle,
+    listVisible,
+    panelVisible,
+    openVisible,
+    menuWidth,
+    listWidth
+}) => {
+    const appMenu = useRef<HTMLDivElement>();
+    const appList = useRef<HTMLDivElement>();
+
     return (
         <div class="app">
             {beta ? (
@@ -29,13 +45,29 @@ export const AppView: FunctionComponent<{
             <div class="app__body">
                 {listVisible ? (
                     <>
-                        <div class="app__menu">
+                        <div class="app__menu" ref={appMenu} style={{ width: menuWidth }}>
                             <AppMenu />
                         </div>
-                        <div class="app__menu-drag" />
+                        <div class="app__menu-drag">
+                            <DragHandle
+                                target={appMenu}
+                                coord="x"
+                                name="menu"
+                                min={130}
+                                max={300}
+                            />
+                        </div>
                         <div class="app__list-wrap">
-                            <div class="app__list" />
-                            <div class="app__list-drag" />
+                            <div class="app__list" ref={appList} style={{ width: listWidth }} />
+                            <div class="app__list-drag">
+                                <DragHandle
+                                    target={appList}
+                                    coord="x"
+                                    name="list"
+                                    min={200}
+                                    max={500}
+                                />
+                            </div>
                             <div class="app__details" />
                         </div>
                     </>

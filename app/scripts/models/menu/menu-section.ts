@@ -11,6 +11,7 @@ class MenuSection extends Model {
     drag = false;
     visible = true;
     active = false;
+    height?: number;
 
     constructor(...items: MenuItem[]) {
         super();

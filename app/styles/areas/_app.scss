@@ -97,7 +97,8 @@
     }
 
     &__list {
-        flex: 0 0 25em;
+        flex: 0 0 auto;
+        width: 25em;
         display: flex;
         align-items: stretch;
         flex-direction: column;

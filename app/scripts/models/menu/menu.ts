@@ -9,6 +9,7 @@ import { Launcher } from 'comp/launcher';
 import { Features } from 'util/features';
 import { MenuItem } from './menu-item';
 import { MenuOption } from './menu-option';
+import { AppSettings } from 'models/app-settings';
 
 type MenuType = 'app' | 'settings';
 
@@ -67,6 +68,7 @@ class Menu extends Model {
         this.tagsSection.setDefaultItems(defTagItem);
         this.tagsSection.scrollable = true;
         this.tagsSection.drag = true;
+        this.tagsSection.height = AppSettings.tagsViewHeight ?? undefined;
 
         this.trashSection = new MenuSection(
             new MenuItem({
@@ -187,6 +189,10 @@ class Menu extends Model {
         this.sections = this._menus.app;
 
         Events.on('locale-changed', () => this.setLocale());
+        AppSettings.onChange('tagsViewHeight', (tagsViewHeight) => {
+            this.tagsSection.height = tagsViewHeight ?? undefined;
+        });
+
         this.setLocale();
     }
 

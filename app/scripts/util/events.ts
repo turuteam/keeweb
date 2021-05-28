@@ -25,6 +25,7 @@ interface EventSpec {
     'qr-enter-manually': () => void;
     'enter-full-screen': () => void;
     'leave-full-screen': () => void;
+    'drag-handle-set': (name: string, size: number | null) => void;
 }
 
 class Events extends TypedEmitter<EventSpec> {

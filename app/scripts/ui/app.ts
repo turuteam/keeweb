@@ -6,14 +6,28 @@ import { RuntimeInfo } from 'const/runtime-info';
 import { AppSettings } from 'models/app-settings';
 import { Features } from 'util/features';
 import { Workspace } from 'models/workspace';
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect } from 'preact/hooks';
+import { Events } from 'util/events';
+import { useAppSetting, useModelField } from 'util/ui/hooks';
 
 export const App: FunctionComponent = () => {
-    const [mode, setMode] = useState(Workspace.mode);
+    const mode = useModelField(Workspace, 'mode');
+    const menuWidth = useAppSetting('menuViewWidth');
+    const listWidth = useAppSetting('listViewWidth');
 
     useEffect(() => {
-        Workspace.onChange('mode', setMode);
-        return () => Workspace.offChange('mode', setMode);
+        const dragHandleSet = (name: string, size: number | null) => {
+            switch (name) {
+                case 'menu':
+                    AppSettings.menuViewWidth = size;
+                    break;
+                case 'list':
+                    AppSettings.listViewWidth = size;
+                    break;
+            }
+        };
+        Events.on('drag-handle-set', dragHandleSet);
+        return () => Events.off('drag-handle-set', dragHandleSet);
     }, []);
 
     const listVisible = mode === 'list';
@@ -26,6 +40,8 @@ export const App: FunctionComponent = () => {
         titlebarStyle: AppSettings.titlebarStyle,
         listVisible,
         panelVisible,
-        openVisible
+        openVisible,
+        menuWidth,
+        listWidth
     });
 };

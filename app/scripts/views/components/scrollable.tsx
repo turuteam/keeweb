@@ -5,6 +5,7 @@ import { Features } from 'util/features';
 import { baron } from 'util/ui/baron';
 import { classes } from 'util/ui/classes';
 import { Timeouts } from 'const/timeouts';
+import { Events } from 'util/events';
 
 const Scrollable: FunctionComponent = ({ children }) => {
     const scroller = useRef<HTMLDivElement>();
@@ -41,10 +42,12 @@ const Scrollable: FunctionComponent = ({ children }) => {
         updateInvisible();
 
         window.addEventListener('resize', updateScrollDebounced);
+        Events.on('drag-handle-set', updateScrollDebounced);
 
         return () => {
             scroll.dispose();
             window.removeEventListener('resize', updateScrollDebounced);
+            Events.off('drag-handle-set', updateScrollDebounced);
         };
     }, []);
 

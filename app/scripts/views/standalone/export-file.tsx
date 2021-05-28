@@ -1,6 +1,6 @@
 import { FunctionComponent } from 'preact';
 import { Locale } from 'util/locale';
-import { LocalizedWith } from 'views/helpers/localized-with';
+import { LocalizedWith } from 'views/components/localized-with';
 import { ExportEntry, ExportEntryParameters } from './export-entry';
 
 export const ExportFile: FunctionComponent<{

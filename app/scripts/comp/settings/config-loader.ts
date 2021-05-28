@@ -146,7 +146,7 @@ class ConfigLoader {
         if (Array.isArray(config.plugins)) {
             const pluginPromises: Promise<void>[] = [];
             for (const plugin of config.plugins as Record<string, unknown>[]) {
-                if (typeof plugin.url === 'string' && typeof plugin.manifest === 'object') {
+                if (typeof plugin.url === 'string') {
                     const pluginPromise = PluginManager.installIfNew(
                         plugin.url,
                         plugin.manifest as PluginManifest,

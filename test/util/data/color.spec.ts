@@ -54,4 +54,9 @@ describe('Color', () => {
         expect(Color.getNearest('#33d037')).to.eql('green');
         expect(Color.getNearest('#0675e3')).to.eql('blue');
     });
+
+    it('converts color to string', () => {
+        expect(new Color('rgb(1, 2, 3)').toString()).to.eql('#010203');
+        expect(new Color('rgba(1, 2, 3, 0.4)').toString()).to.eql('rgba(1,2,3,0.4)');
+    });
 });

@@ -109,6 +109,10 @@ class Color {
         return res;
     }
 
+    toString(): string {
+        return this.a === 1 ? this.toHex() : this.toRgba();
+    }
+
     static getNearest(colorStr: string): string | undefined {
         const color = new Color(colorStr);
         if (!color.s) {

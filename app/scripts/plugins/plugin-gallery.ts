@@ -30,10 +30,11 @@ const PluginGallery = {
                 xhr.responseType = 'json';
                 xhr.send();
                 xhr.addEventListener('load', () => {
-                    if (!xhr.response) {
-                        return reject('Empty data');
+                    const resp = xhr.response as PluginGalleryData;
+                    if (!resp?.signature) {
+                        return reject('Empty plugin gallery data');
                     }
-                    resolve(xhr.response as PluginGalleryData);
+                    resolve(resp);
                 });
                 xhr.addEventListener('error', () => {
                     reject('Network error during loading plugins');

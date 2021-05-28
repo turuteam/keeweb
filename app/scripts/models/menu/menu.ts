@@ -10,6 +10,7 @@ import { Features } from 'util/features';
 import { MenuItem } from './menu-item';
 import { MenuOption } from './menu-option';
 import { AppSettings } from 'models/app-settings';
+import { KeyHandler } from 'comp/browser/key-handler';
 
 type MenuType = 'app' | 'settings';
 
@@ -193,6 +194,18 @@ class Menu extends Model {
             this.tagsSection.height = tagsViewHeight ?? undefined;
         });
 
+        KeyHandler.onKey(
+            Keys.DOM_VK_UP,
+            () => this.selectPrevious(),
+            KeyHandler.SHORTCUT_ACTION + KeyHandler.SHORTCUT_OPT
+        );
+
+        KeyHandler.onKey(
+            Keys.DOM_VK_DOWN,
+            () => this.selectNext(),
+            KeyHandler.SHORTCUT_ACTION + KeyHandler.SHORTCUT_OPT
+        );
+
         this.setLocale();
     }
 
@@ -231,7 +244,11 @@ class Menu extends Model {
                 continue;
             }
             for (const item of section.items) {
-                yield* Menu.allItemsWithin(item);
+                for (const subItem of Menu.allItemsWithin(item)) {
+                    if (subItem.visible) {
+                        yield subItem;
+                    }
+                }
             }
         }
     }
@@ -255,11 +272,11 @@ class Menu extends Model {
         let previousItem: MenuItem | undefined;
 
         for (const item of this.visibleItems()) {
-            previousItem = item;
             if (item.active && previousItem) {
                 this.select({ item: previousItem });
-                break;
+                return;
             }
+            previousItem = item;
         }
     }
 
@@ -271,6 +288,7 @@ class Menu extends Model {
                 activeItem = item;
             } else if (activeItem) {
                 this.select({ item });
+                return;
             }
         }
     }

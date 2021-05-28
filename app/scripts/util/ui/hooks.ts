@@ -13,7 +13,7 @@ export function useModelField<
     useEffect(() => {
         model.onChange(field, setValue);
         return () => model.offChange(field, setValue);
-    }, []);
+    }, [model, field]);
 
     return value;
 }
@@ -22,4 +22,17 @@ export function useAppSetting<Field extends AppSettingsFieldName>(
     field: Field
 ): typeof AppSettings[Field] {
     return useModelField(AppSettings, field);
+}
+
+export function useModelWatcher<
+    ModelEventsType extends ListenerSignature<ModelEventsType>,
+    ModelType extends Model<ModelEventsType>
+>(model: ModelType): void {
+    const [, setState] = useState({});
+
+    useEffect(() => {
+        const refresh = () => setState({});
+        (model as Model).on('change', refresh);
+        return () => (model as Model).off('change', refresh);
+    }, [model]);
 }

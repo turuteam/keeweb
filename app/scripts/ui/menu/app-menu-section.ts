@@ -1,18 +1,13 @@
 import { FunctionComponent, h } from 'preact';
 import { AppMenuSectionView } from 'views/menu/app-menu-section-view';
 import { MenuSection } from 'models/menu/menu-section';
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect } from 'preact/hooks';
 import { Events } from 'util/events';
 import { AppSettings } from 'models/app-settings';
+import { useModelWatcher } from 'util/ui/hooks';
 
 export const AppMenuSection: FunctionComponent<{ section: MenuSection }> = ({ section }) => {
-    const [, refresh] = useState({});
-
-    useEffect(() => {
-        const onChange = () => refresh({});
-        section.on('change', onChange);
-        return () => section.off('change', onChange);
-    }, []);
+    useModelWatcher(section);
 
     useEffect(() => {
         if (section.drag) {

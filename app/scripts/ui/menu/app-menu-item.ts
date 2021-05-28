@@ -1,7 +1,7 @@
 import { FunctionComponent, h } from 'preact';
 import { AppMenuItemView } from 'views/menu/app-menu-item-view';
 import { MenuItem } from 'models/menu/menu-item';
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect } from 'preact/hooks';
 import { Locale } from 'util/locale';
 import { MenuOption } from 'models/menu/menu-option';
 import { Workspace } from 'models/workspace';
@@ -9,15 +9,10 @@ import { KeyHandler } from 'comp/browser/key-handler';
 import { Callback } from 'util/types';
 import { Keys } from 'const/keys';
 import { Alerts } from 'comp/ui/alerts';
+import { useModelWatcher } from 'util/ui/hooks';
 
 export const AppMenuItem: FunctionComponent<{ item: MenuItem }> = ({ item }) => {
-    const [, refresh] = useState({});
-
-    useEffect(() => {
-        const onChange = () => refresh({});
-        item.on('change', onChange);
-        return () => item.off('change', onChange);
-    }, []);
+    useModelWatcher(item);
 
     useEffect(() => {
         const offs: Callback[] = [];

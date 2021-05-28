@@ -1,15 +1,10 @@
 import { FunctionComponent, h } from 'preact';
 import { Workspace } from 'models/workspace';
 import { AppMenuView } from 'views/menu/app-menu-view';
-import { useEffect, useState } from 'preact/hooks';
+import { useModelField } from 'util/ui/hooks';
 
 export const AppMenu: FunctionComponent = () => {
-    const [sections, setSections] = useState(Workspace.menu.sections);
-
-    useEffect(() => {
-        Workspace.menu.onChange('sections', setSections);
-        return () => Workspace.menu.offChange('sections', setSections);
-    }, []);
+    const sections = useModelField(Workspace.menu, 'sections');
 
     return h(AppMenuView, {
         sections

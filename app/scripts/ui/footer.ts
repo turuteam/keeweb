@@ -7,12 +7,13 @@ import { useModelField } from 'util/ui/hooks';
 
 export const Footer: FunctionComponent = () => {
     const files = useModelField(FileManager, 'files');
+    const updateStatus = useModelField(Updater, 'updateStatus');
 
     if (!files.length) {
         return null;
     }
 
-    const updateAvailable = Updater.updateStatus === 'ready' || Updater.updateStatus === 'found';
+    const updateAvailable = updateStatus === 'ready' || updateStatus === 'found';
 
     const openClicked = () => Workspace.toggleOpen();
 

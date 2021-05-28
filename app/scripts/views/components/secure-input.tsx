@@ -1,6 +1,7 @@
 import * as kdbxweb from 'kdbxweb';
 import { FunctionComponent } from 'preact';
-import { useRef } from 'preact/hooks';
+import { Ref, useRef } from 'preact/hooks';
+import { classes } from 'util/ui/classes';
 
 const MaxLength = 1024;
 
@@ -12,24 +13,26 @@ export const SecureInput: FunctionComponent<{
     name?: string;
     inputClass?: string;
     autofocus?: boolean;
-    shake?: boolean;
+    error?: boolean;
     readonly?: boolean;
     disabled?: boolean;
     size?: number;
     placeholder?: string;
     tabIndex?: number;
+    inputRef?: Ref<HTMLInputElement>;
 
     onInput?: (e: SecureInputEvent) => void;
 }> = ({
     name,
     inputClass,
     autofocus,
-    shake,
+    error,
     readonly,
     disabled,
     size,
     placeholder,
     tabIndex,
+    inputRef,
     onInput
 }) => {
     const minChar = useRef(0x1400 + Math.round(Math.random() * 100));
@@ -118,7 +121,12 @@ export const SecureInput: FunctionComponent<{
     return (
         <input
             name={name}
-            class={`secure-input ${inputClass || ''} ${shake ? 'input-shake' : ''}`}
+            class={classes({
+                'secure-input': true,
+                'input--shake': error,
+                'input--error': error,
+                ...(inputClass ? { [inputClass]: true } : null)
+            })}
             type="password"
             autocomplete="new-password"
             maxLength={MaxLength}
@@ -129,6 +137,7 @@ export const SecureInput: FunctionComponent<{
             disabled={disabled}
             size={size}
             onInput={onInternalInput}
+            ref={inputRef}
         />
     );
 };

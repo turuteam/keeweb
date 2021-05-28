@@ -1,6 +1,6 @@
 import { TypedEmitter } from 'tiny-typed-emitter';
 
-interface EventSpec {
+export interface GlobalEventSpec {
     'app-ready': () => void;
     'app-minimized': () => void;
     'app-maximized': () => void;
@@ -29,7 +29,7 @@ interface EventSpec {
     'plugin-gallery-load-complete': () => void;
 }
 
-class Events extends TypedEmitter<EventSpec> {
+class Events extends TypedEmitter<GlobalEventSpec> {
     constructor() {
         super();
         this.setMaxListeners(1000);

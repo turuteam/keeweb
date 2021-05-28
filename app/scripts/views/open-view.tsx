@@ -2,6 +2,8 @@ import { FunctionComponent } from 'preact';
 import { Locale } from 'util/locale';
 import { SecureInput } from 'views/components/secure-input';
 import { classes } from 'util/ui/classes';
+import { useRef } from 'preact/hooks';
+import { useEvent } from 'util/ui/hooks';
 
 interface StorageProvider {
     name: string;
@@ -59,6 +61,12 @@ export const OpenView: FunctionComponent<{
     openDemoClicked
 }) => {
     let tabIndex = 0;
+
+    const passwordInputRef = useRef<HTMLInputElement>();
+
+    useEvent('main-window-focus', () => {
+        passwordInputRef.current?.focus();
+    });
 
     return (
         <div class="open">
@@ -178,6 +186,7 @@ export const OpenView: FunctionComponent<{
                         placeholder={showOpen ? Locale.openClickToOpen : ''}
                         readonly={true}
                         tabIndex={++tabIndex}
+                        inputRef={passwordInputRef}
                     />
                     <div class="open__pass-enter-btn" tabIndex={++tabIndex}>
                         <i class="fa fa-level-down-alt rotate-90 open__pass-enter-btn-icon-enter" />

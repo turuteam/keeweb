@@ -4,6 +4,7 @@ import { NonFunctionPropertyNames } from 'util/types';
 import { ListenerSignature, Model } from 'util/model';
 import { KeyHandler } from 'comp/browser/key-handler';
 import { Keys } from 'const/keys';
+import { Events, GlobalEventSpec } from 'util/events';
 
 export function useModelField<
     ModelEventsType extends ListenerSignature<ModelEventsType>,
@@ -37,6 +38,16 @@ export function useModelWatcher<
         (model as Model).on('change', refresh);
         return () => (model as Model).off('change', refresh);
     }, [model]);
+}
+
+export function useEvent<Event extends keyof GlobalEventSpec>(
+    event: Event,
+    handler: GlobalEventSpec[Event]
+): void {
+    useEffect(() => {
+        Events.on(event, handler);
+        return () => Events.off(event, handler);
+    }, []);
 }
 
 export function useKey(

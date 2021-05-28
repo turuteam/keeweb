@@ -75,7 +75,6 @@ class OpenView extends View {
         this.onKey(Keys.DOM_VK_RETURN, this.enterKeyPress, null, 'open');
         this.onKey(Keys.DOM_VK_DOWN, this.moveOpenFileSelectionDown, null, 'open');
         this.onKey(Keys.DOM_VK_UP, this.moveOpenFileSelectionUp, null, 'open');
-        this.listenTo(Events, 'main-window-focus', this.windowFocused.bind(this));
         this.listenTo(Events, 'usb-devices-changed', this.usbDevicesChanged.bind(this));
         this.listenTo(Events, 'unlock-message-changed', this.unlockMessageChanged.bind(this));
         this.listenTo(Events, 'user-idle', this.userIdle);

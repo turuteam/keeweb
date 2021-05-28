@@ -2,6 +2,8 @@ import { AppSettings, AppSettingsFieldName } from 'models/app-settings';
 import { useEffect, useState } from 'preact/hooks';
 import { NonFunctionPropertyNames } from 'util/types';
 import { ListenerSignature, Model } from 'util/model';
+import { KeyHandler } from 'comp/browser/key-handler';
+import { Keys } from 'const/keys';
 
 export function useModelField<
     ModelEventsType extends ListenerSignature<ModelEventsType>,
@@ -13,7 +15,7 @@ export function useModelField<
     useEffect(() => {
         model.onChange(field, setValue);
         return () => model.offChange(field, setValue);
-    }, [model, field]);
+    }, [model]);
 
     return value;
 }
@@ -35,4 +37,16 @@ export function useModelWatcher<
         (model as Model).on('change', refresh);
         return () => (model as Model).off('change', refresh);
     }, [model]);
+}
+
+export function useKey(
+    key: Keys,
+    handler: (e: KeyboardEvent) => void,
+    shortcut?: number,
+    modal?: string,
+    noPrevent?: boolean
+): void {
+    useEffect(() => {
+        return KeyHandler.onKey(key, handler, shortcut, modal, noPrevent);
+    }, []);
 }

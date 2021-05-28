@@ -33,6 +33,9 @@ export interface PluginManifest {
     publicKey: string;
     locale?: PluginManifestLocale;
     theme?: PluginManifestTheme;
+    desktop?: boolean;
+    versionMin?: string;
+    versionMax?: string;
 }
 
 export interface PluginGalleryPlugin {
@@ -45,4 +48,19 @@ export interface PluginGalleryData {
     date: string;
     signature: string;
     plugins: PluginGalleryPlugin[];
+}
+
+export interface PluginSettingOption {
+    value: string;
+    label: string;
+}
+
+export interface PluginSetting {
+    name: string;
+    label: string;
+    type: 'text' | 'select' | 'checkbox';
+    value?: string | boolean;
+    placeholder?: string;
+    maxlength?: string;
+    options?: PluginSettingOption[];
 }

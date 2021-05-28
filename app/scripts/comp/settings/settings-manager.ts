@@ -35,7 +35,7 @@ const SettingsManager = {
         'en-US': 'English',
         'de-DE': 'Deutsch',
         'fr-FR': 'Français'
-    },
+    } as Record<string, string>,
 
     allThemes: {
         dark: 'setGenThemeDark',
@@ -50,7 +50,7 @@ const SettingsManager = {
         lt: 'setGenThemeLt',
         dc: 'setGenThemeDc',
         hc: 'setGenThemeHc'
-    },
+    } as Record<string, string>,
 
     // changing something here? don't forget about desktop/app.js
     autoSwitchedThemes: [
@@ -87,6 +87,7 @@ const SettingsManager = {
     ],
 
     customLocales: new Map<string, Record<string, string>>(),
+    customThemeNames: new Map<string, string>(),
 
     init(): void {
         Events.on('dark-mode-changed', () => this.darkModeChanged());

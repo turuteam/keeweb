@@ -6,6 +6,8 @@ import { Locale } from 'util/locale';
 import { FileManager } from 'models/file-manager';
 import { FileInfo, FileStorageExtraOptions } from 'models/file-info';
 import { IdGenerator } from 'util/generators/id-generator';
+import { PluginManager } from 'plugins/plugin-manager';
+import { PluginManifest } from 'plugins/types';
 
 const logger = new Logger('config-loader');
 
@@ -20,7 +22,7 @@ class ConfigLoader {
                     throw new Error('Invalid app config, no settings section');
                 }
 
-                this.applyUserConfig(config);
+                await this.applyUserConfig(config);
                 return true;
             } catch (e) {
                 if (!AppSettings.cacheConfigSettings) {
@@ -86,7 +88,7 @@ class ConfigLoader {
         }
     }
 
-    private applyUserConfig(config: Record<string, unknown>): void {
+    private async applyUserConfig(config: Record<string, unknown>): Promise<void> {
         if (!config.settings) {
             logger.error('Invalid app config, no settings section', config);
             throw new Error('Invalid app config, no settings section');
@@ -141,14 +143,19 @@ class ConfigLoader {
             }
         }
 
-        if (config.plugins) {
-            // TODO: set plugins
-            // const pluginsPromises = config.plugins.map((plugin) =>
-            //     PluginManager.installIfNew(plugin.url, plugin.manifest, true)
-            // );
-            // return Promise.all(pluginsPromises).then(() => {
-            //     this.settings.set(config.settings);
-            // });
+        if (Array.isArray(config.plugins)) {
+            const pluginPromises: Promise<void>[] = [];
+            for (const plugin of config.plugins as Record<string, unknown>[]) {
+                if (typeof plugin.url === 'string' && typeof plugin.manifest === 'object') {
+                    const pluginPromise = PluginManager.installIfNew(
+                        plugin.url,
+                        plugin.manifest as PluginManifest,
+                        true
+                    );
+                    pluginPromises.push(pluginPromise);
+                }
+            }
+            await Promise.all(pluginPromises);
         }
 
         if (config.advancedSearch) {

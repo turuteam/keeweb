@@ -23,7 +23,7 @@ function config(options) {
     return {
         mode,
         entry: {
-            app: ['babel-helpers', 'bootstrap', 'main.scss']
+            app: ['babel-helpers', 'main', 'main.scss']
         },
         output: {
             path: path.resolve('.', 'tmp'),

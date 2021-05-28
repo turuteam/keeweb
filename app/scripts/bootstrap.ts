@@ -1,7 +1,3 @@
-/* eslint-disable import/first */
-if (process.env.NODE_ENV === 'development') {
-    require('preact/debug');
-}
 import 'util/kdbxweb/protected-value';
 import { h, render } from 'preact';
 import { App } from 'ui/app';
@@ -30,7 +26,8 @@ import { ConfigLoader } from 'comp/settings/config-loader';
 import { WindowClass } from 'comp/browser/window-class';
 import { FileManager } from 'models/file-manager';
 import { Updater } from './comp/app/updater';
-/* eslint-enable */
+import { Timeouts } from 'const/timeouts';
+import { PluginManager } from 'plugins/plugin-manager';
 
 declare global {
     interface Window {
@@ -51,7 +48,7 @@ async function bootstrap() {
 
     try {
         await loadConfigs();
-        initModules();
+        await initModules();
         await loadRemoteConfig();
         await ensureCanRun();
         addWindowClasses();
@@ -95,7 +92,7 @@ async function bootstrap() {
         );
     }
 
-    function initModules() {
+    async function initModules() {
         KeyHandler.init();
         PopupNotifier.init();
         KdbxwebInit.init();
@@ -103,7 +100,7 @@ async function bootstrap() {
         // AutoType.init(); // TODO
         ThemeWatcher.init();
         SettingsManager.init();
-        // await PluginManager.init() // TODO
+        await PluginManager.init();
         StartProfiler.milestone('initializing modules');
     }
 
@@ -162,7 +159,10 @@ async function bootstrap() {
         AppRightsChecker.init().catch(noop);
         IdleTracker.init();
         // BrowserExtensionConnector.init(appModel); // TODO
-        // PluginManager.runAutoUpdate(); // TODO: timeout
+
+        setTimeout(() => {
+            PluginManager.runAutoUpdate().catch(noop);
+        }, Timeouts.PluginsAutoUpdateAfterStart);
     }
 
     function showView() {

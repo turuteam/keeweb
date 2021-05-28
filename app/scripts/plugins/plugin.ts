@@ -49,7 +49,7 @@ class Plugin extends Model {
     resources: Record<string, ArrayBuffer>;
     module?: { exports: Record<string, unknown> };
 
-    constructor(url: string, manifest: PluginManifest) {
+    constructor(url: string, manifest: PluginManifest, autoUpdate = false) {
         super();
 
         const name = manifest.name;
@@ -61,6 +61,7 @@ class Plugin extends Model {
         this.manifest = manifest;
         this.name = manifest.name;
         this.url = url;
+        this.autoUpdate = autoUpdate;
         this.logger = new Logger('plugin', name);
         this.resources = {};
     }
@@ -674,7 +675,7 @@ class Plugin extends Model {
         }
     }
 
-    static async loadFromUrl(url: string, expectedManifest: PluginManifest): Promise<Plugin> {
+    static async loadFromUrl(url: string, expectedManifest?: PluginManifest): Promise<Plugin> {
         if (url[url.length - 1] !== '/') {
             url += '/';
         }

@@ -64,3 +64,16 @@ export interface PluginSetting {
     maxlength?: string;
     options?: PluginSettingOption[];
 }
+
+export interface StoredPlugin {
+    manifest: PluginManifest;
+    url: string;
+    enabled: boolean;
+    autoUpdate: boolean;
+}
+
+export interface StoredPlugins {
+    autoUpdateAppVersion?: string;
+    autoUpdateDate?: string | number;
+    plugins?: StoredPlugin[];
+}

@@ -15,8 +15,8 @@ export const AppMenuItem: FunctionComponent<{ item: MenuItem }> = ({ item }) => 
     useModelWatcher(item);
 
     useEffect(() => {
-        const offs: Callback[] = [];
         if (item.shortcut) {
+            const offs: Callback[] = [];
             offs.push(KeyHandler.onKey(item.shortcut, selectItem, KeyHandler.SHORTCUT_OPT));
             if (item.shortcut !== Keys.DOM_VK_C) {
                 offs.push(KeyHandler.onKey(item.shortcut, selectItem, KeyHandler.SHORTCUT_ACTION));

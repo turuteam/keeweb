@@ -294,4 +294,26 @@ export class OpenState extends Model {
             return undefined;
         }
     }
+
+    private static async showLocalFileAlert(): Promise<void> {
+        if (AppSettings.skipOpenLocalWarn) {
+            return;
+        }
+        const res = await Alerts.alert({
+            header: Locale.openLocalFile,
+            body: Locale.openLocalFileBody,
+            icon: 'file-alt',
+            buttons: [
+                { result: 'skip', title: Locale.openLocalFileDontShow, error: true },
+                { result: 'ok', title: Locale.alertOk }
+            ],
+            click: '',
+            esc: '',
+            enter: ''
+        }).wait();
+
+        if (res === 'skip') {
+            AppSettings.skipOpenLocalWarn = true;
+        }
+    }
 }

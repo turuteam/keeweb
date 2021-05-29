@@ -26,30 +26,6 @@ class OpenView extends View {
         this.checkIfEncryptedPasswordDateIsValid();
     }
 
-    showLocalFileAlert() {
-        if (this.model.settings.skipOpenLocalWarn) {
-            return;
-        }
-        Alerts.alert({
-            header: Locale.openLocalFile,
-            body: Locale.openLocalFileBody,
-            icon: 'file-alt',
-            buttons: [
-                { result: 'skip', title: Locale.openLocalFileDontShow, error: true },
-                { result: 'ok', title: Locale.alertOk }
-            ],
-            click: '',
-            esc: '',
-            enter: '',
-            success: (res) => {
-                this.focusInput();
-                if (res === 'skip') {
-                    this.model.settings.skipOpenLocalWarn = true;
-                }
-            }
-        });
-    }
-
     displayOpenChalResp() {
         this.$el
             .find('.open__settings-yubikey')
@@ -63,44 +39,6 @@ class OpenView extends View {
         this.el
             .querySelector('.open__pass-enter-btn')
             .classList.toggle('open__pass-enter-btn--touch-id', canUseEncryptedPassword);
-    }
-
-    openLast(e) {
-        if (this.busy) {
-            return;
-        }
-        const id = $(e.target).closest('.open__last-item').data('id').toString();
-        if ($(e.target).is('.open__last-item-icon-del')) {
-            const fileInfo = this.model.fileInfos.get(id);
-            if (!fileInfo.storage || fileInfo.modified) {
-                Alerts.yesno({
-                    header: Locale.openRemoveLastQuestion,
-                    body: fileInfo.modified
-                        ? Locale.openRemoveLastQuestionModBody
-                        : Locale.openRemoveLastQuestionBody,
-                    buttons: [
-                        { result: 'yes', title: Locale.alertYes },
-                        { result: '', title: Locale.alertNo }
-                    ],
-                    success: () => {
-                        this.removeFile(id);
-                    }
-                });
-                return;
-            }
-            this.removeFile(id);
-            return;
-        }
-
-        const fileInfo = this.model.fileInfos.get(id);
-        this.showOpenFileInfo(fileInfo, true);
-    }
-
-    removeFile(id) {
-        this.model.removeFileInfo(id);
-        this.$el.find('.open__last-item[data-id="' + id + '"]').remove();
-        this.resetParams();
-        this.render();
     }
 
     inputInput() {

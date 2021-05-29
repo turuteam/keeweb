@@ -129,32 +129,22 @@ export class Model<EventSpec extends ListenerSignature<EventSpec> = DefaultModel
         return this;
     }
 
-    batchSet(setter: () => void, opts?: { silent?: boolean }): void {
+    batchSet(setter: () => void): void {
         const emitter = this[SymbolEmitter] as ModelTypedEmitter;
+        const isNested = emitter?.batchSet;
 
         if (emitter) {
-            if (emitter.batchSet) {
-                throw new Error('Already in batchSet');
-            }
             emitter.batchSet = true;
-            if (opts?.silent) {
-                emitter.silent = true;
-            }
         }
 
         try {
             setter();
         } finally {
-            if (emitter) {
+            if (emitter && !isNested) {
                 emitter.batchSet = false;
-                if (opts?.silent) {
-                    emitter.silent = false;
-                }
                 if (emitter.changePending) {
                     emitter.changePending = false;
-                    if (!opts?.silent) {
-                        emitter.emit('change');
-                    }
+                    emitter.emit('change');
                 }
             }
         }

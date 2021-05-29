@@ -10,7 +10,7 @@ export const OpenScreen: FunctionComponent = () => {
     useModal('open');
 
     const openFile = () => {
-        Workspace.openState.selectFile();
+        Workspace.openState.chooseFile();
     };
 
     const setVisualFocus = () => {

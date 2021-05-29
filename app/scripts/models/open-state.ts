@@ -49,7 +49,7 @@ export class OpenState extends Model {
             return;
         }
         this.batchSet(() => {
-            this.resetInternal();
+            this.reset();
             this.id = fileInfo.id;
             this.name = fileInfo.name;
             this.storage = fileInfo.storage;
@@ -63,7 +63,7 @@ export class OpenState extends Model {
         });
     }
 
-    selectFile(): void {
+    chooseFile(): void {
         if (this.busy || !AppSettings.canOpen) {
             return;
         }
@@ -78,7 +78,7 @@ export class OpenState extends Model {
         switch (format) {
             case 'kdbx':
                 this.batchSet(() => {
-                    this.resetInternal();
+                    this.reset();
                     this.name = file.name.replace(/\.kdbx$/i, '');
                     this.fileData = fileData;
                     this.path = file.path || undefined;
@@ -113,7 +113,7 @@ export class OpenState extends Model {
         }
     }
 
-    selectKeyFile(): void {
+    chooseKeyFile(): void {
         if (this.busy || !AppSettings.canOpen) {
             return;
         }
@@ -193,6 +193,13 @@ export class OpenState extends Model {
         if (this.busy) {
             return;
         }
+        if (!this.id) {
+            const [first] = FileManager.getFileInfosToOpen();
+            if (first) {
+                this.selectFileInfo(first);
+            }
+            return;
+        }
         let found = false;
         for (const fileInfo of FileManager.getFileInfosToOpen()) {
             if (found) {
@@ -207,6 +214,13 @@ export class OpenState extends Model {
 
     selectPreviousFile(): void {
         if (this.busy) {
+            return;
+        }
+        if (!this.id) {
+            const fileInfos = FileManager.getFileInfosToOpen();
+            if (fileInfos.length) {
+                this.selectFileInfo(fileInfos[fileInfos.length - 1]);
+            }
             return;
         }
         let prevFileInfo: FileInfo | undefined;
@@ -225,20 +239,22 @@ export class OpenState extends Model {
         // TODO
     }
 
-    private resetInternal() {
-        this.id = undefined;
-        this.name = undefined;
-        this.password = kdbxweb.ProtectedValue.fromString('');
-        this.storage = undefined;
-        this.path = undefined;
-        this.fileData = undefined;
-        this.keyFileName = undefined;
-        this.keyFileData = undefined;
-        this.keyFileHash = undefined;
-        this.keyFilePath = undefined;
-        this.rev = undefined;
-        this.opts = undefined;
-        this.chalResp = undefined;
+    reset(): void {
+        this.batchSet(() => {
+            this.id = undefined;
+            this.name = undefined;
+            this.password = kdbxweb.ProtectedValue.fromString('');
+            this.storage = undefined;
+            this.path = undefined;
+            this.fileData = undefined;
+            this.keyFileName = undefined;
+            this.keyFileData = undefined;
+            this.keyFileHash = undefined;
+            this.keyFilePath = undefined;
+            this.rev = undefined;
+            this.opts = undefined;
+            this.chalResp = undefined;
+        });
     }
 
     private resetKeyFileInternal() {

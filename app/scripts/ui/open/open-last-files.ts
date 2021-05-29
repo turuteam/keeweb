@@ -30,29 +30,25 @@ export const OpenLastFiles: FunctionComponent = () => {
         }
     };
 
-    const removeFileClicked = (id: string) => {
+    const removeFileClicked = async (id: string) => {
         if (Workspace.openState.busy) {
             return;
         }
         const fileInfo = FileManager.getFileInfoById(id);
         if (fileInfo) {
             if (!fileInfo.storage || fileInfo.modified) {
-                Alerts.yesno({
+                const alertRes = await Alerts.yesno({
                     header: Locale.openRemoveLastQuestion,
                     body: fileInfo.modified
                         ? Locale.openRemoveLastQuestionModBody
-                        : Locale.openRemoveLastQuestionBody,
-                    buttons: [
-                        { result: 'yes', title: Locale.alertYes },
-                        { result: '', title: Locale.alertNo }
-                    ],
-                    success: () => {
-                        FileManager.removeFileInfo(id);
-                    }
-                });
-            } else {
-                FileManager.removeFileInfo(id);
+                        : Locale.openRemoveLastQuestionBody
+                }).wait();
+                if (!alertRes) {
+                    return;
+                }
             }
+            FileManager.removeFileInfo(id);
+            Workspace.openState.reset();
         }
     };
 

@@ -18,7 +18,7 @@ export const OpenSettings: FunctionComponent = () => {
         if (keyFileName) {
             Workspace.openState.clearKeyFile();
         } else {
-            Workspace.openState.selectKeyFile();
+            Workspace.openState.chooseKeyFile();
         }
     };
 

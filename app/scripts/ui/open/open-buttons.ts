@@ -41,7 +41,7 @@ export const OpenButtons: FunctionComponent = () => {
         !FileManager.getFileByName('yubikey');
 
     const openClicked = () => {
-        Workspace.openState.selectFile();
+        Workspace.openState.chooseFile();
     };
 
     const newClicked = () => {

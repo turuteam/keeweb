@@ -271,53 +271,22 @@ describe('Model', () => {
         expect(changedProps).to.eql([]);
     });
 
-    it('sets properties silently', () => {
+    it('supports nested batchSet', () => {
         const model = new TestModel();
 
-        let changed = 0;
-
-        model.on('change', () => changed++);
-        model.onChange('str', () => changed++);
-        model.onChange('num', () => changed++);
-        model.onChange('strOpt', () => changed++);
-        model.onChange('numOpt', () => changed++);
-
-        model.batchSet(
-            () => {
-                model.str = 'x';
-                model.num = 1;
-                model.strOpt = 'y';
-                delete model.strOpt;
-                model.numOpt = 2;
-            },
-            { silent: true }
-        );
-
-        expect(changed).to.eql(0);
-    });
-
-    it('throws an error for nested batchSet', () => {
-        const model = new TestModel();
-
-        let err: Error | undefined;
-
+        let changes = 0;
         model.on('change', () => {
-            expect.fail('Not expected to get here');
+            changes++;
         });
 
         model.batchSet(() => {
-            try {
-                model.batchSet(() => {
-                    expect.fail('Not expected to get here');
-                });
-            } catch (e) {
-                if (e instanceof Error) {
-                    err = e;
-                }
-            }
+            model.str = 'st';
+            model.batchSet(() => {
+                model.num = 22;
+            });
         });
 
-        expect(err?.message).to.eql('Already in batchSet');
+        expect(changes).to.eql(1);
     });
 
     it('supports derived models', () => {

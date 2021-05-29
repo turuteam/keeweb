@@ -19,6 +19,7 @@ import {
 } from 'plugins/types';
 import { Locale } from 'util/locale';
 import { RuntimeData } from 'models/runtime-data';
+import { errorToString } from 'util/fn';
 
 const commonLogger = new Logger('plugin');
 const io = new IoCache('PluginFiles', new Logger('storage-plugin-files'));
@@ -89,7 +90,7 @@ class Plugin extends Model {
                     this.logger.error('Error installing plugin', err);
                     this.batchSet(() => {
                         this.status = 'error';
-                        this.installError = err instanceof Error ? err.message : String(err);
+                        this.installError = errorToString(err);
                         this.installTime = this.logger.ts() - ts;
                         this.updateError = undefined;
                     });
@@ -605,7 +606,7 @@ class Plugin extends Model {
                         return this.installWithResources().then(() => {
                             this.batchSet(() => {
                                 this.updateCheckDate = new Date();
-                                this.updateError = err instanceof Error ? err.message : String(err);
+                                this.updateError = errorToString(err);
                             });
                             throw err;
                         });
@@ -613,7 +614,7 @@ class Plugin extends Model {
                         this.batchSet(() => {
                             this.status = prevStatus;
                             this.updateCheckDate = new Date();
-                            this.updateError = err instanceof Error ? err.message : String(err);
+                            this.updateError = errorToString(err);
                         });
                         throw err;
                     }

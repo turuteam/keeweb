@@ -76,8 +76,6 @@ class OpenView extends View {
         this.onKey(Keys.DOM_VK_DOWN, this.moveOpenFileSelectionDown, null, 'open');
         this.onKey(Keys.DOM_VK_UP, this.moveOpenFileSelectionUp, null, 'open');
         this.listenTo(Events, 'usb-devices-changed', this.usbDevicesChanged.bind(this));
-        this.listenTo(Events, 'unlock-message-changed', this.unlockMessageChanged.bind(this));
-        this.listenTo(Events, 'user-idle', this.userIdle);
     }
 
     render() {
@@ -955,12 +953,6 @@ class OpenView extends View {
         this.views.gen = generator;
     }
 
-    userIdle() {
-        this.inputEl.val('');
-        this.passwordInput.reset();
-        this.passwordInput.setElement(this.inputEl);
-    }
-
     usbDevicesChanged() {
         if (this.model.settings.canOpenOtpDevice) {
             const hasYubiKeys = !!UsbListener.attachedYubiKeys;
@@ -1086,16 +1078,6 @@ class OpenView extends View {
             if (maxDate < new Date()) {
                 this.encryptedPassword = null;
             }
-        }
-    }
-
-    unlockMessageChanged(unlockMessageRes) {
-        const messageEl = this.el.querySelector('.open__message');
-        messageEl.classList.toggle('hide', !unlockMessageRes);
-
-        if (unlockMessageRes) {
-            const contentEl = this.el.querySelector('.open__message-content');
-            contentEl.innerText = Locale[unlockMessageRes];
         }
     }
 

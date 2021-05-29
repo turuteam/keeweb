@@ -42,3 +42,7 @@ export function minmax(val: number, min: number, max: number): number {
 export function unreachable(msg: string, arg: never): never {
     throw new Error(`${msg}: ${String(arg)}`);
 }
+
+export function errorToString(err: unknown): string {
+    return err instanceof Error ? err.message : String(err);
+}

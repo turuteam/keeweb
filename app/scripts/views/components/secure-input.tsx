@@ -5,7 +5,7 @@ import { classes } from 'util/ui/classes';
 
 const MaxLength = 1024;
 
-interface SecureInputEvent {
+export interface SecureInputEvent {
     value: kdbxweb.ProtectedValue;
 }
 
@@ -20,6 +20,7 @@ export const SecureInput: FunctionComponent<{
     placeholder?: string;
     tabIndex?: number;
     inputRef?: Ref<HTMLInputElement>;
+    value?: kdbxweb.ProtectedValue;
 
     onInput?: (e: SecureInputEvent) => void;
 }> = ({
@@ -33,12 +34,27 @@ export const SecureInput: FunctionComponent<{
     placeholder,
     tabIndex,
     inputRef,
+    value,
+
     onInput
 }) => {
     const minChar = useRef(0x1400 + Math.round(Math.random() * 100));
     const length = useRef(0);
     const pseudoValue = useRef('');
     const salt = useRef(new Uint32Array(0));
+    const lastValue = useRef(value ?? kdbxweb.ProtectedValue.fromString(''));
+
+    let realInputValue: string | undefined;
+
+    if (value && lastValue.current && !value.equals(lastValue.current)) {
+        if (value.length === 0) {
+            realInputValue = '';
+            pseudoValue.current = '';
+            salt.current = new Uint32Array(0);
+        } else {
+            throw new Error('Setting a new value in SecureInput is not supported');
+        }
+    }
 
     const onInternalInput = (e: Event) => {
         const input = e.target;
@@ -48,6 +64,7 @@ export const SecureInput: FunctionComponent<{
 
         const selStart = input.selectionStart;
         const value = input.value;
+
         let newPs = '';
         const newSalt = new Uint32Array(MaxLength);
         let valIx = 0,
@@ -81,11 +98,9 @@ export const SecureInput: FunctionComponent<{
         input.selectionStart = selStart;
         input.selectionEnd = selStart;
 
-        onInput?.({
-            get value() {
-                return getValue();
-            }
-        });
+        lastValue.current = getValue();
+
+        onInput?.({ value: lastValue.current });
     };
 
     function getChar(ix: number): string {
@@ -136,8 +151,9 @@ export const SecureInput: FunctionComponent<{
             readonly={readonly}
             disabled={disabled}
             size={size}
-            onInput={onInternalInput}
             ref={inputRef}
+            onInput={onInternalInput}
+            value={realInputValue}
         />
     );
 };

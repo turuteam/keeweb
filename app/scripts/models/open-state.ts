@@ -1,9 +1,11 @@
+import * as kdbxweb from 'kdbxweb';
 import { Model } from 'util/model';
 import { StorageFileOptions } from 'storage/types';
 import { FileChalRespConfig } from 'models/file-info';
 
-export interface OpenParams {
+export class OpenState extends Model {
     name?: string;
+    password?: kdbxweb.ProtectedValue;
     id?: string;
     storage?: string;
     path?: string;
@@ -14,9 +16,7 @@ export interface OpenParams {
     rev?: string;
     opts?: StorageFileOptions;
     chalResp?: FileChalRespConfig;
-}
 
-export class OpenState extends Model {
-    params: OpenParams = {};
+    busy = false;
     secondRowVisible = false;
 }

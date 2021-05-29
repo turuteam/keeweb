@@ -2,16 +2,16 @@ import { h, FunctionComponent } from 'preact';
 import { OpenButtonsView } from 'views/open/open-buttons-view';
 import { AppSettings } from 'models/app-settings';
 import { Storage } from 'storage';
-import { useState } from 'preact/hooks';
 import { UsbListener } from 'comp/devices/usb-listener';
 import { FileManager } from 'models/file-manager';
 import { Workspace } from 'models/workspace';
 import { Logger } from 'util/logger';
+import { useModelField } from 'util/ui/hooks';
 
 const logger = new Logger('open');
 
 export const OpenButtons: FunctionComponent = () => {
-    const [secondRowVisible, setSecondRowVisible] = useState(false);
+    const secondRowVisible = useModelField(Workspace.openState, 'secondRowVisible');
 
     const storageProviders = [];
 
@@ -44,7 +44,9 @@ export const OpenButtons: FunctionComponent = () => {
         Workspace.createNewFile().catch((e) => logger.error(e));
     };
 
-    const moreClicked = () => setSecondRowVisible(!secondRowVisible);
+    const moreClicked = () => {
+        Workspace.openState.secondRowVisible = !secondRowVisible;
+    };
 
     const openDemoClicked = () => {
         Workspace.createDemoFile().catch((e) => logger.error(e));

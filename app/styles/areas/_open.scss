@@ -322,6 +322,9 @@
         }
     }
 
+    &--drag {
+        pointer-events: none;
+    }
     &__dropzone {
         display: none;
         .open--drag & {
@@ -329,15 +332,18 @@
             flex-direction: column;
             flex: 1 0 auto;
             justify-content: center;
-            align-self: center;
+            align-self: stretch;
             align-items: center;
             text-align: center;
+            pointer-events: auto;
         }
         &-icon {
             font-size: 10em;
+            pointer-events: none;
         }
         &-header {
             margin-top: 1em;
+            pointer-events: none;
         }
     }
 

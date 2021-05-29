@@ -1,11 +1,11 @@
 import { FunctionComponent } from 'preact';
 import { OpenButtons } from 'ui/open/open-buttons';
 import { OpenUnlockMessage } from 'ui/open/open-unlock-message';
-import { OpenDropzoneView } from 'views/open/open-dropzone-view';
 import { OpenStorageConfig } from 'ui/open/open-storage-config';
 import { OpenPassword } from 'ui/open/open-password';
 import { OpenLastFiles } from 'ui/open/open-last-files';
 import { OpenSettings } from 'ui/open/open-settings';
+import { OpenDropzone } from 'ui/open/open-dropzone';
 import { classes } from 'util/ui/classes';
 import { useKey } from 'util/ui/hooks';
 import { Keys } from 'const/keys';
@@ -15,7 +15,17 @@ export const OpenScreenView: FunctionComponent<{
     fileSelected: boolean;
     keyFileSelected: boolean;
     visualFocus: boolean;
-}> = ({ fileSelected, keyFileSelected, visualFocus }) => {
+    dragInProgress: boolean;
+
+    onDragEnter: (e: DragEvent) => void;
+}> = ({
+    fileSelected,
+    keyFileSelected,
+    visualFocus,
+    dragInProgress,
+
+    onDragEnter
+}) => {
     const openEl = useRef<HTMLDivElement>();
 
     const enterKeyPress = () => {
@@ -31,11 +41,13 @@ export const OpenScreenView: FunctionComponent<{
     return (
         <div
             ref={openEl}
+            onDragEnter={onDragEnter}
             class={classes({
                 'open': true,
                 'open--file': fileSelected,
                 'open--key-file': keyFileSelected,
-                'open--show-focus': visualFocus
+                'open--show-focus': visualFocus,
+                'open--drag': dragInProgress
             })}
         >
             <OpenUnlockMessage />
@@ -48,7 +60,7 @@ export const OpenScreenView: FunctionComponent<{
             </div>
 
             <OpenStorageConfig />
-            <OpenDropzoneView />
+            <OpenDropzone />
         </div>
     );
 };

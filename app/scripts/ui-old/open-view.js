@@ -21,42 +21,6 @@ import { NativeModules } from 'comp/launcher/native-modules';
 const logger = new Logger('open-view');
 
 class OpenView extends View {
-    events = {
-        'change .open__file-ctrl': 'fileSelected',
-        'click .open__icon-open': 'openFile',
-        'click .open__icon-new': 'createNew',
-        'click .open__icon-demo': 'createDemo',
-        'click .open__icon-yubikey': 'openYubiKey',
-        'click .open__icon-more': 'toggleMore',
-        'click .open__icon-storage': 'openStorage',
-        'click .open__icon-settings': 'openSettings',
-        'click .open__pass-input[readonly]': 'openFile',
-        'input .open__pass-input': 'inputInput',
-        'keydown .open__pass-input': 'inputKeydown',
-        'keyup .open__pass-input': 'inputKeyup',
-        'keypress .open__pass-input': 'inputKeypress',
-        'click .open__pass-enter-btn': 'openDb',
-        'click .open__settings-key-file': 'openKeyFile',
-        'click .open__settings-yubikey': 'selectYubiKeyChalResp',
-        'click .open__last-item': 'openLast',
-        'click .open__icon-generate': 'toggleGenerator',
-        'click .open__message-cancel-btn': 'openMessageCancelClick',
-        dragover: 'dragover',
-        dragleave: 'dragleave',
-        drop: 'drop'
-    };
-
-    constructor() {
-        super();
-        this.listenTo(Events, 'usb-devices-changed', this.usbDevicesChanged.bind(this));
-    }
-
-    render() {
-        if (this.dragTimeout) {
-            clearTimeout(this.dragTimeout);
-        }
-    }
-
     windowFocused() {
         this.inputEl.focus();
         this.checkIfEncryptedPasswordDateIsValid();
@@ -158,80 +122,6 @@ class OpenView extends View {
 
     inputInput() {
         this.displayOpenDeviceOwnerAuth();
-    }
-
-    dragover(e) {
-        if (this.model.settings.canOpen === false) {
-            return;
-        }
-        e.preventDefault();
-        e.stopPropagation();
-        const dt = e.dataTransfer;
-        if (
-            !dt.types ||
-            (dt.types.indexOf ? dt.types.indexOf('Files') === -1 : !dt.types.contains('Files'))
-        ) {
-            dt.dropEffect = 'none';
-            return;
-        }
-        dt.dropEffect = 'copy';
-        if (this.dragTimeout) {
-            clearTimeout(this.dragTimeout);
-        }
-        if (!this.$el.hasClass('open--drag')) {
-            this.$el.addClass('open--drag');
-        }
-    }
-
-    dragleave() {
-        if (this.model.settings.canOpen === false) {
-            return;
-        }
-        if (this.dragTimeout) {
-            clearTimeout(this.dragTimeout);
-        }
-        this.dragTimeout = setTimeout(() => {
-            this.$el.removeClass('open--drag');
-        }, 100);
-    }
-
-    drop(e) {
-        if (this.model.settings.canOpen === false) {
-            return;
-        }
-        e.preventDefault();
-        if (this.busy) {
-            return;
-        }
-        if (this.dragTimeout) {
-            clearTimeout(this.dragTimeout);
-        }
-        this.closeConfig();
-        this.$el.removeClass('open--drag');
-        const files = [...(e.target.files || e.dataTransfer.files)];
-        const dataFile = files.find((file) => /\.kdbx$/i.test(file.name));
-        const keyFile = files.find((file) => /\.keyx?$/i.test(file.name));
-        if (dataFile) {
-            this.setFile(
-                dataFile,
-                keyFile,
-                dataFile.path ? null : this.showLocalFileAlert.bind(this)
-            );
-            return;
-        }
-        if (this.model.settings.canImportXml) {
-            const xmlFile = files.find((file) => /\.xml$/i.test(file.name));
-            if (xmlFile) {
-                this.setFile(xmlFile, null, this.showLocalFileAlert.bind(this));
-                return;
-            }
-        }
-        if (this.model.settings.canImportCsv) {
-            const csvFile = files.find((file) => /\.csv$/i.test(file.name));
-            if (csvFile) {
-                Events.emit('import-csv-requested', csvFile);
-            }
-        }
     }
 
     openDb() {

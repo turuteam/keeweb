@@ -18,12 +18,12 @@ export const OpenSettings: FunctionComponent = () => {
         if (keyFileName) {
             Workspace.openState.clearKeyFile();
         } else {
-            Workspace.openState.openKeyFile();
+            Workspace.openState.selectKeyFile();
         }
     };
 
     const selectKeyFileFromDropboxClicked = () => {
-        Workspace.openState.openKeyFileFromDropbox();
+        Workspace.openState.selectKeyFileFromDropbox();
     };
 
     return h(OpenSettingsView, {

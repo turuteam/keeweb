@@ -15,7 +15,7 @@ export const OpenPassword: FunctionComponent = () => {
     });
 
     const passwordClicked = () => {
-        Workspace.openState.openFile();
+        Workspace.openState.selectFile();
     };
 
     const passwordChanged = (password: kdbxweb.ProtectedValue) => {

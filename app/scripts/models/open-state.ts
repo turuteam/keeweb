@@ -8,6 +8,9 @@ import { Alerts } from 'comp/ui/alerts';
 import { Locale } from 'util/locale';
 import { FileManager } from 'models/file-manager';
 import { DropboxChooser } from 'storage/dropbox-chooser';
+import { Logger } from 'util/logger';
+
+const logger = new Logger('open');
 
 export class OpenState extends Model {
     id?: string;
@@ -16,7 +19,6 @@ export class OpenState extends Model {
     storage?: string;
     path?: string;
     fileData?: ArrayBuffer;
-    fileXml?: string;
     keyFileName?: string;
     keyFileData?: ArrayBuffer;
     keyFileHash?: string;
@@ -30,6 +32,7 @@ export class OpenState extends Model {
     autoFocusPassword = true;
     capsLockPressed = false;
     visualFocus = false;
+    dragInProgress = false;
 
     constructor() {
         super();
@@ -59,63 +62,74 @@ export class OpenState extends Model {
         });
     }
 
-    openFile(): void {
+    selectFile(): void {
         if (this.busy || !AppSettings.canOpen) {
             return;
         }
-        FileOpener.openBinary((file, fileData) => {
-            const format = OpenState.getOpenFileFormat(fileData);
-            switch (format) {
-                case 'kdbx':
-                    this.batchSet(() => {
-                        this.resetInternal();
-                        this.name = file.name.replace(/\.kdbx$/i, '');
-                        this.fileData = fileData;
-                        this.path = file.path || undefined;
-                        this.storage = file.path ? 'file' : undefined;
-                    });
-                    break;
-                case 'xml':
-                    this.batchSet(() => {
-                        this.resetInternal();
-                        this.fileXml = kdbxweb.ByteUtils.bytesToString(fileData);
-                        this.name = file.name.replace(/\.\w+$/i, '');
-                    });
-                    break;
-                case 'kdb':
-                    Alerts.error({
-                        header: Locale.openWrongFile,
-                        body: Locale.openKdbFileBody
-                    });
-                    break;
-                default:
-                    Alerts.error({
-                        header: Locale.openWrongFile,
-                        body: Locale.openWrongFileBody
-                    });
-                    break;
+        FileOpener.open((file) => {
+            this.readFile(file).catch((e) => logger.error('Error selecting file', e));
+        });
+    }
+
+    async readFile(file: File): Promise<void> {
+        const fileData = await FileOpener.readBinary(file);
+        const format = OpenState.getOpenFileFormat(fileData);
+        switch (format) {
+            case 'kdbx':
+                this.batchSet(() => {
+                    this.resetInternal();
+                    this.name = file.name.replace(/\.kdbx$/i, '');
+                    this.fileData = fileData;
+                    this.path = file.path || undefined;
+                    this.storage = file.path ? 'file' : undefined;
+                });
+                break;
+            case 'xml':
+                this.batchSet(() => {
+                    this.resetInternal();
+                    // const fileXml = kdbxweb.ByteUtils.bytesToString(fileData);
+                    // const name = file.name.replace(/\.\w+$/i, '');
+                    // TODO: open xml
+                });
+                break;
+            case 'kdb':
+                Alerts.error({
+                    header: Locale.openWrongFile,
+                    body: Locale.openKdbFileBody
+                });
+                break;
+            default:
+                Alerts.error({
+                    header: Locale.openWrongFile,
+                    body: Locale.openWrongFileBody
+                });
+                break;
+        }
+    }
+
+    selectKeyFile(): void {
+        if (this.busy || !AppSettings.canOpen) {
+            return;
+        }
+        FileOpener.open((file) => {
+            this.readKeyFile(file).catch((e) => logger.error('Error selecting keyfile', e));
+        });
+    }
+
+    async readKeyFile(file: File): Promise<void> {
+        const keyFileData = await FileOpener.readBinary(file);
+        this.batchSet(() => {
+            this.resetKeyFileInternal();
+
+            this.keyFileName = file.name;
+            if (AppSettings.rememberKeyFiles === 'path' && file.path) {
+                this.keyFilePath = file.path;
             }
+            this.keyFileData = keyFileData;
         });
     }
 
-    openKeyFile(): void {
-        if (this.busy || !AppSettings.canOpen) {
-            return;
-        }
-        FileOpener.openBinary((file, keyFileData) => {
-            this.batchSet(() => {
-                this.resetKeyFileInternal();
-
-                this.keyFileName = file.name;
-                if (AppSettings.rememberKeyFiles === 'path' && file.path) {
-                    this.keyFilePath = file.path;
-                }
-                this.keyFileData = keyFileData;
-            });
-        });
-    }
-
-    openKeyFileFromDropbox(): void {
+    selectKeyFileFromDropbox(): void {
         if (this.busy || !AppSettings.canOpen) {
             return;
         }
@@ -139,6 +153,18 @@ export class OpenState extends Model {
         this.batchSet(() => {
             this.resetKeyFileInternal();
         });
+    }
+
+    readFileAndKeyFile(file: File, keyFile?: File): void {
+        this.readFile(file)
+            .then(() => {
+                if (keyFile) {
+                    return this.readKeyFile(keyFile);
+                }
+            })
+            .catch((e) => {
+                logger.error('Error reading file and keyfile', e);
+            });
     }
 
     selectNextFile(): void {
@@ -184,7 +210,6 @@ export class OpenState extends Model {
         this.storage = undefined;
         this.path = undefined;
         this.fileData = undefined;
-        this.fileXml = undefined;
         this.keyFileName = undefined;
         this.keyFileData = undefined;
         this.keyFileHash = undefined;

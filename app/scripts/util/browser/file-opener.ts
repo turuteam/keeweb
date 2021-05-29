@@ -5,27 +5,7 @@ let el: HTMLInputElement | undefined;
 const logger = new Logger('file-reader');
 
 export const FileOpener = {
-    openText(selected: (file: File, data: string) => void): void {
-        this.open((file, data) => {
-            if (typeof data === 'string') {
-                selected(file, data);
-            } else {
-                logger.error(`Error reading file: expected a string, got`, data);
-            }
-        }, true);
-    },
-
-    openBinary(selected: (file: File, data: ArrayBuffer) => void): void {
-        this.open((file, data) => {
-            if (data instanceof ArrayBuffer) {
-                selected(file, data);
-            } else {
-                logger.error(`Error reading file: expected an ArrayBuffer, got`, data);
-            }
-        }, false);
-    },
-
-    open(selected: (file: File, data: unknown) => void, asText: boolean): void {
+    open(selected: (file: File) => void): void {
         el?.remove();
 
         el = document.createElement('input');
@@ -46,14 +26,42 @@ export const FileOpener = {
                 return;
             }
 
+            selected(file);
+            el?.remove();
+        });
+    },
+
+    async readText(file: File): Promise<string> {
+        const data = await this.readFile(file, true);
+        if (typeof data === 'string') {
+            return data;
+        } else {
+            throw new Error('Error reading file: expected a string');
+        }
+    },
+
+    async readBinary(file: File): Promise<ArrayBuffer> {
+        const data = await this.readFile(file, false);
+        if (data instanceof ArrayBuffer) {
+            return data;
+        } else {
+            throw new Error('Error reading file: expected an ArrayBuffer');
+        }
+    },
+
+    readFile(file: File, asText: boolean): Promise<ArrayBuffer | string> {
+        return new Promise((resolve, reject) => {
             const reader = new FileReader();
+
             reader.addEventListener('error', () => {
-                el?.remove();
-                logger.error('Error reading file');
+                logger.error('Error reading file', reader.error);
+                reject('Error reading file');
             });
             reader.addEventListener('load', () => {
-                selected(file, reader.result);
-                el?.remove();
+                if (reader.result === null) {
+                    return reject('No data read from file');
+                }
+                resolve(reader.result);
             });
 
             if (asText) {

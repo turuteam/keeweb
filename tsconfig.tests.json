@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "strict": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "baseUrl": "app/scripts",
+    "noEmitOnError": true,
+    "esModuleInterop": true
+  },
+  "include": ["app/scripts/**/*", "test/**/*.ts"]
+}

@@ -54,6 +54,7 @@ class Workspace extends Model {
         if (!FileManager.getFileByName('Demo')) {
             const demoFile = await File.openDemo();
             FileManager.addFile(demoFile);
+            AppSettings.demoOpened = true;
         }
         this.showList();
     }
@@ -112,6 +113,20 @@ class Workspace extends Model {
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    toggleSettings(page: string): void {
+        // TODO: settings page
+        if (this.mode === 'settings') {
+            if (FileManager.hasOpenFiles) {
+                this.showList();
+            } else {
+                this.showOpen();
+            }
+        } else {
+            this.showSettings();
+        }
+    }
+
     showList() {
         if (FileManager.hasOpenFiles) {
             this.mode = 'list';
@@ -121,6 +136,10 @@ class Workspace extends Model {
     showOpen(): void {
         this.openState = new OpenState();
         this.mode = 'open';
+    }
+
+    showSettings(): void {
+        this.mode = 'settings';
     }
 
     private filesChanged() {
@@ -265,6 +284,12 @@ class Workspace extends Model {
         );
 
         KeyHandler.onKey(Keys.DOM_VK_O, () => this.toggleOpen(), KeyHandler.SHORTCUT_ACTION);
+        KeyHandler.onKey(
+            Keys.DOM_VK_COMMA,
+            () => this.showSettings(),
+            KeyHandler.SHORTCUT_ACTION,
+            'open'
+        );
     }
 }
 

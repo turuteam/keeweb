@@ -1,24 +1,50 @@
 import { FunctionComponent } from 'preact';
 import { Locale } from 'util/locale';
 import { classes } from 'util/ui/classes';
+import { withoutPropagation } from 'util/ui/events';
 
 export const OpenSettingsView: FunctionComponent<{
+    canSelectKeyFile: boolean;
     canOpenKeyFromDropbox: boolean;
     canUseChalRespYubiKey: boolean;
-}> = ({ canOpenKeyFromDropbox, canUseChalRespYubiKey }) => {
-    let tabIndex = 0;
+    keyFileName?: string;
+
+    selectKeyFileClicked: () => void;
+    selectKeyFileFromDropboxClicked: () => void;
+}> = ({
+    canSelectKeyFile,
+    canOpenKeyFromDropbox,
+    canUseChalRespYubiKey,
+    keyFileName,
+
+    selectKeyFileClicked,
+    selectKeyFileFromDropboxClicked
+}) => {
+    let tabIndex = 300;
+
     return (
         <div class="open__settings">
-            <div class="open__settings-key-file hide" tabIndex={++tabIndex}>
-                <i class="fa fa-key open__settings-key-file-icon" />
-                <span class="open__settings-key-file-name">{Locale.openKeyFile}</span>
-                {canOpenKeyFromDropbox ? (
-                    <span class="open__settings-key-file-dropbox">
-                        {' '}
-                        {Locale.openKeyFileDropbox}
+            {canSelectKeyFile ? (
+                <div
+                    class="open__settings-key-file"
+                    tabIndex={++tabIndex}
+                    onClick={selectKeyFileClicked}
+                >
+                    <i class="fa fa-key open__settings-key-file-icon" />
+                    <span class="open__settings-key-file-name">
+                        {keyFileName || Locale.openKeyFile}
                     </span>
-                ) : null}
-            </div>
+                    {canOpenKeyFromDropbox ? (
+                        <span
+                            class="open__settings-key-file-dropbox"
+                            onClick={withoutPropagation(selectKeyFileFromDropboxClicked)}
+                        >
+                            {' '}
+                            {Locale.openKeyFileDropbox}
+                        </span>
+                    ) : null}
+                </div>
+            ) : undefined}
             <div
                 class={classes({
                     'open__settings-yubikey': true,

@@ -15,8 +15,9 @@ export const FooterView: FunctionComponent<{
     updateAvailable: boolean;
 
     openClicked: () => void;
+    settingsClicked: () => void;
     lockWorkspaceClicked: () => void;
-}> = ({ files, updateAvailable, openClicked, lockWorkspaceClicked }) => {
+}> = ({ files, updateAvailable, settingsClicked, openClicked, lockWorkspaceClicked }) => {
     return (
         <div class="footer">
             {files.map((file) => (
@@ -57,6 +58,7 @@ export const FooterView: FunctionComponent<{
                 class="footer__btn footer__btn-settings"
                 tip-placement="top"
                 id="footer__btn-settings"
+                onClick={settingsClicked}
             >
                 <kw-tip text={Locale.settings} />
                 {updateAvailable ? (

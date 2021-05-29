@@ -19,9 +19,11 @@ export const OpenButtonsView: FunctionComponent<{
     showSettings: boolean;
     storageProviders: StorageProvider[];
 
+    openClicked: () => void;
     moreClicked: () => void;
     newClicked: () => void;
     openDemoClicked: () => void;
+    settingsClicked: () => void;
 }> = ({
     secondRowVisible,
     showOpen,
@@ -35,17 +37,23 @@ export const OpenButtonsView: FunctionComponent<{
     showSettings,
     storageProviders,
 
+    openClicked,
     moreClicked,
     newClicked,
-    openDemoClicked
+    openDemoClicked,
+    settingsClicked
 }) => {
-    let tabIndex = 0;
+    let tabIndex = 100;
 
     return (
         <>
             <div class="open__icons">
                 {showOpen ? (
-                    <div class="open__icon open__icon-open" tabIndex={++tabIndex}>
+                    <div
+                        class="open__icon open__icon-open"
+                        tabIndex={++tabIndex}
+                        onClick={openClicked}
+                    >
                         <i class="fa fa-lock open__icon-i" />
                         <div class="open__icon-text">{Locale.openOpen}</div>
                     </div>
@@ -122,7 +130,11 @@ export const OpenButtonsView: FunctionComponent<{
                         </div>
                     ) : null}
                     {showSettings ? (
-                        <div class="open__icon open__icon-settings" tabIndex={++tabIndex}>
+                        <div
+                            class="open__icon open__icon-settings"
+                            tabIndex={++tabIndex}
+                            onClick={settingsClicked}
+                        >
                             <i class="fa fa-cog open__icon-i" />
                             <div class="open__icon-text">{Locale.settings}</div>
                         </div>

@@ -106,6 +106,14 @@ class FileManager extends Model<FileManagerEvents> {
         this.files = this.files.filter((f) => f !== file);
     }
 
+    getFirstFileInfoToOpen(): FileInfo | undefined {
+        for (const fi of this.fileInfos) {
+            if (!this.getFileById(fi.id)) {
+                return fi;
+            }
+        }
+    }
+
     private fileClosed(file: File) {
         if (file.storage === 'file' && file.path) {
             Storage.file.unwatch(file.path);

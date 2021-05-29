@@ -40,6 +40,10 @@ export const OpenButtons: FunctionComponent = () => {
         AppSettings.yubiKeyShowIcon &&
         !FileManager.getFileByName('yubikey');
 
+    const openClicked = () => {
+        Workspace.openState.openFile();
+    };
+
     const newClicked = () => {
         Workspace.createNewFile().catch((e) => logger.error(e));
     };
@@ -50,6 +54,10 @@ export const OpenButtons: FunctionComponent = () => {
 
     const openDemoClicked = () => {
         Workspace.createDemoFile().catch((e) => logger.error(e));
+    };
+
+    const settingsClicked = () => {
+        Workspace.showSettings();
     };
 
     return h(OpenButtonsView, {
@@ -65,8 +73,10 @@ export const OpenButtons: FunctionComponent = () => {
         showSettings: AppSettings.canOpenSettings,
         storageProviders,
 
+        openClicked,
         newClicked,
         moreClicked,
-        openDemoClicked
+        openDemoClicked,
+        settingsClicked
     });
 };

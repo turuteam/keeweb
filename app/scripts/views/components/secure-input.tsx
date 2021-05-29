@@ -5,14 +5,13 @@ import { classes } from 'util/ui/classes';
 
 const MaxLength = 1024;
 
-export interface SecureInputEvent {
+export interface SecureInputEvent extends InputEvent {
     value: kdbxweb.ProtectedValue;
 }
 
 export const SecureInput: FunctionComponent<{
     name?: string;
     inputClass?: string;
-    autofocus?: boolean;
     error?: boolean;
     readonly?: boolean;
     disabled?: boolean;
@@ -23,10 +22,13 @@ export const SecureInput: FunctionComponent<{
     value?: kdbxweb.ProtectedValue;
 
     onInput?: (e: SecureInputEvent) => void;
+    onClick?: (e: MouseEvent) => void;
+    onKeyDown?: (e: KeyboardEvent) => void;
+    onKeyUp?: (e: KeyboardEvent) => void;
+    onKeyPress?: (e: KeyboardEvent) => void;
 }> = ({
     name,
     inputClass,
-    autofocus,
     error,
     readonly,
     disabled,
@@ -36,7 +38,11 @@ export const SecureInput: FunctionComponent<{
     inputRef,
     value,
 
-    onInput
+    onInput,
+    onClick,
+    onKeyDown,
+    onKeyUp,
+    onKeyPress
 }) => {
     const minChar = useRef(0x1400 + Math.round(Math.random() * 100));
     const length = useRef(0);
@@ -100,7 +106,10 @@ export const SecureInput: FunctionComponent<{
 
         lastValue.current = getValue();
 
-        onInput?.({ value: lastValue.current });
+        const ev = e as SecureInputEvent;
+        ev.value = lastValue.current;
+
+        onInput?.(ev);
     };
 
     function getChar(ix: number): string {
@@ -145,15 +154,18 @@ export const SecureInput: FunctionComponent<{
             type="password"
             autocomplete="new-password"
             maxLength={MaxLength}
-            autofocus={autofocus}
             tabIndex={tabIndex}
             placeholder={placeholder}
             readonly={readonly}
             disabled={disabled}
             size={size}
             ref={inputRef}
-            onInput={onInternalInput}
             value={realInputValue}
+            onInput={onInternalInput}
+            onClick={onClick}
+            onKeyDown={onKeyDown}
+            onKeyUp={onKeyUp}
+            onKeyPress={onKeyPress}
         />
     );
 };

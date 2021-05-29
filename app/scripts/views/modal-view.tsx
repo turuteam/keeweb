@@ -1,5 +1,6 @@
 import { Fragment, FunctionComponent } from 'preact';
 import { classes } from 'util/ui/classes';
+import { withoutPropagation } from 'util/ui/events';
 
 export interface ModalViewButton {
     title: string;
@@ -43,11 +44,6 @@ export const ModalView: FunctionComponent<ModalViewProps> = ({
     buttonClicked,
     checkboxChanged
 }) => {
-    const buttonClickedWithoutPropagation = (e: MouseEvent, result: string) => {
-        e.stopPropagation();
-        buttonClicked(result);
-    };
-
     return (
         <div
             class={classes({
@@ -90,7 +86,7 @@ export const ModalView: FunctionComponent<ModalViewProps> = ({
                                 'btn-error': btn.error || !btn.result,
                                 'btn-silent': btn.silent
                             })}
-                            onClick={(e) => buttonClickedWithoutPropagation(e, btn.result)}
+                            onClick={withoutPropagation(buttonClicked, btn.result)}
                             data-result={btn.result}
                         >
                             {btn.title}

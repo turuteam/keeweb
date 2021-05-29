@@ -5,6 +5,7 @@ import { Locale } from 'util/locale';
 import { useState } from 'preact/hooks';
 import { MenuItem } from 'models/menu/menu-item';
 import { AppMenuItem } from 'ui/menu/app-menu-item';
+import { withoutPropagation } from 'util/ui/events';
 
 export const AppMenuItemView: FunctionComponent<{
     title: string;
@@ -49,36 +50,6 @@ export const AppMenuItemView: FunctionComponent<{
 }) => {
     const [hover, setHover] = useState(false);
 
-    const mouseOver = (e: Event) => {
-        e.stopPropagation();
-        setHover(true);
-    };
-
-    const mouseOut = (e: Event) => {
-        e.stopPropagation();
-        setHover(false);
-    };
-
-    const itemClickedStopPropagation = (e: Event) => {
-        e.stopPropagation();
-        itemClicked?.();
-    };
-
-    const itemDblClickedStopPropagation = (e: Event) => {
-        e.stopPropagation();
-        itemDblClicked?.();
-    };
-
-    const optionClickedStopPropagation = (e: Event, option: MenuOption) => {
-        e.stopPropagation();
-        optionClicked?.(option);
-    };
-
-    const actionClickedStopPropagation = (e: Event) => {
-        e.stopPropagation();
-        actionClicked?.();
-    };
-
     return (
         <div
             class={classes({
@@ -90,10 +61,10 @@ export const AppMenuItemView: FunctionComponent<{
                 'menu__item--collapsed': !expanded,
                 ...(cls ? { [cls]: true } : null)
             })}
-            onMouseOver={(e) => mouseOver(e)}
-            onMouseOut={(e) => mouseOut(e)}
-            onClick={itemClickedStopPropagation}
-            onDblClick={itemDblClickedStopPropagation}
+            onMouseOver={withoutPropagation(setHover, true)}
+            onMouseOut={withoutPropagation(setHover, false)}
+            onClick={withoutPropagation(itemClicked)}
+            onDblClick={withoutPropagation(itemDblClicked)}
         >
             {collapsible ? (
                 <i class="menu__item-collapse fa fa-ellipsis-v muted-color">
@@ -123,7 +94,7 @@ export const AppMenuItemView: FunctionComponent<{
                             <div
                                 class={`menu__item-option ${opt.cls || ''}`}
                                 key={opt.value}
-                                onClick={(e) => optionClickedStopPropagation(e, opt)}
+                                onClick={withoutPropagation(optionClicked, opt)}
                             >
                                 {opt.title}
                             </div>
@@ -131,13 +102,16 @@ export const AppMenuItemView: FunctionComponent<{
                     </div>
                 ) : null}
                 {editable ? (
-                    <i class="menu__item-edit fa fa-cog" onClick={actionClickedStopPropagation} />
+                    <i
+                        class="menu__item-edit fa fa-cog"
+                        onClick={withoutPropagation(actionClicked)}
+                    />
                 ) : null}
                 {isTrash ? (
                     <i
                         class="menu__item-empty-trash fa fa-minus-circle"
                         tip-placement="right"
-                        onClick={actionClickedStopPropagation}
+                        onClick={withoutPropagation(actionClicked)}
                     >
                         <kw-tip text={Locale.menuEmptyTrash} />
                     </i>

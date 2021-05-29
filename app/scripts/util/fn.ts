@@ -44,5 +44,12 @@ export function unreachable(msg: string, arg: never): never {
 }
 
 export function errorToString(err: unknown): string {
-    return err instanceof Error ? err.message : String(err);
+    if (err instanceof Error) {
+        return err.message;
+    }
+    const str = String(err);
+    if (str === String({})) {
+        return `Error: ${JSON.stringify(str)}`;
+    }
+    return str;
 }

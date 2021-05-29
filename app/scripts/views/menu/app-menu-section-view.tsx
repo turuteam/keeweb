@@ -14,7 +14,7 @@ export const AppMenuSectionView: FunctionComponent<{
     items: MenuItem[];
     height?: number;
 }> = ({ id, scrollable, grow, drag, items, height }) => {
-    const menuRef = useRef<HTMLDivElement>();
+    const menu = useRef<HTMLDivElement>();
     const menuItems = items.map((item) => <AppMenuItem item={item} key={item.id} />);
 
     return (
@@ -27,14 +27,14 @@ export const AppMenuSectionView: FunctionComponent<{
                     'menu__section--drag': drag
                 })}
                 style={{ height }}
-                ref={menuRef}
+                ref={menu}
             >
                 {scrollable ? <Scrollable>{menuItems}</Scrollable> : menuItems}
             </div>
             {drag ? (
                 <div class="menu__drag-section">
                     <DragHandle
-                        target={menuRef}
+                        target={menu}
                         coord="y"
                         name={`menu-section:${id}`}
                         min={55}

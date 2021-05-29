@@ -5,6 +5,7 @@ import { ListenerSignature, Model } from 'util/model';
 import { KeyHandler } from 'comp/browser/key-handler';
 import { Keys } from 'const/keys';
 import { Events, GlobalEventSpec } from 'util/events';
+import { FocusManager } from 'comp/app/focus-manager';
 
 export function useModelField<
     ModelEventsType extends ListenerSignature<ModelEventsType>,
@@ -59,5 +60,12 @@ export function useKey(
 ): void {
     useEffect(() => {
         return KeyHandler.onKey(key, handler, shortcut, modal, noPrevent);
+    }, []);
+}
+
+export function useModal(name: string): void {
+    useEffect(() => {
+        FocusManager.pushModal(name);
+        return () => FocusManager.popModal();
     }, []);
 }

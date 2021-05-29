@@ -11,7 +11,6 @@ class FooterView extends View {
 
         this.onKey(Keys.DOM_VK_G, this.genPass, KeyHandler.SHORTCUT_ACTION);
         this.onKey(Keys.DOM_VK_S, this.saveAll, KeyHandler.SHORTCUT_ACTION);
-        this.onKey(Keys.DOM_VK_COMMA, this.toggleSettings, KeyHandler.SHORTCUT_ACTION);
 
         this.listenTo(this, 'hide', this.viewHidden);
         this.listenTo(this.model.files, 'change', this.render);
@@ -59,10 +58,6 @@ class FooterView extends View {
 
     toggleHelp() {
         Events.emit('toggle-settings', 'help');
-    }
-
-    toggleSettings() {
-        Events.emit('toggle-settings', 'general');
     }
 }
 

@@ -28,6 +28,7 @@ import { FileManager } from 'models/file-manager';
 import { Updater } from './comp/app/updater';
 import { Timeouts } from 'const/timeouts';
 import { PluginManager } from 'plugins/plugin-manager';
+import { Workspace } from 'models/workspace';
 
 declare global {
     interface Window {
@@ -168,6 +169,8 @@ async function bootstrap() {
     }
 
     function showView() {
+        Workspace.showOpen();
+
         const root = document.querySelector('.app');
         if (root) {
             const app = h(App, null);

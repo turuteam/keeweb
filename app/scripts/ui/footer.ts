@@ -17,6 +17,8 @@ export const Footer: FunctionComponent = () => {
 
     const openClicked = () => Workspace.toggleOpen();
 
+    const settingsClicked = () => Workspace.toggleSettings('general');
+
     const lockWorkspaceClicked = () => Workspace.lockWorkspace();
 
     return h(FooterView, {
@@ -24,6 +26,7 @@ export const Footer: FunctionComponent = () => {
         updateAvailable,
 
         openClicked,
+        settingsClicked,
         lockWorkspaceClicked
     });
 };

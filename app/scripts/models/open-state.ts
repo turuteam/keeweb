@@ -10,6 +10,7 @@ import { FileManager } from 'models/file-manager';
 import { DropboxChooser } from 'storage/dropbox-chooser';
 import { Logger } from 'util/logger';
 import { Workspace } from 'models/workspace';
+import { errorToString } from 'util/fn';
 
 const logger = new Logger('open');
 
@@ -92,6 +93,11 @@ export class OpenState extends Model {
                     await Workspace.importFileFromXml(name, xml);
                 } catch (e) {
                     logger.error('Error importing XML', e);
+                    Alerts.error({
+                        header: Locale.openXml,
+                        body: Locale.openError,
+                        pre: errorToString(e)
+                    });
                 }
                 break;
             }

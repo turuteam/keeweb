@@ -19,10 +19,10 @@ interface Baron {
     dispose(): void;
 }
 
-const module = require('baron') as {
+const mod = require('baron') as {
     default: (params: BaronParams) => Baron;
 };
 
-const baron = module.default;
+const baron = mod.default;
 
 export { baron };

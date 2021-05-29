@@ -21,6 +21,9 @@ global.navigator = jsdom.navigator;
 global.screen = jsdom.screen;
 global.location = jsdom.location;
 global.document = jsdom.document;
+global.requestAnimationFrame = setTimeout;
+global.HTMLElement = jsdom.HTMLElement;
+global.customElements = jsdom.customElements;
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 global.window = jsdom.window;
@@ -52,9 +55,23 @@ function requireTextFile(filePath: string): () => { default: string } {
     };
 }
 
+function requireBase64File(filePath: string): () => string {
+    return () => {
+        filePath = path.resolve(__dirname, '..', filePath);
+        return fs.readFileSync(filePath, 'base64');
+    };
+}
+
 const knownModules: Record<string, any> = {
+    'demo.kdbx': requireBase64File('app/resources/demo.kdbx'),
     'public-key.pem': requireTextFile('app/resources/public-key.pem'),
-    'public-key-new.pem': requireTextFile('app/resources/public-key-new.pem')
+    'public-key-new.pem': requireTextFile('app/resources/public-key-new.pem'),
+    '!!raw-loader!../../styles/base/_theme-vars.scss': requireTextFile(
+        'app/styles/base/_theme-vars.scss'
+    ),
+    '!!raw-loader!../../styles/themes/_theme-defaults.scss': requireTextFile(
+        'app/styles/themes/_theme-defaults.scss'
+    )
 };
 
 const originalRequire = Module.prototype.require;

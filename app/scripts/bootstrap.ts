@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     bootstrap().catch(noop);
 });
 
-async function bootstrap() {
+export async function bootstrap(): Promise<void> {
     StartProfiler.milestone('document ready');
 
     const logger = new Logger('bootstrap');

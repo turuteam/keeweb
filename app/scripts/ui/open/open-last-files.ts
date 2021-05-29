@@ -4,9 +4,11 @@ import { FileManager } from 'models/file-manager';
 import { Storage } from 'storage';
 import { AppSettings } from 'models/app-settings';
 import { Workspace } from 'models/workspace';
+import { Alerts } from 'comp/ui/alerts';
+import { Locale } from 'util/locale';
 
 export const OpenLastFiles: FunctionComponent = () => {
-    const lastOpenFiles = FileManager.fileInfos.map((fi) => {
+    const lastOpenFiles = FileManager.getFileInfosToOpen().map((fi) => {
         const storage = Storage.get(fi.storage ?? '');
         const icon = storage?.icon ?? 'file-alt';
         const path = fi.storage === 'file' || fi.storage === 'webdav' ? fi.path : undefined;
@@ -18,10 +20,39 @@ export const OpenLastFiles: FunctionComponent = () => {
         };
     });
 
-    const lastFileSelected = (id: string) => {
+    const fileSelected = (id: string) => {
+        if (Workspace.openState.busy) {
+            return;
+        }
         const fileInfo = FileManager.getFileInfoById(id);
         if (fileInfo) {
             Workspace.openState.selectFileInfo(fileInfo);
+        }
+    };
+
+    const removeFileClicked = (id: string) => {
+        if (Workspace.openState.busy) {
+            return;
+        }
+        const fileInfo = FileManager.getFileInfoById(id);
+        if (fileInfo) {
+            if (!fileInfo.storage || fileInfo.modified) {
+                Alerts.yesno({
+                    header: Locale.openRemoveLastQuestion,
+                    body: fileInfo.modified
+                        ? Locale.openRemoveLastQuestionModBody
+                        : Locale.openRemoveLastQuestionBody,
+                    buttons: [
+                        { result: 'yes', title: Locale.alertYes },
+                        { result: '', title: Locale.alertNo }
+                    ],
+                    success: () => {
+                        FileManager.removeFileInfo(id);
+                    }
+                });
+            } else {
+                FileManager.removeFileInfo(id);
+            }
         }
     };
 
@@ -29,6 +60,7 @@ export const OpenLastFiles: FunctionComponent = () => {
         lastOpenFiles,
         canRemoveLatest: AppSettings.canRemoveLatest,
 
-        lastFileSelected
+        fileSelected,
+        removeFileClicked
     });
 };

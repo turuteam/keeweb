@@ -1,4 +1,5 @@
 import { FunctionComponent } from 'preact';
+import { withoutPropagation } from 'util/ui/events';
 
 interface LastOpenFile {
     id: string;
@@ -11,8 +12,9 @@ export const OpenLastFilesView: FunctionComponent<{
     lastOpenFiles: LastOpenFile[];
     canRemoveLatest: boolean;
 
-    lastFileSelected: (id: string) => void;
-}> = ({ lastOpenFiles, canRemoveLatest, lastFileSelected }) => {
+    fileSelected: (id: string) => void;
+    removeFileClicked: (id: string) => void;
+}> = ({ lastOpenFiles, canRemoveLatest, fileSelected, removeFileClicked }) => {
     let tabIndex = 400;
 
     return (
@@ -22,12 +24,17 @@ export const OpenLastFilesView: FunctionComponent<{
                     key={file.id}
                     class="open__last-item"
                     tabIndex={++tabIndex}
-                    onClick={() => lastFileSelected(file.id)}
+                    onClick={() => fileSelected(file.id)}
                 >
                     {file.path ? <kw-tip text={file.path} /> : null}
                     {file.icon ? <i class={`fa fa-${file.icon} open__last-item-icon`} /> : null}
                     <span class="open__last-item-text">{file.name}</span>
-                    {canRemoveLatest ? <i class="fa fa-times open__last-item-icon-del" /> : null}
+                    {canRemoveLatest ? (
+                        <i
+                            class="fa fa-times open__last-item-icon-del"
+                            onClick={withoutPropagation(removeFileClicked, file.id)}
+                        />
+                    ) : null}
                 </div>
             ))}
         </div>

@@ -456,25 +456,6 @@ class AppModel {
         }
     }
 
-    importFileWithXml(params, callback) {
-        const logger = new Logger('import', params.name);
-        logger.info('File import request with supplied xml');
-        const file = new File({
-            id: IdGenerator.uuid(),
-            name: params.name,
-            storage: params.storage,
-            path: params.path
-        });
-        file.importWithXml(params.fileXml, (err) => {
-            logger.info('Import xml complete ' + (err ? 'with error' : ''), err);
-            if (err) {
-                return callback(err);
-            }
-            this.addFile(file);
-            this.fileOpened(file);
-        });
-    }
-
     addToLastOpenFiles(file, rev) {
         this.applogger.info('Add last open file', file.id, file.name, file.storage, file.path, rev);
         const dt = new Date();

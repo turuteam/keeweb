@@ -24,29 +24,7 @@ export const OpenDropzone: FunctionComponent = () => {
         Workspace.openState.dragInProgress = false;
 
         const files = [...e.dataTransfer.files];
-
-        const dataFile = files.find((file) => /\.kdbx$/i.test(file.name));
-        const keyFile = files.find((file) => /\.keyx?$/i.test(file.name));
-
-        if (dataFile) {
-            Workspace.openState.readFileAndKeyFile(dataFile, keyFile);
-            return;
-        }
-
-        if (AppSettings.canImportXml) {
-            const xmlFile = files.find((file) => /\.xml$/i.test(file.name));
-            if (xmlFile) {
-                // TODO: import XML
-                return;
-            }
-        }
-
-        if (AppSettings.canImportCsv) {
-            const csvFile = files.find((file) => /\.csv$/i.test(file.name));
-            if (csvFile) {
-                // Events.emit('import-csv-requested', csvFile); // TODO: import CSV
-            }
-        }
+        Workspace.openState.readDroppedFiles(files);
     };
 
     return h(OpenDropzoneView, {

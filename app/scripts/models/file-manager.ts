@@ -63,6 +63,10 @@ class FileManager extends Model<FileManagerEvents> {
         });
     }
 
+    getFileInfosToOpen(): FileInfo[] {
+        return this.fileInfos.filter((fi) => !this.getFileById(fi.id));
+    }
+
     getNewFileName(): string {
         for (let i = 0; ; i++) {
             const name = `${Locale.openNewFile}${i || ''}`;
@@ -112,6 +116,19 @@ class FileManager extends Model<FileManagerEvents> {
                 return fi;
             }
         }
+    }
+
+    removeFileInfo(id: string): void {
+        const fileInfo = this.getFileInfoById(id);
+        if (!fileInfo) {
+            throw new Error('FileInfo not found');
+        }
+        const file = this.getFileById(id);
+        if (file) {
+            throw new Error('Cannot remove FileInfo while the file is open');
+        }
+        this.fileInfos = this.fileInfos.filter((fi) => fi.id !== id);
+        this.emit('file-info-removed', id);
     }
 
     private fileClosed(file: File) {

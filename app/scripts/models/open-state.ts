@@ -9,6 +9,7 @@ import { Locale } from 'util/locale';
 import { FileManager } from 'models/file-manager';
 import { DropboxChooser } from 'storage/dropbox-chooser';
 import { Logger } from 'util/logger';
+import { Workspace } from 'models/workspace';
 
 const logger = new Logger('open');
 
@@ -73,7 +74,7 @@ export class OpenState extends Model {
 
     async readFile(file: File): Promise<void> {
         const fileData = await FileOpener.readBinary(file);
-        const format = OpenState.getOpenFileFormat(fileData);
+        const format = OpenState.getOpenFileFormat(file, fileData);
         switch (format) {
             case 'kdbx':
                 this.batchSet(() => {
@@ -84,13 +85,18 @@ export class OpenState extends Model {
                     this.storage = file.path ? 'file' : undefined;
                 });
                 break;
-            case 'xml':
-                this.batchSet(() => {
-                    this.resetInternal();
-                    // const fileXml = kdbxweb.ByteUtils.bytesToString(fileData);
-                    // const name = file.name.replace(/\.\w+$/i, '');
-                    // TODO: open xml
-                });
+            case 'xml': {
+                const name = file.name.replace(/\.\w+$/i, '');
+                const xml = kdbxweb.ByteUtils.bytesToString(fileData);
+                try {
+                    await Workspace.importFileFromXml(name, xml);
+                } catch (e) {
+                    logger.error('Error importing XML', e);
+                }
+                break;
+            }
+            case 'csv':
+                // TODO: load CSV
                 break;
             case 'kdb':
                 Alerts.error({
@@ -155,6 +161,22 @@ export class OpenState extends Model {
         });
     }
 
+    readDroppedFiles(files: File[]): void {
+        if (!files.length) {
+            return;
+        }
+
+        const dataFile = files.find((file) => /\.kdbx$/i.test(file.name));
+        const keyFile = files.find((file) => /\.keyx?$/i.test(file.name));
+
+        if (dataFile) {
+            this.readFileAndKeyFile(dataFile, keyFile);
+            return;
+        }
+
+        this.readFile(files[0]).catch((e) => logger.error('Error reading dropped files', e));
+    }
+
     readFileAndKeyFile(file: File, keyFile?: File): void {
         this.readFile(file)
             .then(() => {
@@ -172,7 +194,7 @@ export class OpenState extends Model {
             return;
         }
         let found = false;
-        for (const fileInfo of FileManager.fileInfos) {
+        for (const fileInfo of FileManager.getFileInfosToOpen()) {
             if (found) {
                 this.selectFileInfo(fileInfo);
                 return;
@@ -188,7 +210,7 @@ export class OpenState extends Model {
             return;
         }
         let prevFileInfo: FileInfo | undefined;
-        for (const fileInfo of FileManager.fileInfos) {
+        for (const fileInfo of FileManager.getFileInfosToOpen()) {
             if (fileInfo.id === this.id) {
                 if (prevFileInfo) {
                     this.selectFileInfo(prevFileInfo);
@@ -226,7 +248,10 @@ export class OpenState extends Model {
         this.keyFilePath = undefined;
     }
 
-    private static getOpenFileFormat(fileData: ArrayBuffer): 'kdbx' | 'kdb' | 'xml' | undefined {
+    private static getOpenFileFormat(
+        file: File,
+        fileData: ArrayBuffer
+    ): 'kdbx' | 'kdb' | 'xml' | 'csv' | undefined {
         if (fileData.byteLength < 8) {
             return undefined;
         }
@@ -247,6 +272,8 @@ export class OpenState extends Model {
                 }
             } catch (e) {}
             return undefined;
+        } else if (AppSettings.canImportCsv && /\.csv$/i.test(file.name)) {
+            return 'csv';
         } else {
             return undefined;
         }

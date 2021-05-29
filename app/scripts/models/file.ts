@@ -159,6 +159,7 @@ class File extends Model<FileEvents> {
     }
 
     static async importWithXml(id: string, name: string, xml: string): Promise<File> {
+        logger.info(`Importing file from XML: ${name}`);
         try {
             const ts = logger.ts();
             const password = kdbxweb.ProtectedValue.fromString('');

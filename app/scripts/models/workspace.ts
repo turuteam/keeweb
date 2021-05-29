@@ -25,16 +25,9 @@ class Workspace extends Model {
         super();
 
         FileManager.onChange('files', () => this.filesChanged());
+        FileManager.on('file-added', (id) => this.fileAdded(id));
 
         this.setKeyHandlers();
-    }
-
-    addFile(file: File): void {
-        this.refresh();
-        FileManager.addFile(file);
-
-        file.on('reload', () => this.reloadFile(file));
-        file.on('ejected', () => this.closeFile(file));
     }
 
     closeAllFiles(): void {
@@ -66,6 +59,13 @@ class Workspace extends Model {
 
         const newFile = await File.create(IdGenerator.uuid(), name);
         FileManager.addFile(newFile);
+
+        this.showList();
+    }
+
+    async importFileFromXml(name: string, xml: string): Promise<void> {
+        const file = await File.importWithXml(IdGenerator.uuid(), name, xml);
+        FileManager.addFile(file);
 
         this.showList();
     }
@@ -140,6 +140,18 @@ class Workspace extends Model {
 
     showSettings(): void {
         this.mode = 'settings';
+    }
+
+    private fileAdded(id: string) {
+        const file = FileManager.getFileById(id);
+        if (!file) {
+            return;
+        }
+
+        this.refresh();
+
+        file.on('reload', () => this.reloadFile(file));
+        file.on('ejected', () => this.closeFile(file));
     }
 
     private filesChanged() {

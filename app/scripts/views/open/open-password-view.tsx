@@ -5,7 +5,6 @@ import { SecureInput, SecureInputEvent } from 'views/components/secure-input';
 import { useLayoutEffect, useRef } from 'preact/hooks';
 import { useEvent } from 'util/ui/hooks';
 import { classes } from 'util/ui/classes';
-import { FocusDetector } from 'comp/browser/focus-detector';
 import { Features } from 'util/features';
 
 export const OpenPasswordView: FunctionComponent<{

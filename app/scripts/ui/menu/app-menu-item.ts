@@ -14,17 +14,6 @@ import { useModelWatcher } from 'util/ui/hooks';
 export const AppMenuItem: FunctionComponent<{ item: MenuItem }> = ({ item }) => {
     useModelWatcher(item);
 
-    useEffect(() => {
-        if (item.shortcut) {
-            const offs: Callback[] = [];
-            offs.push(KeyHandler.onKey(item.shortcut, selectItem, KeyHandler.SHORTCUT_OPT));
-            if (item.shortcut !== Keys.DOM_VK_C) {
-                offs.push(KeyHandler.onKey(item.shortcut, selectItem, KeyHandler.SHORTCUT_ACTION));
-            }
-            return () => offs.forEach((off) => off());
-        }
-    }, []);
-
     const selectItem = () => {
         if (item.active) {
             return;
@@ -37,6 +26,17 @@ export const AppMenuItem: FunctionComponent<{ item: MenuItem }> = ({ item }) => 
             Workspace.menu.select({ item });
         }
     };
+
+    useEffect(() => {
+        if (item.shortcut) {
+            const offs: Callback[] = [];
+            offs.push(KeyHandler.onKey(item.shortcut, selectItem, KeyHandler.SHORTCUT_OPT));
+            if (item.shortcut !== Keys.DOM_VK_C) {
+                offs.push(KeyHandler.onKey(item.shortcut, selectItem, KeyHandler.SHORTCUT_ACTION));
+            }
+            return () => offs.forEach((off) => off());
+        }
+    }, [item.shortcut]);
 
     const itemClicked = () => {
         selectItem();

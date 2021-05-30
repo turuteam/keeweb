@@ -7,7 +7,7 @@ import { Logger } from 'util/logger';
 import { Locale } from 'util/locale';
 import { StringFormat } from 'util/formatting/string-format';
 import { StorageFileOptions } from 'storage/types';
-import { FileBackupConfig } from './file-info';
+import { FileBackupConfig, FileChalRespConfig } from './file-info';
 import { IdGenerator } from 'util/generators/id-generator';
 import { Filter } from 'models/filter';
 // import { ChalRespCalculator } from 'comp/app/chal-resp-calculator';
@@ -67,6 +67,7 @@ class File extends Model<FileEvents> {
     syncError?: string;
     syncDate?: Date;
     backup?: FileBackupConfig;
+    chalResp?: FileChalRespConfig;
     formatVersion?: number;
     defaultUser?: string;
     recycleBinEnabled?: boolean;

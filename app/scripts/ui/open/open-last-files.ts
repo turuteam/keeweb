@@ -8,7 +8,7 @@ import { Alerts } from 'comp/ui/alerts';
 import { Locale } from 'util/locale';
 
 export const OpenLastFiles: FunctionComponent = () => {
-    const lastOpenFiles = FileManager.getFileInfosToOpen().map((fi) => {
+    const lastOpenFiles = FileManager.fileInfos.map((fi) => {
         const storage = Storage.get(fi.storage ?? '');
         const icon = storage?.icon ?? 'file-alt';
         const path = fi.storage === 'file' || fi.storage === 'webdav' ? fi.path : undefined;

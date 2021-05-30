@@ -249,16 +249,16 @@ const KdbxwebInit = {
     workerPostRun: function (): void {
         /* eslint-disable */
         const postRunMsg: MessageFromWorkerWorkerPostRun = { op: 'postRun' };
-        self.postMessage(postRunMsg, location.origin);
+        (self as unknown as MessagePort).postMessage(postRunMsg);
         self.onmessage = (e: MessageEvent) => {
             try {
                 // @ts-ignore
                 const hash = Module.calcHash(Module, e.data) as Uint8Array;
                 const hashMsg: MessageFromWorkerWorkerHash = { op: 'hash', hash };
-                self.postMessage(hashMsg, location.origin);
+                (self as unknown as MessagePort).postMessage(hashMsg);
             } catch (e) {
                 const errMsg: MessageFromWorkerWorkerError = { op: 'error', error: e.toString() };
-                self.postMessage(errMsg, location.origin);
+                (self as unknown as MessagePort).postMessage(errMsg);
             }
         };
         /* eslint-enable */

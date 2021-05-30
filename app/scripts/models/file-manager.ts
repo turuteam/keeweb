@@ -4,6 +4,8 @@ import { SettingsStore } from 'comp/settings/settings-store';
 import { Model } from 'util/model';
 import { Storage } from 'storage';
 import { Locale } from 'util/locale';
+import { AppSettings } from 'models/app-settings';
+import { noop } from 'util/fn';
 
 interface FileManagerEvents {
     'file-info-added': (id: string) => void;
@@ -18,6 +20,9 @@ class FileManager extends Model<FileManagerEvents> {
 
     async init() {
         await this.loadFileInfos();
+        (this as FileManager).onChange('fileInfos', () => {
+            this.saveFileInfos().catch(noop);
+        });
     }
 
     reset(): void {
@@ -61,10 +66,6 @@ class FileManager extends Model<FileManagerEvents> {
         return this.fileInfos.find((fi) => {
             return fi.name === name && fi.storage === storage && fi.path === path;
         });
-    }
-
-    getFileInfosToOpen(): FileInfo[] {
-        return this.fileInfos.filter((fi) => !this.getFileById(fi.id));
     }
 
     getNewFileName(): string {
@@ -129,6 +130,49 @@ class FileManager extends Model<FileManagerEvents> {
         }
         this.fileInfos = this.fileInfos.filter((fi) => fi.id !== id);
         this.emit('file-info-removed', id);
+    }
+
+    addLastOpenFileInfo(file: File, rev?: string): void {
+        const dt = new Date();
+        const fileInfo = new FileInfo({
+            id: file.id,
+            name: file.name,
+            storage: file.storage,
+            path: file.path,
+            // opts: this.getStoreOpts(file), // TODO: opts
+            modified: file.modified,
+            editState: file.getLocalEditState(),
+            rev,
+            syncDate: file.syncDate || dt,
+            openDate: dt,
+            backup: file.backup,
+            chalResp: file.chalResp
+        });
+        switch (AppSettings.rememberKeyFiles) {
+            case 'data':
+                fileInfo.keyFileName = file.keyFileName;
+                fileInfo.keyFileHash = file.getKeyFileHash();
+                break;
+            case 'path':
+                fileInfo.keyFileName = file.keyFileName;
+                fileInfo.keyFilePath = file.keyFilePath;
+                break;
+        }
+        if (AppSettings.deviceOwnerAuth === 'file' && file.encryptedPassword) {
+            // const maxDate = new Date(file.encryptedPasswordDate); // TODO: encrypted passwords
+            // maxDate.setMinutes(maxDate.getMinutes() + this.settings.deviceOwnerAuthTimeoutMinutes);
+            // if (maxDate > new Date()) {
+            //     fileInfo.encryptedPassword = file.encryptedPassword;
+            //     fileInfo.encryptedPasswordDate = file.encryptedPasswordDate;
+            // }
+        }
+
+        const existed = this.getFileInfoById(file.id);
+        this.fileInfos = [fileInfo].concat(this.fileInfos.filter((fi) => fi.id !== file.id));
+
+        if (!existed) {
+            this.emit('file-info-added', file.id);
+        }
     }
 
     private fileClosed(file: File) {

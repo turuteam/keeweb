@@ -24,7 +24,7 @@ class OpenController {
 
         Workspace.openState.beginOpen();
 
-        FileController.open()
+        FileController.open(Workspace.openState)
             .then(() => {
                 Workspace.showList();
             })

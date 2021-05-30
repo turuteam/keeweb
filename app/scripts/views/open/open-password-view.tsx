@@ -22,6 +22,7 @@ export const OpenPasswordView: FunctionComponent<{
     passwordKeyDown?: (e: KeyboardEvent) => void;
     passwordKeyUp?: (e: KeyboardEvent) => void;
     passwordKeyPress?: (e: KeyboardEvent) => void;
+    submitClicked?: () => void;
 }> = ({
     password,
     passwordReadOnly,
@@ -36,7 +37,8 @@ export const OpenPasswordView: FunctionComponent<{
     passwordClicked,
     passwordKeyDown,
     passwordKeyUp,
-    passwordKeyPress
+    passwordKeyPress,
+    submitClicked
 }) => {
     let tabIndex = 200;
 
@@ -101,7 +103,7 @@ export const OpenPasswordView: FunctionComponent<{
                     onKeyDown={passwordKeyDown}
                     onKeyPress={passwordKeyPress}
                 />
-                <div class="open__pass-enter-btn" tabIndex={++tabIndex}>
+                <div class="open__pass-enter-btn" tabIndex={++tabIndex} onClick={submitClicked}>
                     {buttonFingerprint ? (
                         <i class="fa fa-fingerprint open__pass-enter-btn-icon-touch-id" />
                     ) : (

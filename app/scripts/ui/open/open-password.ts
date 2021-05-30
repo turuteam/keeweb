@@ -7,6 +7,7 @@ import { Locale } from 'util/locale';
 import { AppSettings } from 'models/app-settings';
 import { Keys } from 'const/keys';
 import { OpenController } from 'comp/app/open-controller';
+import { Alerts } from 'comp/ui/alerts';
 
 export const OpenPassword: FunctionComponent = () => {
     useModelWatcher(Workspace.openState);
@@ -56,11 +57,15 @@ export const OpenPassword: FunctionComponent = () => {
         passwordPlaceholder = Locale.openClickToOpen;
     }
 
+    const submitClicked = () => {
+        OpenController.open();
+    };
+
     return h(OpenPasswordView, {
         password: Workspace.openState.password,
         passwordReadOnly: !Workspace.openState.name,
         passwordPlaceholder,
-        autoFocusPassword: Workspace.openState.autoFocusPassword,
+        autoFocusPassword: !Alerts.alertDisplayed && Workspace.openState.autoFocusPassword,
         buttonFingerprint: false,
         capsLockPressed: Workspace.openState.capsLockPressed,
         openingFile: Workspace.openState.openingFile,
@@ -70,6 +75,7 @@ export const OpenPassword: FunctionComponent = () => {
         passwordChanged,
         passwordKeyUp,
         passwordKeyDown,
-        passwordKeyPress
+        passwordKeyPress,
+        submitClicked
     });
 };

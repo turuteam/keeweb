@@ -96,14 +96,14 @@ export class OpenState extends Model {
             return;
         }
         if (!this.id) {
-            const [first] = FileManager.getFileInfosToOpen();
+            const [first] = FileManager.fileInfos;
             if (first) {
                 this.selectFileInfo(first);
             }
             return;
         }
         let found = false;
-        for (const fileInfo of FileManager.getFileInfosToOpen()) {
+        for (const fileInfo of FileManager.fileInfos) {
             if (found) {
                 this.selectFileInfo(fileInfo);
                 return;
@@ -119,14 +119,14 @@ export class OpenState extends Model {
             return;
         }
         if (!this.id) {
-            const fileInfos = FileManager.getFileInfosToOpen();
+            const fileInfos = FileManager.fileInfos;
             if (fileInfos.length) {
                 this.selectFileInfo(fileInfos[fileInfos.length - 1]);
             }
             return;
         }
         let prevFileInfo: FileInfo | undefined;
-        for (const fileInfo of FileManager.getFileInfosToOpen()) {
+        for (const fileInfo of FileManager.fileInfos) {
             if (fileInfo.id === this.id) {
                 if (prevFileInfo) {
                     this.selectFileInfo(prevFileInfo);

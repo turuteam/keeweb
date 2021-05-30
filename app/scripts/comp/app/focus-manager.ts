@@ -16,7 +16,7 @@ class FocusManager {
 
     popModal(): string | undefined {
         const lastModal = this._modalStack.pop();
-        logger.debug('Pop modal', lastModal);
+        logger.debug('Pop modal', lastModal, '=>', this._modalStack[this._modalStack.length - 1]);
         return lastModal;
     }
 }

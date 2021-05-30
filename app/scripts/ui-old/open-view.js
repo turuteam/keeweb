@@ -10,7 +10,6 @@ import { Features } from 'util/features';
 import { UrlFormat } from 'util/formatting/url-format';
 import { Locale } from 'util/locale';
 import { Logger } from 'util/logger';
-import { InputFx } from 'util/ui/input-fx';
 import { OpenConfigView } from 'views/open-config-view';
 import { StorageFileListView } from 'views/storage-file-list-view';
 import { OpenChalRespView } from 'views/open-chal-resp-view';
@@ -41,22 +40,7 @@ class OpenView extends View {
             .classList.toggle('open__pass-enter-btn--touch-id', canUseEncryptedPassword);
     }
 
-    inputInput() {
-        this.displayOpenDeviceOwnerAuth();
-    }
-
     openDb() {
-        if (this.params.id && this.model.files.get(this.params.id)) {
-            this.emit('close');
-            return;
-        }
-        if (this.busy || !this.params.name) {
-            return;
-        }
-        this.$el.toggleClass('open--opening', true);
-        this.inputEl.attr('disabled', 'disabled');
-        this.busy = true;
-        this.params.password = this.passwordInput.value;
         if (this.encryptedPassword && !this.params.password.length) {
             logger.info('Encrypting password using hardware decryption');
             const touchIdPrompt = Locale.bioOpenAuthPrompt.replace('{}', this.params.name);
@@ -85,42 +69,6 @@ class OpenView extends View {
                 });
         } else {
             this.params.encryptedPassword = null;
-            this.afterPaint(() => {
-                this.model.openFile(this.params, (err) => this.openDbComplete(err));
-            });
-        }
-    }
-
-    openDbComplete(err) {
-        this.busy = false;
-        this.$el.toggleClass('open--opening', false);
-        const showInputError = err && !err.userCanceled;
-        this.inputEl.removeAttr('disabled').toggleClass('input--error', !!showInputError);
-        if (err) {
-            logger.error('Error opening file', err);
-            this.focusInput(true);
-            this.inputEl[0].selectionStart = 0;
-            this.inputEl[0].selectionEnd = this.inputEl.val().length;
-            if (err.code === 'InvalidKey') {
-                InputFx.shake(this.inputEl);
-            } else if (err.userCanceled) {
-                // nothing to do
-            } else {
-                if (err.notFound) {
-                    err = Locale.openErrorFileNotFound;
-                }
-                let alertBody = Locale.openErrorDescription;
-                if (err.maybeTouchIdChanged) {
-                    alertBody += '\n' + Locale.openErrorDescriptionMaybeTouchIdChanged;
-                }
-                Alerts.error({
-                    header: Locale.openError,
-                    body: alertBody,
-                    pre: this.errorToString(err)
-                });
-            }
-        } else {
-            this.emit('close');
         }
     }
 

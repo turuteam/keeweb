@@ -2,6 +2,7 @@ import { h, FunctionComponent } from 'preact';
 import { OpenDropzoneView } from 'views/open/open-dropzone-view';
 import { AppSettings } from 'models/app-settings';
 import { Workspace } from 'models/workspace';
+import { OpenController } from 'comp/app/open-controller';
 
 export const OpenDropzone: FunctionComponent = () => {
     const onDragOver = (e: DragEvent) => {
@@ -24,7 +25,7 @@ export const OpenDropzone: FunctionComponent = () => {
         Workspace.openState.dragInProgress = false;
 
         const files = [...e.dataTransfer.files];
-        Workspace.openState.readDroppedFiles(files);
+        OpenController.readDroppedFiles(files);
     };
 
     return h(OpenDropzoneView, {

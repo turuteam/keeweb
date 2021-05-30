@@ -16,6 +16,7 @@ export const OpenScreenView: FunctionComponent<{
     keyFileSelected: boolean;
     visualFocus: boolean;
     dragInProgress: boolean;
+    openingFile: boolean;
 
     onDragEnter: (e: DragEvent) => void;
 }> = ({
@@ -23,6 +24,7 @@ export const OpenScreenView: FunctionComponent<{
     keyFileSelected,
     visualFocus,
     dragInProgress,
+    openingFile,
 
     onDragEnter
 }) => {
@@ -47,7 +49,8 @@ export const OpenScreenView: FunctionComponent<{
                 'open--file': fileSelected,
                 'open--key-file': keyFileSelected,
                 'open--show-focus': visualFocus,
-                'open--drag': dragInProgress
+                'open--drag': dragInProgress,
+                'open--opening': openingFile
             })}
         >
             <OpenUnlockMessage />

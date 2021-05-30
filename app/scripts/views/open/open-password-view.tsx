@@ -14,6 +14,8 @@ export const OpenPasswordView: FunctionComponent<{
     autoFocusPassword: boolean;
     buttonFingerprint: boolean;
     capsLockPressed: boolean;
+    openingFile: boolean;
+    showInputError: boolean;
 
     passwordClicked?: () => void;
     passwordChanged?: (password: kdbxweb.ProtectedValue) => void;
@@ -27,6 +29,8 @@ export const OpenPasswordView: FunctionComponent<{
     passwordChanged,
     buttonFingerprint,
     capsLockPressed,
+    openingFile,
+    showInputError,
 
     autoFocusPassword,
     passwordClicked,
@@ -37,6 +41,7 @@ export const OpenPasswordView: FunctionComponent<{
     let tabIndex = 200;
 
     const passwordInput = useRef<HTMLInputElement>();
+    const isErrorPresented = useRef(false);
 
     useEvent('main-window-focus', () => {
         passwordInput.current?.focus();
@@ -45,6 +50,14 @@ export const OpenPasswordView: FunctionComponent<{
     useLayoutEffect(() => {
         if (autoFocusPassword && !Features.isMobile) {
             passwordInput.current?.focus();
+            if (showInputError) {
+                if (!isErrorPresented.current) {
+                    isErrorPresented.current = true;
+                    passwordInput.current?.select();
+                }
+            } else {
+                isErrorPresented.current = showInputError;
+            }
         }
     });
 
@@ -79,6 +92,8 @@ export const OpenPasswordView: FunctionComponent<{
                     placeholder={passwordPlaceholder}
                     readonly={passwordReadOnly}
                     tabIndex={++tabIndex}
+                    disabled={openingFile}
+                    error={showInputError}
                     inputRef={passwordInput}
                     onInput={passwordInputChanged}
                     onClick={passwordReadOnly ? passwordClicked : undefined}

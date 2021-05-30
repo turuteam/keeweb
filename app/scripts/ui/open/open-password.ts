@@ -6,6 +6,7 @@ import { useEvent, useModelWatcher } from 'util/ui/hooks';
 import { Locale } from 'util/locale';
 import { AppSettings } from 'models/app-settings';
 import { Keys } from 'const/keys';
+import { OpenController } from 'comp/app/open-controller';
 
 export const OpenPassword: FunctionComponent = () => {
     useModelWatcher(Workspace.openState);
@@ -15,7 +16,7 @@ export const OpenPassword: FunctionComponent = () => {
     });
 
     const passwordClicked = () => {
-        Workspace.openState.chooseFile();
+        OpenController.chooseFile();
     };
 
     const passwordChanged = (password: kdbxweb.ProtectedValue) => {
@@ -32,7 +33,7 @@ export const OpenPassword: FunctionComponent = () => {
     const passwordKeyDown = (e: KeyboardEvent) => {
         const code = e.keyCode || e.which;
         if (code === Keys.DOM_VK_RETURN) {
-            Workspace.openState.open();
+            OpenController.open();
         } else if (code === Keys.DOM_VK_CAPS_LOCK) {
             Workspace.openState.capsLockPressed = false;
         }
@@ -62,6 +63,8 @@ export const OpenPassword: FunctionComponent = () => {
         autoFocusPassword: Workspace.openState.autoFocusPassword,
         buttonFingerprint: false,
         capsLockPressed: Workspace.openState.capsLockPressed,
+        openingFile: Workspace.openState.openingFile,
+        showInputError: Workspace.openState.openError && Workspace.openState.invalidKey,
 
         passwordClicked,
         passwordChanged,

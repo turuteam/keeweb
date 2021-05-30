@@ -5,12 +5,13 @@ import { useKey, useModal, useModelField } from 'util/ui/hooks';
 import { Keys } from 'const/keys';
 import { KeyHandler } from 'comp/browser/key-handler';
 import { AppSettings } from 'models/app-settings';
+import { OpenController } from 'comp/app/open-controller';
 
 export const OpenScreen: FunctionComponent = () => {
     useModal('open');
 
     const openFile = () => {
-        Workspace.openState.chooseFile();
+        OpenController.chooseFile();
     };
 
     const setVisualFocus = () => {
@@ -23,6 +24,7 @@ export const OpenScreen: FunctionComponent = () => {
     const keyFileName = useModelField(Workspace.openState, 'keyFileName');
     const visualFocus = useModelField(Workspace.openState, 'visualFocus');
     const dragInProgress = useModelField(Workspace.openState, 'dragInProgress');
+    const openingFile = useModelField(Workspace.openState, 'openingFile');
 
     useKey(Keys.DOM_VK_O, openFile, KeyHandler.SHORTCUT_ACTION, 'open');
     useKey(Keys.DOM_VK_DOWN, () => Workspace.openState.selectNextFile(), undefined, 'open');
@@ -52,6 +54,7 @@ export const OpenScreen: FunctionComponent = () => {
         keyFileSelected: !!keyFileName,
         visualFocus,
         dragInProgress,
+        openingFile,
 
         onDragEnter
     });

@@ -6,6 +6,7 @@ import { AppSettings } from 'models/app-settings';
 import { UsbListener } from 'comp/devices/usb-listener';
 import { useModelField } from 'util/ui/hooks';
 import { Workspace } from 'models/workspace';
+import { OpenController } from 'comp/app/open-controller';
 
 export const OpenSettings: FunctionComponent = () => {
     const name = useModelField(Workspace.openState, 'name');
@@ -18,12 +19,12 @@ export const OpenSettings: FunctionComponent = () => {
         if (keyFileName) {
             Workspace.openState.clearKeyFile();
         } else {
-            Workspace.openState.chooseKeyFile();
+            OpenController.chooseKeyFile();
         }
     };
 
     const selectKeyFileFromDropboxClicked = () => {
-        Workspace.openState.selectKeyFileFromDropbox();
+        OpenController.selectKeyFileFromDropbox();
     };
 
     return h(OpenSettingsView, {

@@ -7,6 +7,7 @@ import { FileManager } from 'models/file-manager';
 import { Workspace } from 'models/workspace';
 import { Logger } from 'util/logger';
 import { useModelField } from 'util/ui/hooks';
+import { OpenController } from 'comp/app/open-controller';
 
 const logger = new Logger('open');
 
@@ -41,7 +42,7 @@ export const OpenButtons: FunctionComponent = () => {
         !FileManager.getFileByName('yubikey');
 
     const openClicked = () => {
-        Workspace.openState.chooseFile();
+        OpenController.chooseFile();
     };
 
     const newClicked = () => {

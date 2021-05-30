@@ -1,11 +1,11 @@
 import { h, FunctionComponent } from 'preact';
 import { OpenScreenView } from 'views/open/open-screen-view';
-import { Workspace } from 'models/workspace';
 import { useKey, useModal, useModelField } from 'util/ui/hooks';
 import { Keys } from 'const/keys';
 import { KeyHandler } from 'comp/browser/key-handler';
 import { AppSettings } from 'models/app-settings';
 import { OpenController } from 'comp/app/open-controller';
+import { OpenState } from 'models/open-state';
 
 export const OpenScreen: FunctionComponent = () => {
     useModal('open');
@@ -15,26 +15,26 @@ export const OpenScreen: FunctionComponent = () => {
     };
 
     const setVisualFocus = () => {
-        Workspace.openState.visualFocus = true;
+        OpenState.visualFocus = true;
     };
 
     const undoKeyPress = (e: KeyboardEvent) => e.preventDefault();
 
-    const name = useModelField(Workspace.openState, 'name');
-    const keyFileName = useModelField(Workspace.openState, 'keyFileName');
-    const visualFocus = useModelField(Workspace.openState, 'visualFocus');
-    const dragInProgress = useModelField(Workspace.openState, 'dragInProgress');
-    const openingFile = useModelField(Workspace.openState, 'openingFile');
+    const name = useModelField(OpenState, 'name');
+    const keyFileName = useModelField(OpenState, 'keyFileName');
+    const visualFocus = useModelField(OpenState, 'visualFocus');
+    const dragInProgress = useModelField(OpenState, 'dragInProgress');
+    const openingFile = useModelField(OpenState, 'openingFile');
 
     useKey(Keys.DOM_VK_O, openFile, KeyHandler.SHORTCUT_ACTION, 'open');
-    useKey(Keys.DOM_VK_DOWN, () => Workspace.openState.selectNextFile(), undefined, 'open');
-    useKey(Keys.DOM_VK_UP, () => Workspace.openState.selectPreviousFile(), undefined, 'open');
+    useKey(Keys.DOM_VK_DOWN, () => OpenState.selectNextFile(), undefined, 'open');
+    useKey(Keys.DOM_VK_UP, () => OpenState.selectPreviousFile(), undefined, 'open');
     useKey(Keys.DOM_VK_TAB, setVisualFocus, undefined, 'open');
     useKey(Keys.DOM_VK_TAB, setVisualFocus, KeyHandler.SHORTCUT_SHIFT, 'open');
     useKey(Keys.DOM_VK_Z, undoKeyPress, undefined, 'open');
 
     const onDragEnter = (e: DragEvent) => {
-        if (!AppSettings.canOpen || Workspace.openState.busy || !e.dataTransfer) {
+        if (!AppSettings.canOpen || OpenState.busy || !e.dataTransfer) {
             return;
         }
         e.preventDefault();
@@ -46,7 +46,7 @@ export const OpenScreen: FunctionComponent = () => {
             return;
         }
         dt.dropEffect = 'copy';
-        Workspace.openState.dragInProgress = true;
+        OpenState.dragInProgress = true;
     };
 
     return h(OpenScreenView, {

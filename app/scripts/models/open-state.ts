@@ -4,7 +4,7 @@ import { StorageFileOptions } from 'storage/types';
 import { FileChalRespConfig, FileInfo } from 'models/file-info';
 import { FileManager } from 'models/file-manager';
 
-export class OpenState extends Model {
+class OpenState extends Model {
     id?: string;
     name?: string;
     password?: kdbxweb.ProtectedValue;
@@ -29,13 +29,26 @@ export class OpenState extends Model {
     visualFocus = false;
     dragInProgress = false;
 
-    constructor() {
-        super();
-
+    init(): void {
         const fileInfo = FileManager.getFirstFileInfoToOpen();
-        if (fileInfo) {
-            this.selectFileInfo(fileInfo);
-        }
+
+        this.batchSet(() => {
+            this.busy = false;
+            this.openingFile = false;
+            this.openError = false;
+            this.invalidKey = false;
+            this.secondRowVisible = false;
+            this.autoFocusPassword = true;
+            this.capsLockPressed = false;
+            this.visualFocus = false;
+            this.dragInProgress = false;
+
+            if (fileInfo) {
+                this.selectFileInfo(fileInfo);
+            } else {
+                this.reset();
+            }
+        });
     }
 
     selectFileInfo(fileInfo: FileInfo): void {
@@ -188,3 +201,7 @@ export class OpenState extends Model {
         });
     }
 }
+
+const instance = new OpenState();
+
+export { instance as OpenState };

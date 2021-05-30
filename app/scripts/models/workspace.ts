@@ -16,7 +16,6 @@ class Workspace extends Model {
     readonly menu = new Menu();
     mode: WorkspaceMode = 'open';
     filter = new Filter();
-    openState = new OpenState();
     tags: string[] = [];
     activeEntryId?: string;
     unlockMessage?: string;
@@ -134,7 +133,7 @@ class Workspace extends Model {
     }
 
     showOpen(): void {
-        this.openState = new OpenState();
+        OpenState.init();
         this.mode = 'open';
     }
 

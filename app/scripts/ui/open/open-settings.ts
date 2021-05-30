@@ -5,19 +5,19 @@ import { Storage } from 'storage';
 import { AppSettings } from 'models/app-settings';
 import { UsbListener } from 'comp/devices/usb-listener';
 import { useModelField } from 'util/ui/hooks';
-import { Workspace } from 'models/workspace';
 import { OpenController } from 'comp/app/open-controller';
+import { OpenState } from 'models/open-state';
 
 export const OpenSettings: FunctionComponent = () => {
-    const name = useModelField(Workspace.openState, 'name');
-    const keyFileName = useModelField(Workspace.openState, 'keyFileName');
+    const name = useModelField(OpenState, 'name');
+    const keyFileName = useModelField(OpenState, 'keyFileName');
 
     const hasYubiKeys = UsbListener.attachedYubiKeys > 0;
     const canUseChalRespYubiKey = hasYubiKeys && AppSettings.yubiKeyShowChalResp;
 
     const selectKeyFileClicked = () => {
         if (keyFileName) {
-            Workspace.openState.clearKeyFile();
+            OpenState.clearKeyFile();
         } else {
             OpenController.chooseKeyFile();
         }

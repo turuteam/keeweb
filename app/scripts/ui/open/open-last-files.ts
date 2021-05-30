@@ -3,9 +3,9 @@ import { OpenLastFilesView } from 'views/open/open-last-files-view';
 import { FileManager } from 'models/file-manager';
 import { Storage } from 'storage';
 import { AppSettings } from 'models/app-settings';
-import { Workspace } from 'models/workspace';
 import { Alerts } from 'comp/ui/alerts';
 import { Locale } from 'util/locale';
+import { OpenState } from 'models/open-state';
 
 export const OpenLastFiles: FunctionComponent = () => {
     const lastOpenFiles = FileManager.fileInfos.map((fi) => {
@@ -21,17 +21,17 @@ export const OpenLastFiles: FunctionComponent = () => {
     });
 
     const fileSelected = (id: string) => {
-        if (Workspace.openState.busy) {
+        if (OpenState.busy) {
             return;
         }
         const fileInfo = FileManager.getFileInfoById(id);
         if (fileInfo) {
-            Workspace.openState.selectFileInfo(fileInfo);
+            OpenState.selectFileInfo(fileInfo);
         }
     };
 
     const removeFileClicked = async (id: string) => {
-        if (Workspace.openState.busy) {
+        if (OpenState.busy) {
             return;
         }
         const fileInfo = FileManager.getFileInfoById(id);
@@ -48,7 +48,7 @@ export const OpenLastFiles: FunctionComponent = () => {
                 }
             }
             FileManager.removeFileInfo(id);
-            Workspace.openState.reset();
+            OpenState.reset();
         }
     };
 

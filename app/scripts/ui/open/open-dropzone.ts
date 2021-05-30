@@ -1,8 +1,8 @@
 import { h, FunctionComponent } from 'preact';
 import { OpenDropzoneView } from 'views/open/open-dropzone-view';
 import { AppSettings } from 'models/app-settings';
-import { Workspace } from 'models/workspace';
 import { OpenController } from 'comp/app/open-controller';
+import { OpenState } from 'models/open-state';
 
 export const OpenDropzone: FunctionComponent = () => {
     const onDragOver = (e: DragEvent) => {
@@ -11,18 +11,18 @@ export const OpenDropzone: FunctionComponent = () => {
     };
 
     const onDragLeave = () => {
-        if (!AppSettings.canOpen || Workspace.openState.busy) {
+        if (!AppSettings.canOpen || OpenState.busy) {
             return;
         }
-        Workspace.openState.dragInProgress = false;
+        OpenState.dragInProgress = false;
     };
 
     const onDrop = (e: DragEvent) => {
-        if (!AppSettings.canOpen || Workspace.openState.busy || !e.dataTransfer?.files) {
+        if (!AppSettings.canOpen || OpenState.busy || !e.dataTransfer?.files) {
             return;
         }
         e.preventDefault();
-        Workspace.openState.dragInProgress = false;
+        OpenState.dragInProgress = false;
 
         const files = [...e.dataTransfer.files];
         OpenController.readDroppedFiles(files);

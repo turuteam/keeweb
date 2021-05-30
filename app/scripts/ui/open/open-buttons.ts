@@ -8,11 +8,12 @@ import { Workspace } from 'models/workspace';
 import { Logger } from 'util/logger';
 import { useModelField } from 'util/ui/hooks';
 import { OpenController } from 'comp/app/open-controller';
+import { OpenState } from 'models/open-state';
 
 const logger = new Logger('open');
 
 export const OpenButtons: FunctionComponent = () => {
-    const secondRowVisible = useModelField(Workspace.openState, 'secondRowVisible');
+    const secondRowVisible = useModelField(OpenState, 'secondRowVisible');
 
     const storageProviders = [];
 
@@ -50,7 +51,7 @@ export const OpenButtons: FunctionComponent = () => {
     };
 
     const moreClicked = () => {
-        Workspace.openState.secondRowVisible = !secondRowVisible;
+        OpenState.secondRowVisible = !secondRowVisible;
     };
 
     const openDemoClicked = () => {

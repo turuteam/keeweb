@@ -1,19 +1,19 @@
 import * as kdbxweb from 'kdbxweb';
 import { h, FunctionComponent } from 'preact';
 import { OpenPasswordView } from 'views/open/open-password-view';
-import { Workspace } from 'models/workspace';
 import { useEvent, useModelWatcher } from 'util/ui/hooks';
 import { Locale } from 'util/locale';
 import { AppSettings } from 'models/app-settings';
 import { Keys } from 'const/keys';
 import { OpenController } from 'comp/app/open-controller';
 import { Alerts } from 'comp/ui/alerts';
+import { OpenState } from 'models/open-state';
 
 export const OpenPassword: FunctionComponent = () => {
-    useModelWatcher(Workspace.openState);
+    useModelWatcher(OpenState);
 
     useEvent('user-idle', () => {
-        Workspace.openState.password = kdbxweb.ProtectedValue.fromString('');
+        OpenState.password = kdbxweb.ProtectedValue.fromString('');
     });
 
     const passwordClicked = () => {
@@ -21,13 +21,13 @@ export const OpenPassword: FunctionComponent = () => {
     };
 
     const passwordChanged = (password: kdbxweb.ProtectedValue) => {
-        Workspace.openState.password = password;
+        OpenState.password = password;
     };
 
     const passwordKeyUp = (e: KeyboardEvent) => {
         const code = e.keyCode || e.which;
         if (code === Keys.DOM_VK_CAPS_LOCK) {
-            Workspace.openState.capsLockPressed = false;
+            OpenState.capsLockPressed = false;
         }
     };
 
@@ -36,7 +36,7 @@ export const OpenPassword: FunctionComponent = () => {
         if (code === Keys.DOM_VK_RETURN) {
             OpenController.open();
         } else if (code === Keys.DOM_VK_CAPS_LOCK) {
-            Workspace.openState.capsLockPressed = false;
+            OpenState.capsLockPressed = false;
         }
     };
 
@@ -46,13 +46,13 @@ export const OpenPassword: FunctionComponent = () => {
         const lower = ch.toLowerCase();
         const upper = ch.toUpperCase();
         if (lower !== upper && !e.shiftKey) {
-            Workspace.openState.capsLockPressed = ch !== lower;
+            OpenState.capsLockPressed = ch !== lower;
         }
     };
 
     let passwordPlaceholder = '';
-    if (Workspace.openState.name) {
-        passwordPlaceholder = `${Locale.openPassFor} ${Workspace.openState.name}`;
+    if (OpenState.name) {
+        passwordPlaceholder = `${Locale.openPassFor} ${OpenState.name}`;
     } else if (AppSettings.canOpen) {
         passwordPlaceholder = Locale.openClickToOpen;
     }
@@ -62,14 +62,14 @@ export const OpenPassword: FunctionComponent = () => {
     };
 
     return h(OpenPasswordView, {
-        password: Workspace.openState.password,
-        passwordReadOnly: !Workspace.openState.name,
+        password: OpenState.password,
+        passwordReadOnly: !OpenState.name,
         passwordPlaceholder,
-        autoFocusPassword: !Alerts.alertDisplayed && Workspace.openState.autoFocusPassword,
+        autoFocusPassword: !Alerts.alertDisplayed && OpenState.autoFocusPassword,
         buttonFingerprint: false,
-        capsLockPressed: Workspace.openState.capsLockPressed,
-        openingFile: Workspace.openState.openingFile,
-        showInputError: Workspace.openState.openError && Workspace.openState.invalidKey,
+        capsLockPressed: OpenState.capsLockPressed,
+        openingFile: OpenState.openingFile,
+        showInputError: OpenState.openError && OpenState.invalidKey,
 
         passwordClicked,
         passwordChanged,

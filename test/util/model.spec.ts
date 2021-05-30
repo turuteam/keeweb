@@ -376,4 +376,23 @@ describe('Model', () => {
         expect(baseFired).to.eql(1);
         expect(derivedFired).to.eql(1);
     });
+
+    it('works with Object.assign', () => {
+        const model = new TestModel();
+        model.num = 1;
+
+        let changed = 0;
+        let changedNum = 0;
+        model.on('change', () => changed++);
+        model.onChange('num', () => changedNum++);
+
+        const another = new TestModel();
+        another.num = 2;
+
+        Object.assign(model, another);
+
+        expect(model.num).to.eql(2);
+        expect(changed).to.eql(1);
+        expect(changedNum).to.eql(1);
+    });
 });

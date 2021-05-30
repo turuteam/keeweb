@@ -9,22 +9,23 @@ import { errorToString } from 'util/fn';
 import { DropboxChooser } from 'storage/dropbox-chooser';
 import { Logger } from 'util/logger';
 import { FileController } from 'comp/app/file-controller';
+import { OpenState } from 'models/open-state';
 
 const logger = new Logger('open');
 
 class OpenController {
     open(): void {
-        if (Workspace.openState.busy) {
+        if (OpenState.busy) {
             return;
         }
-        if (Workspace.openState.id && FileManager.getFileById(Workspace.openState.id)) {
+        if (OpenState.id && FileManager.getFileById(OpenState.id)) {
             Workspace.showList();
             return;
         }
 
-        Workspace.openState.beginOpen();
+        OpenState.beginOpen();
 
-        FileController.open(Workspace.openState)
+        FileController.open(OpenState)
             .then(() => {
                 Workspace.showList();
             })
@@ -33,7 +34,7 @@ class OpenController {
                 const invalidKey =
                     err instanceof kdbxweb.KdbxError &&
                     err.code === kdbxweb.Consts.ErrorCodes.InvalidKey;
-                Workspace.openState.setOpenError(invalidKey);
+                OpenState.setOpenError(invalidKey);
                 if (!invalidKey) {
                     // } else if (err.userCanceled) { // TODO: yubikey cancellation
                     // if (err.notFound) { // TODO: handle file not found
@@ -53,19 +54,19 @@ class OpenController {
     }
 
     selectKeyFileFromDropbox(): void {
-        if (Workspace.openState.busy || !AppSettings.canOpen) {
+        if (OpenState.busy || !AppSettings.canOpen) {
             return;
         }
         const dropboxChooser = new DropboxChooser((err, res) => {
             if (!err && res) {
-                Workspace.openState.setKeyFile(res.name, res.data);
+                OpenState.setKeyFile(res.name, res.data);
             }
         });
         dropboxChooser.choose();
     }
 
     chooseFile(): void {
-        if (Workspace.openState.busy || !AppSettings.canOpen) {
+        if (OpenState.busy || !AppSettings.canOpen) {
             return;
         }
         FileOpener.open((file) => {
@@ -79,7 +80,7 @@ class OpenController {
         switch (format) {
             case 'kdbx': {
                 const name = file.name.replace(/\.kdbx$/i, '');
-                Workspace.openState.setFile(
+                OpenState.setFile(
                     name,
                     fileData,
                     file.path || undefined,
@@ -121,7 +122,7 @@ class OpenController {
     }
 
     chooseKeyFile(): void {
-        if (Workspace.openState.busy || !AppSettings.canOpen) {
+        if (OpenState.busy || !AppSettings.canOpen) {
             return;
         }
         FileOpener.open((file) => {
@@ -132,7 +133,7 @@ class OpenController {
     async readKeyFile(file: File): Promise<void> {
         const keyFileData = await FileOpener.readBinary(file);
         const path = AppSettings.rememberKeyFiles === 'path' && file.path ? file.path : undefined;
-        Workspace.openState.setKeyFile(file.name, keyFileData, path);
+        OpenState.setKeyFile(file.name, keyFileData, path);
     }
 
     readFileAndKeyFile(file: File, keyFile?: File): void {

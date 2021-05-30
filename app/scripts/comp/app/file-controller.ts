@@ -3,7 +3,7 @@ import { Logger } from 'util/logger';
 import { Storage } from 'storage';
 import { Locale } from 'util/locale';
 import { IdGenerator } from 'util/generators/id-generator';
-import { OpenState } from 'models/open-state';
+import { OpenParams } from 'models/open-state';
 import { FileManager } from 'models/file-manager';
 import { File } from 'models/file';
 import { FileInfo } from 'models/file-info';
@@ -11,7 +11,7 @@ import { StorageFileData, StorageFileStat } from 'storage/types';
 import { AppSettings } from 'models/app-settings';
 
 class FileController {
-    async open(params: OpenState): Promise<File> {
+    async open(params: OpenParams): Promise<File> {
         const logger = new Logger('open', params.name);
         logger.info('File open request');
 
@@ -90,7 +90,7 @@ class FileController {
     }
 
     private async openFileFromCache(
-        params: OpenState,
+        params: OpenParams,
         fileInfo: FileInfo,
         logger: Logger
     ): Promise<File> {
@@ -110,7 +110,7 @@ class FileController {
     }
 
     private async openFileFromStorage(
-        params: OpenState,
+        params: OpenParams,
         fileInfo: FileInfo | undefined,
         logger: Logger,
         noCache: boolean
@@ -185,7 +185,7 @@ class FileController {
     }
 
     private async openFileWithData(
-        params: OpenState,
+        params: OpenParams,
         fileInfo: FileInfo | undefined,
         data: ArrayBuffer,
         updateCacheOnSuccess: boolean

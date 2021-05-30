@@ -4,7 +4,23 @@ import { StorageFileOptions } from 'storage/types';
 import { FileChalRespConfig, FileInfo } from 'models/file-info';
 import { FileManager } from 'models/file-manager';
 
-class OpenState extends Model {
+export interface OpenParams {
+    id?: string;
+    name?: string;
+    password?: kdbxweb.ProtectedValue;
+    storage?: string;
+    path?: string;
+    fileData?: ArrayBuffer;
+    keyFileName?: string;
+    keyFileData?: ArrayBuffer;
+    keyFileHash?: string;
+    keyFilePath?: string;
+    rev?: string;
+    opts?: StorageFileOptions;
+    chalResp?: FileChalRespConfig;
+}
+
+class OpenState extends Model implements OpenParams {
     id?: string;
     name?: string;
     password?: kdbxweb.ProtectedValue;

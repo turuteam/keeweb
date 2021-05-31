@@ -103,6 +103,8 @@ abstract class StorageBase {
 
     abstract unwatch?(path: string, callback: StorageFileWatcherCallback): void;
 
+    abstract getPathForName?(fileName: string): string;
+
     protected getOAuthConfig(): StorageOAuthConfig {
         throw new Error('OAuth is not supported');
     }
@@ -630,11 +632,6 @@ abstract class StorageBase {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     applySetting(key: string, value: string | null): void {
         throw new Error('applySetting is not implemented');
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    getPathForName(fileName: string): string {
-        throw new Error('getPathForName is not implemented');
     }
 }
 

@@ -407,6 +407,7 @@ class StorageWebDav extends StorageBase {
     remove: undefined;
     watch: undefined;
     unwatch: undefined;
+    getPathForName: undefined;
 }
 
 export { StorageWebDav };

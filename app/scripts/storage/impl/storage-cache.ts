@@ -37,6 +37,7 @@ class StorageCache extends StorageBase {
     mkdir: undefined;
     watch: undefined;
     unwatch: undefined;
+    getPathForName: undefined;
 }
 
 export { StorageCache };

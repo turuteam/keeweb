@@ -184,6 +184,7 @@ class StorageFile extends StorageBase {
 
     list: undefined;
     remove: undefined;
+    getPathForName: undefined;
 }
 
 export { StorageFile };

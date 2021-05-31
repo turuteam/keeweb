@@ -32,7 +32,9 @@ export const App: FunctionComponent = () => {
         return () => Events.off('drag-handle-set', dragHandleSet);
     }, []);
 
+    const menuVisible = mode === 'list' || mode === 'settings';
     const listVisible = mode === 'list';
+    const settingsVisible = mode === 'settings';
     const panelVisible = mode === 'panel';
     const openVisible = mode === 'open';
 
@@ -40,7 +42,9 @@ export const App: FunctionComponent = () => {
         beta: RuntimeInfo.beta,
         customTitlebar: Features.renderCustomTitleBar,
         titlebarStyle: AppSettings.titlebarStyle,
+        menuVisible,
         listVisible,
+        settingsVisible,
         panelVisible,
         openVisible,
         tableView,

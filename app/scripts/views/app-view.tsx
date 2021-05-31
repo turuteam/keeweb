@@ -13,7 +13,9 @@ export const AppView: FunctionComponent<{
     beta: boolean;
     customTitlebar: boolean;
     titlebarStyle: AppSettingsTitlebarStyle;
+    menuVisible: boolean;
     listVisible: boolean;
+    settingsVisible: boolean;
     panelVisible: boolean;
     openVisible: boolean;
     tableView: boolean;
@@ -23,7 +25,9 @@ export const AppView: FunctionComponent<{
     beta,
     customTitlebar,
     titlebarStyle,
+    menuVisible,
     listVisible,
+    settingsVisible,
     panelVisible,
     openVisible,
     tableView,
@@ -46,7 +50,7 @@ export const AppView: FunctionComponent<{
                 <div class="app__titlebar-drag" />
             ) : null}
             <div class="app__body">
-                {listVisible ? (
+                {menuVisible ? (
                     <>
                         <div class="app__menu" ref={appMenu} style={{ width: menuWidth }}>
                             <AppMenu />
@@ -60,27 +64,30 @@ export const AppView: FunctionComponent<{
                                 max={300}
                             />
                         </div>
-                        <div
-                            class={classes({
-                                'app__list-wrap': true,
-                                'app__list-wrap--table': tableView
-                            })}
-                        >
-                            <div class="app__list" ref={appList} style={{ width: listWidth }} />
-                            <div class="app__list-drag">
-                                <DragHandle
-                                    target={appList}
-                                    coord="x"
-                                    name="list"
-                                    min={200}
-                                    max={500}
-                                />
-                            </div>
-                            <div class="app__details" />
-                        </div>
                     </>
                 ) : null}
+                {listVisible ? (
+                    <div
+                        class={classes({
+                            'app__list-wrap': true,
+                            'app__list-wrap--table': tableView
+                        })}
+                    >
+                        <div class="app__list" ref={appList} style={{ width: listWidth }} />
+                        <div class="app__list-drag">
+                            <DragHandle
+                                target={appList}
+                                coord="x"
+                                name="list"
+                                min={200}
+                                max={500}
+                            />
+                        </div>
+                        <div class="app__details" />
+                    </div>
+                ) : null}
                 {panelVisible ? <div class="app__panel" /> : null}
+                {settingsVisible ? 'settings' : null}
                 {openVisible ? <OpenScreen /> : null}
             </div>
             <div class="app__footer">

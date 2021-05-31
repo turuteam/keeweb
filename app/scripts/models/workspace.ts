@@ -25,6 +25,7 @@ class Workspace extends Model {
 
         FileManager.onChange('files', () => this.filesChanged());
         FileManager.on('file-added', (id) => this.fileAdded(id));
+        (this as Workspace).onChange('mode', (mode, prevMode) => this.modeChanged(mode, prevMode));
 
         this.setKeyHandlers();
     }
@@ -139,6 +140,14 @@ class Workspace extends Model {
 
     showSettings(): void {
         this.mode = 'settings';
+    }
+
+    modeChanged(mode: WorkspaceMode, prevMode: WorkspaceMode) {
+        if (mode === 'settings') {
+            this.menu.setMenu('settings');
+        } else if (prevMode === 'settings') {
+            this.menu.setMenu('app');
+        }
     }
 
     private fileAdded(id: string) {

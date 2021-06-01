@@ -34,7 +34,7 @@ class MenuItem extends Model {
     page?: SettingsPage;
     editable = false;
     file?: File;
-    section?: string;
+    anchor?: string;
 
     constructor(values?: InitWithFieldsOf<MenuItem>) {
         super();

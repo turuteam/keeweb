@@ -27,8 +27,6 @@ class Workspace extends Model {
     readonly menu = new Menu();
     readonly query = new Query();
     mode: WorkspaceMode = 'open';
-    settingsPage: SettingsPage = 'general';
-    settingsFileId?: string;
     tags: string[] = [];
     activeEntryId?: string;
     unlockMessage?: string;
@@ -86,7 +84,7 @@ class Workspace extends Model {
     }
 
     selectShowAllMenuItem(): void {
-        this.menu.select({ item: this.menu.allItemsItem });
+        this.menu.select(this.menu.allItemsItem);
     }
 
     renameTag(from: string, to: string): void {
@@ -123,11 +121,11 @@ class Workspace extends Model {
         }
     }
 
-    toggleSettings(page?: SettingsPage, fileId?: string): void {
+    toggleSettings(page?: SettingsPage, anchor?: string, fileId?: string): void {
         if (this.mode === 'settings') {
             if (
-                (!page || this.settingsPage === page) &&
-                (!fileId || this.settingsFileId === fileId)
+                (!page || this.menu.selectedItem.page === page) &&
+                (!page || !fileId || this.menu.selectedItem.file?.id === fileId)
             ) {
                 if (FileManager.hasOpenFiles) {
                     this.showList();
@@ -135,10 +133,10 @@ class Workspace extends Model {
                     this.showOpen();
                 }
             } else {
-                this.showSettings(page, fileId);
+                this.showSettings(page, anchor, fileId);
             }
         } else {
-            this.showSettings(page, fileId);
+            this.showSettings(page, anchor, fileId);
         }
     }
 
@@ -153,10 +151,9 @@ class Workspace extends Model {
         this.mode = 'open';
     }
 
-    showSettings(page: SettingsPage = 'general', fileId?: string): void {
-        this.settingsPage = page;
-        this.settingsFileId = fileId;
+    showSettings(page: SettingsPage = 'general', anchor?: string, fileId?: string): void {
         this.mode = 'settings';
+        this.menu.selectSettingsPage(page, anchor, fileId);
     }
 
     modeChanged(mode: WorkspaceMode, prevMode: WorkspaceMode) {

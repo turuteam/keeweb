@@ -11,12 +11,13 @@ import { MenuItem } from './menu-item';
 import { MenuOption } from './menu-option';
 import { AppSettings } from 'models/app-settings';
 import { KeyHandler } from 'comp/browser/key-handler';
-import { Workspace } from 'models/workspace';
+import { SettingsPage } from 'models/workspace';
 
 type MenuType = 'app' | 'settings';
 
 class Menu extends Model {
     private readonly _menus = {} as Record<MenuType, MenuSection[]>;
+    selectedItem: MenuItem;
 
     sections: MenuSection[];
 
@@ -50,6 +51,7 @@ class Menu extends Model {
             // filterKey: '*'
         });
         this.allItemsSection = new MenuSection(this.allItemsItem);
+        this.selectedItem = this.allItemsItem;
 
         this.groupsSection = new MenuSection();
         this.groupsSection.scrollable = true;
@@ -65,7 +67,7 @@ class Menu extends Model {
         });
         this.colorsSection = new MenuSection(this.colorsItem);
 
-        const defTagItem = this.getDefaultTagItem();
+        const defTagItem = Menu.getDefaultTagItem();
         this.tagsSection = new MenuSection(defTagItem);
         this.tagsSection.setDefaultItems(defTagItem);
         this.tagsSection.scrollable = true;
@@ -106,44 +108,44 @@ class Menu extends Model {
                 locTitle: 'menuSetGeneral',
                 icon: 'cog',
                 page: 'general',
-                section: 'top',
+                anchor: undefined,
                 active: true
             }),
             new MenuItem({
                 locTitle: 'setGenAppearance',
                 icon: '0',
                 page: 'general',
-                section: 'appearance'
+                anchor: 'appearance'
             }),
             new MenuItem({
                 locTitle: 'setGenFunction',
                 icon: '0',
                 page: 'general',
-                section: 'function'
+                anchor: 'function'
             }),
             new MenuItem({
                 locTitle: 'setGenAudit',
                 icon: '0',
                 page: 'general',
-                section: 'audit'
+                anchor: 'audit'
             }),
             new MenuItem({
                 locTitle: 'setGenLock',
                 icon: '0',
                 page: 'general',
-                section: 'lock'
+                anchor: 'lock'
             }),
             new MenuItem({
                 locTitle: 'setGenStorage',
                 icon: '0',
                 page: 'general',
-                section: 'storage'
+                anchor: 'storage'
             }),
             new MenuItem({
                 locTitle: 'advanced',
                 icon: '0',
                 page: 'general',
-                section: 'advanced'
+                anchor: 'advanced'
             })
         );
 
@@ -210,27 +212,40 @@ class Menu extends Model {
         this.setLocale();
     }
 
-    select(sel: { item: MenuItem; option?: MenuOption }): void {
+    select(item: MenuItem, option?: MenuOption): void {
         const sections = this.sections;
         for (const it of this.allItems()) {
-            it.active = it === sel.item;
+            it.active = it === item;
+            if (it.active) {
+                this.selectedItem = it;
+            }
         }
         if (sections === this._menus.app) {
             this.colorsItem.options?.forEach((opt) => {
-                opt.active = opt === sel.option;
+                opt.active = opt === option;
             });
             this.colorsItem.iconCls =
-                sel.item === this.colorsItem && sel.option
-                    ? `${sel.option.value}-color`
-                    : undefined;
+                item === this.colorsItem && option ? `${option.value}-color` : undefined;
             // TODO: set the filter
             // const filterKey = sel.item.filterKey;
             // const filterValue = (sel.option || sel.item).filterValue;
             // const filter = {};
             // filter[filterKey] = filterValue;
             // Events.emit('set-filter', filter);
-        } else if (sections === this._menus.settings && sel.item.page) {
-            Workspace.showSettings(sel.item.page, sel.item.file?.id);
+        } else if (sections === this._menus.settings && item.page) {
+            // Workspace.showSettings(sel.item.page, sel.item.file?.id);
+        }
+    }
+
+    selectSettingsPage(page: SettingsPage, anchor?: string, fileId?: string): void {
+        for (const section of this._menus.settings) {
+            for (const it of section.items) {
+                it.active =
+                    it.page === page && anchor === it.anchor && (!fileId || fileId === it.file?.id);
+                if (it.active) {
+                    this.selectedItem = it;
+                }
+            }
         }
     }
 
@@ -269,7 +284,7 @@ class Menu extends Model {
 
         for (const item of this.visibleItems()) {
             if (item.active && previousItem) {
-                this.select({ item: previousItem });
+                this.select(previousItem);
                 return;
             }
             previousItem = item;
@@ -283,7 +298,7 @@ class Menu extends Model {
             if (item.active) {
                 activeItem = item;
             } else if (activeItem) {
-                this.select({ item });
+                this.select(item);
                 return;
             }
         }
@@ -299,10 +314,10 @@ class Menu extends Model {
                 }
             }
         }
-        this.tagsSection?.setDefaultItems(this.getDefaultTagItem());
+        this.tagsSection?.setDefaultItems(Menu.getDefaultTagItem());
     }
 
-    private getDefaultTagItem(): MenuItem {
+    private static getDefaultTagItem(): MenuItem {
         return new MenuItem({
             title: StringFormat.capFirst(Locale.tags),
             icon: 'tags',

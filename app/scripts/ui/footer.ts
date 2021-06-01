@@ -15,7 +15,7 @@ export const Footer: FunctionComponent = () => {
 
     const updateAvailable = updateStatus === 'ready' || updateStatus === 'found';
 
-    const fileClicked = (id: string) => Workspace.toggleSettings('file', id);
+    const fileClicked = (fileId: string) => Workspace.toggleSettings('file', undefined, fileId);
 
     const openClicked = () => Workspace.toggleOpen();
 

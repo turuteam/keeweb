@@ -5,10 +5,20 @@ import { Workspace } from 'models/workspace';
 import { Keys } from 'const/keys';
 
 export const Settings: FunctionComponent = () => {
-    const page = useModelField(Workspace, 'settingsPage');
+    const selectedMenuItem = useModelField(Workspace.menu, 'selectedItem');
     useKey(Keys.DOM_VK_ESCAPE, () => {
         Workspace.toggleSettings();
     });
 
-    return h(SettingsView, { page });
+    const backClicked = () => {
+        Workspace.toggleSettings();
+    };
+
+    return h(SettingsView, {
+        page: selectedMenuItem.page ?? 'general',
+        anchor: selectedMenuItem.anchor,
+        fileId: selectedMenuItem.file?.id,
+
+        backClicked
+    });
 };

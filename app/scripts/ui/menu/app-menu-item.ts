@@ -51,7 +51,7 @@ export const AppMenuItem: FunctionComponent<{ item: MenuItem }> = ({ item }) => 
     };
 
     const actionClicked = () => {
-        if (item.filterKey === 'trash') {
+        if (item.filter?.type === 'trash') {
             askUserAndEmptyTrash();
         } else {
             Alerts.notImplemented(); // TODO: item editing
@@ -80,7 +80,7 @@ export const AppMenuItem: FunctionComponent<{ item: MenuItem }> = ({ item }) => 
         icon: item.icon,
         iconCls: item.iconCls,
         customIcon: item.customIcon,
-        isTrash: item.filterKey === 'trash',
+        isTrash: item.filter?.type === 'trash',
         collapsible: item.collapsible,
         expanded: item.expanded,
         items: item.items,

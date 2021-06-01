@@ -3,11 +3,40 @@ import { MenuOption } from './menu-option';
 import { Keys } from 'const/keys';
 import { AlertConfig } from 'comp/ui/alerts';
 import { LocaleKey } from 'util/locale';
-import { InitWithFieldsOf, NonFunctionPropertyNames } from 'util/types';
-import { Filter } from 'models/filter';
+import { InitWithFieldsOf } from 'util/types';
 import { File } from 'models/file';
 import { IdGenerator } from 'util/generators/id-generator';
 import { SettingsPage } from 'models/workspace';
+
+export interface MenuItemFilterAllItems {
+    type: 'all';
+}
+
+export interface MenuItemFilterColor {
+    type: 'color';
+    value?: string;
+}
+
+export interface MenuItemFilterTag {
+    type: 'tag';
+    value: string;
+}
+
+export interface MenuItemFilterTrash {
+    type: 'trash';
+}
+
+export interface MenuItemFilterGroup {
+    type: 'group';
+    value: string;
+}
+
+export type MenuItemFilter =
+    | MenuItemFilterAllItems
+    | MenuItemFilterColor
+    | MenuItemFilterTag
+    | MenuItemFilterTrash
+    | MenuItemFilterGroup;
 
 class MenuItem extends Model {
     readonly id: string;
@@ -27,8 +56,7 @@ class MenuItem extends Model {
     visible = true;
     drag = false;
     drop = false;
-    filterKey?: NonFunctionPropertyNames<Filter>;
-    filterValue?: string | true;
+    filter?: MenuItemFilter;
     collapsible = false;
     defaultItem = false;
     page?: SettingsPage;

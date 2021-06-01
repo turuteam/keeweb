@@ -47,8 +47,8 @@ class Menu extends Model {
             locTitle: 'menuAllItems',
             icon: 'th-large',
             active: true,
-            shortcut: Keys.DOM_VK_A
-            // filterKey: '*'
+            shortcut: Keys.DOM_VK_A,
+            filter: { type: 'all' }
         });
         this.allItemsSection = new MenuSection(this.allItemsItem);
         this.selectedItem = this.allItemsItem;
@@ -62,8 +62,7 @@ class Menu extends Model {
             icon: 'bookmark',
             shortcut: Keys.DOM_VK_C,
             cls: 'menu__item-colors',
-            filterKey: 'color',
-            filterValue: true
+            filter: { type: 'color' }
         });
         this.colorsSection = new MenuSection(this.colorsItem);
 
@@ -79,8 +78,7 @@ class Menu extends Model {
                 locTitle: 'menuTrash',
                 icon: 'trash-alt',
                 shortcut: Keys.DOM_VK_D,
-                filterKey: 'trash',
-                filterValue: true,
+                filter: { type: 'trash' },
                 drop: true
             })
         );
@@ -232,8 +230,6 @@ class Menu extends Model {
             // const filter = {};
             // filter[filterKey] = filterValue;
             // Events.emit('set-filter', filter);
-        } else if (sections === this._menus.settings && item.page) {
-            // Workspace.showSettings(sel.item.page, sel.item.file?.id);
         }
     }
 
@@ -317,6 +313,10 @@ class Menu extends Model {
         this.tagsSection?.setDefaultItems(Menu.getDefaultTagItem());
     }
 
+    setMenu(type: MenuType): void {
+        this.sections = this._menus[type];
+    }
+
     private static getDefaultTagItem(): MenuItem {
         return new MenuItem({
             title: StringFormat.capFirst(Locale.tags),
@@ -331,8 +331,13 @@ class Menu extends Model {
         });
     }
 
-    setMenu(type: MenuType): void {
-        this.sections = this._menus[type];
+    static newTagItem(tag: string): MenuItem {
+        return new MenuItem({
+            title: tag,
+            icon: 'tag',
+            filter: { type: 'tag', value: tag },
+            editable: true
+        });
     }
 }
 

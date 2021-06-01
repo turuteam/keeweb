@@ -45,12 +45,12 @@ class Workspace extends Model {
 
     closeAllFiles(): void {
         FileManager.closeAll();
-        this.resetFilterAndMenu();
+        this.selectAllItems();
     }
 
     closeFile(file: File): void {
         FileManager.close(file);
-        this.resetFilterAndMenu();
+        this.selectAllItems();
     }
 
     async createDemoFile(): Promise<void> {
@@ -80,8 +80,7 @@ class Workspace extends Model {
         this.showList();
     }
 
-    resetFilterAndMenu(): void {
-        this.query.reset();
+    selectAllItems(): void {
         this.menu.select(this.menu.allItemsItem);
     }
 
@@ -250,16 +249,7 @@ class Workspace extends Model {
     private tagsChanged() {
         if (this.tags.length) {
             this.menu.tagsSection.scrollable = true;
-            this.menu.tagsSection.items = this.tags.map(
-                (tag) =>
-                    new MenuItem({
-                        title: tag,
-                        icon: 'tag',
-                        filterKey: 'tag',
-                        filterValue: tag,
-                        editable: true
-                    })
-            );
+            this.menu.tagsSection.items = this.tags.map((tag) => Menu.newTagItem(tag));
         } else {
             this.menu.tagsSection.scrollable = false;
             this.menu.tagsSection.removeAllItems();

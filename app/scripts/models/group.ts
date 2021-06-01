@@ -5,7 +5,6 @@ import { File } from 'models/file';
 import { MenuItem } from 'models/menu/menu-item';
 import { IconUrlFormat } from 'util/formatting/icon-url-format';
 import { Filter } from 'models/filter';
-import { NonFunctionPropertyNames } from 'util/types';
 
 const KdbxIcons = kdbxweb.Consts.Icons;
 
@@ -17,7 +16,6 @@ class Group extends MenuItem {
     iconId?: number;
     entries: Entry[] = [];
     items: Group[] = [];
-    filterKey?: NonFunctionPropertyNames<Filter> = 'group';
     editable = true;
     top = false;
     drag = true;
@@ -56,7 +54,7 @@ class Group extends MenuItem {
             this.visible = !isRecycleBin;
             this.items = [];
             this.entries = [];
-            this.filterValue = id;
+            this.filter = { type: 'group', value: id };
             this.enableSearching = group.enableSearching;
             this.enableAutoType = group.enableAutoType;
             this.autoTypeSeq = group.defaultAutoTypeSeq;

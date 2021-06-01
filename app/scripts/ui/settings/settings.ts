@@ -16,8 +16,6 @@ export const Settings: FunctionComponent = () => {
 
     return h(SettingsView, {
         page: selectedMenuItem.page ?? 'general',
-        anchor: selectedMenuItem.anchor,
-        fileId: selectedMenuItem.file?.id,
 
         backClicked
     });

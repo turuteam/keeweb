@@ -7,11 +7,9 @@ import { SettingsHelp } from 'ui/settings/settings-help';
 
 export const SettingsView: FunctionComponent<{
     page: SettingsPage;
-    anchor?: string;
-    fileId?: string;
 
     backClicked: () => void;
-}> = ({ page, anchor, fileId, backClicked }) => {
+}> = ({ page, backClicked }) => {
     return (
         <div class="settings">
             <div class="settings__back-button" onClick={backClicked}>

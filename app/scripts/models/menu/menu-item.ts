@@ -7,6 +7,7 @@ import { InitWithFieldsOf, NonFunctionPropertyNames } from 'util/types';
 import { Filter } from 'models/filter';
 import { File } from 'models/file';
 import { IdGenerator } from 'util/generators/id-generator';
+import { SettingsPage } from 'models/workspace';
 
 class MenuItem extends Model {
     readonly id: string;
@@ -30,7 +31,7 @@ class MenuItem extends Model {
     filterValue?: string | true;
     collapsible = false;
     defaultItem = false;
-    page?: string;
+    page?: SettingsPage;
     editable = false;
     file?: File;
     section?: string;

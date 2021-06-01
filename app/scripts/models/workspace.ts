@@ -13,10 +13,22 @@ import { Query } from 'models/query';
 
 export type WorkspaceMode = 'open' | 'list' | 'settings' | 'panel';
 
+export type SettingsPage =
+    | 'general'
+    | 'shortcuts'
+    | 'browser'
+    | 'plugins'
+    | 'devices'
+    | 'about'
+    | 'help'
+    | 'file';
+
 class Workspace extends Model {
     readonly menu = new Menu();
     readonly query = new Query();
     mode: WorkspaceMode = 'open';
+    settingsPage: SettingsPage = 'general';
+    settingsFileId?: string;
     tags: string[] = [];
     activeEntryId?: string;
     unlockMessage?: string;
@@ -111,17 +123,22 @@ class Workspace extends Model {
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    toggleSettings(page: string): void {
-        // TODO: settings page
+    toggleSettings(page?: SettingsPage, fileId?: string): void {
         if (this.mode === 'settings') {
-            if (FileManager.hasOpenFiles) {
-                this.showList();
+            if (
+                (!page || this.settingsPage === page) &&
+                (!fileId || this.settingsFileId === fileId)
+            ) {
+                if (FileManager.hasOpenFiles) {
+                    this.showList();
+                } else {
+                    this.showOpen();
+                }
             } else {
-                this.showOpen();
+                this.showSettings(page, fileId);
             }
         } else {
-            this.showSettings();
+            this.showSettings(page, fileId);
         }
     }
 
@@ -136,7 +153,9 @@ class Workspace extends Model {
         this.mode = 'open';
     }
 
-    showSettings(): void {
+    showSettings(page: SettingsPage = 'general', fileId?: string): void {
+        this.settingsPage = page;
+        this.settingsFileId = fileId;
         this.mode = 'settings';
     }
 

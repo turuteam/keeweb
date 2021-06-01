@@ -14,14 +14,29 @@ export const FooterView: FunctionComponent<{
     files: FooterFile[];
     updateAvailable: boolean;
 
+    fileClicked: (id: string) => void;
     openClicked: () => void;
+    helpClicked: () => void;
     settingsClicked: () => void;
     lockWorkspaceClicked: () => void;
-}> = ({ files, updateAvailable, settingsClicked, openClicked, lockWorkspaceClicked }) => {
+}> = ({
+    files,
+    updateAvailable,
+
+    fileClicked,
+    openClicked,
+    helpClicked,
+    settingsClicked,
+    lockWorkspaceClicked
+}) => {
     return (
         <div class="footer">
             {files.map((file) => (
-                <div key={file.id} class="footer__db footer__db-item">
+                <div
+                    key={file.id}
+                    class="footer__db footer__db-item"
+                    onClick={() => fileClicked(file.id)}
+                >
                     <i class="fa fa-unlock" /> {file.name}
                     {file.syncing ? (
                         <i class="fa fa-sync-alt spin footer__db-sign" />
@@ -50,7 +65,12 @@ export const FooterView: FunctionComponent<{
                 <i class="fa fa-plus" />
                 <span class="footer__db-text">&nbsp;{Locale.footerOpen}</span>
             </div>
-            <div class="footer__btn footer__btn-help" tip-placement="top" id="footer__btn-help">
+            <div
+                class="footer__btn footer__btn-help"
+                tip-placement="top"
+                id="footer__btn-help"
+                onClick={helpClicked}
+            >
                 <i class="fa fa-question" />
                 <kw-tip text={Locale.help} />
             </div>

@@ -11,6 +11,7 @@ import { MenuItem } from './menu-item';
 import { MenuOption } from './menu-option';
 import { AppSettings } from 'models/app-settings';
 import { KeyHandler } from 'comp/browser/key-handler';
+import { Workspace } from 'models/workspace';
 
 type MenuType = 'app' | 'settings';
 
@@ -229,12 +230,7 @@ class Menu extends Model {
             // filter[filterKey] = filterValue;
             // Events.emit('set-filter', filter);
         } else if (sections === this._menus.settings && sel.item.page) {
-            // TODO: switch settings page
-            // Events.emit('set-page', {
-            //     page: sel.item.page,
-            //     section: sel.item.section,
-            //     file: sel.item.file
-            // });
+            Workspace.showSettings(sel.item.page, sel.item.file?.id);
         }
     }
 

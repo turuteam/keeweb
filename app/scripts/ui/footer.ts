@@ -15,7 +15,11 @@ export const Footer: FunctionComponent = () => {
 
     const updateAvailable = updateStatus === 'ready' || updateStatus === 'found';
 
+    const fileClicked = (id: string) => Workspace.toggleSettings('file', id);
+
     const openClicked = () => Workspace.toggleOpen();
+
+    const helpClicked = () => Workspace.toggleSettings('help');
 
     const settingsClicked = () => Workspace.toggleSettings('general');
 
@@ -25,7 +29,9 @@ export const Footer: FunctionComponent = () => {
         files,
         updateAvailable,
 
+        fileClicked,
         openClicked,
+        helpClicked,
         settingsClicked,
         lockWorkspaceClicked
     });

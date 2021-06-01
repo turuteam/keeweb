@@ -1,6 +1,5 @@
 import { Events } from 'framework/events';
 import { Storage } from 'storage';
-import { SearchResultCollection } from 'collections/search-result-collection';
 import { RuntimeInfo } from 'const/runtime-info';
 import { UsbListener } from 'comp/app/usb-listener';
 import { NativeModules } from 'comp/launcher/native-modules';

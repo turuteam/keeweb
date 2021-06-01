@@ -5,6 +5,7 @@ import { Titlebar } from 'ui/titlebar';
 import { OpenScreen } from 'ui/open/open-screen';
 import { Footer } from 'ui/footer';
 import { AppMenu } from 'ui/menu/app-menu';
+import { Settings } from 'ui/settings/settings';
 import { DragHandle } from 'views/components/drag-handle';
 import { useRef } from 'preact/hooks';
 import { classes } from 'util/ui/classes';
@@ -87,7 +88,7 @@ export const AppView: FunctionComponent<{
                     </div>
                 ) : null}
                 {panelVisible ? <div class="app__panel" /> : null}
-                {settingsVisible ? <div>settings</div> : null}
+                {settingsVisible ? <Settings /> : null}
                 {openVisible ? <OpenScreen /> : null}
             </div>
             <div class="app__footer">

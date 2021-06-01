@@ -6,6 +6,8 @@ import { Storage } from 'storage';
 import { Locale } from 'util/locale';
 import { AppSettings } from 'models/app-settings';
 import { noop } from 'util/fn';
+import debounce from 'lodash/debounce';
+import { Timeouts } from 'const/timeouts';
 
 interface FileManagerEvents {
     'file-info-added': (id: string) => void;
@@ -18,11 +20,16 @@ class FileManager extends Model<FileManagerEvents> {
     files: File[] = [];
     fileInfos: FileInfo[] = [];
 
+    private _saveFileInfosBound: () => void;
+
+    constructor() {
+        super();
+        this._saveFileInfosBound = () => this.saveFileInfos().catch(noop);
+    }
+
     async init() {
         await this.loadFileInfos();
-        (this as FileManager).onChange('fileInfos', () => {
-            this.saveFileInfos().catch(noop);
-        });
+        (this as FileManager).onChange('fileInfos', () => this.saveFileInfosDelayed());
     }
 
     reset(): void {
@@ -83,6 +90,7 @@ class FileManager extends Model<FileManagerEvents> {
         } else {
             this.fileInfos = this.fileInfos.concat(fi);
         }
+        this.watchFileInfo(fi);
         this.emit('file-info-added', fi.id);
     }
 
@@ -173,6 +181,7 @@ class FileManager extends Model<FileManagerEvents> {
         if (!existed) {
             this.emit('file-info-added', file.id);
         }
+        this.watchFileInfo(fileInfo);
     }
 
     private fileClosed(file: File) {
@@ -180,6 +189,10 @@ class FileManager extends Model<FileManagerEvents> {
             Storage.file.unwatch(file.path);
         }
         this.emit('file-removed', file.id);
+    }
+
+    private watchFileInfo(fileInfo: FileInfo) {
+        fileInfo.on('change', () => this.saveFileInfosDelayed());
     }
 
     private async loadFileInfos() {
@@ -192,6 +205,10 @@ class FileManager extends Model<FileManagerEvents> {
                 }
             }
         }
+    }
+
+    private saveFileInfosDelayed() {
+        debounce(this._saveFileInfosBound, Timeouts.SaveFileInfoDebounce, { leading: true });
     }
 
     private async saveFileInfos() {

@@ -67,6 +67,7 @@ class File extends Model<FileEvents> {
     syncError?: string;
     syncDate?: Date;
     backup?: FileBackupConfig;
+    backupInProgress?: boolean;
     chalResp?: FileChalRespConfig;
     formatVersion?: number;
     defaultUser?: string;

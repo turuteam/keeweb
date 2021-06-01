@@ -27,6 +27,7 @@ export const Timeouts = {
     MinUpdateTimeout: 500,
     InputShake: 1000,
     WindowResizeUpdateDebounce: 200,
+    SaveFileInfoDebounce: 100,
     PluginsAutoUpdateAfterStart: 2000,
     PluginsUpdate: 1000 * 60 * 60 * 24 * 7
 };

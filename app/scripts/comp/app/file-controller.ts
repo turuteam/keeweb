@@ -18,6 +18,8 @@ import {
 import { AppSettings } from 'models/app-settings';
 import { errorToString, noop } from 'util/fn';
 import { StorageBase } from 'storage/storage-base';
+import { UrlFormat } from 'util/formatting/url-format';
+import { DateFormat } from 'util/formatting/date-format';
 
 const MaxLoadLoops = 3;
 
@@ -547,6 +549,123 @@ class FileController {
             ctx.logger.info('Complete, remove dirty flag');
         } else {
             ctx.logger.info('Complete, no changes');
+        }
+    }
+
+    private async backupFile(file: File, data: ArrayBuffer): Promise<void> {
+        if (file.backupInProgress) {
+            return;
+        }
+        file.backupInProgress = true;
+        try {
+            const opts = file.opts;
+            const backup = file.backup;
+            const logger = new Logger('backup', file.name);
+            if (!backup || !backup.storage || !backup.path) {
+                throw new Error('Invalid backup settings');
+            }
+            const storage = Storage.get(backup.storage);
+            if (!storage) {
+                throw new Error(`Invalid backup storage: ${backup.storage}`);
+            }
+
+            let path = backup.path.replace('{date}', DateFormat.dtStrFs(new Date()));
+            logger.info('Backup file to', backup.storage, path);
+
+            let folderPath = UrlFormat.fileToDir(path);
+            if (storage.getPathForName) {
+                folderPath = storage.getPathForName(folderPath).replace('.kdbx', '');
+            }
+            try {
+                await storage.stat(folderPath, opts);
+                logger.info('Backup folder exists, saving');
+            } catch (err) {
+                if (err instanceof StorageFileNotFoundError) {
+                    logger.info('Backup folder does not exist');
+                    if (!storage.mkdir) {
+                        throw new Error('Mkdir not supported by ' + backup.storage);
+                    }
+                    try {
+                        await storage.mkdir(folderPath);
+                        logger.info('Backup folder created');
+                    } catch (err) {
+                        logger.error('Error creating backup folder', err);
+                        throw new Error('Error creating backup folder');
+                    }
+                } else {
+                    logger.error('Stat folder error', err);
+                    throw new Error('Cannot stat backup folder');
+                }
+            }
+
+            if (storage.getPathForName) {
+                path = storage.getPathForName(path);
+            }
+            try {
+                await storage.save(path, data, opts);
+            } catch (err) {
+                logger.error('Backup error', err);
+                throw err;
+            }
+
+            logger.info('Backup complete');
+            backup.lastTime = Date.now();
+            file.backup = backup;
+
+            const fileInfo = FileManager.getFileInfoById(file.id);
+            if (fileInfo) {
+                fileInfo.backup = backup;
+            }
+        } finally {
+            file.backupInProgress = false;
+        }
+    }
+
+    private scheduleBackupFile(file: File, data: ArrayBuffer): void {
+        const backup = file.backup;
+        if (!backup || !backup.enabled || file.backupInProgress) {
+            return;
+        }
+        const logger = new Logger('backup', file.name);
+        let needBackup = false;
+        if (!backup.lastTime) {
+            needBackup = true;
+            logger.info('No last backup time, backup now');
+        } else {
+            const dt = new Date(backup.lastTime);
+            switch (backup.schedule) {
+                case '0':
+                    break;
+                case '1d':
+                    dt.setDate(dt.getDate() + 1);
+                    break;
+                case '1w':
+                    dt.setDate(dt.getDate() + 7);
+                    break;
+                case '1m':
+                    dt.setMonth(dt.getMonth() + 1);
+                    break;
+                default:
+                    return;
+            }
+            if (dt.getTime() <= Date.now()) {
+                needBackup = true;
+            }
+
+            const lastTimeStr = DateFormat.dtStrFs(backup.lastTime);
+            const dtStr = DateFormat.dtStrFs(dt);
+            logger.info(
+                `Last backup time: ${lastTimeStr}, schedule: ${backup.schedule}, ` +
+                    `next time: ${dtStr}, ${needBackup ? 'backup now' : 'skip backup'}`
+            );
+        }
+
+        const fileInfo = FileManager.getFileInfoById(file.id);
+        if (fileInfo) {
+            fileInfo.backup = backup;
+        }
+        if (needBackup) {
+            this.backupFile(file, data).catch(noop);
         }
     }
 }

@@ -2,6 +2,8 @@ import { FunctionComponent } from 'preact';
 import { SettingsPage } from 'models/workspace';
 import { Scrollable } from 'views/components/scrollable';
 import { Locale } from 'util/locale';
+import { SettingsAbout } from 'ui/settings/settings-about';
+import { SettingsHelp } from 'ui/settings/settings-help';
 
 export const SettingsView: FunctionComponent<{
     page: SettingsPage;
@@ -17,9 +19,8 @@ export const SettingsView: FunctionComponent<{
                 {Locale.retToApp} <i class="fa fa-arrow-circle-left settings__back-button-post" />
             </div>
             <Scrollable>
-                <p>page: {page}</p>
-                <p>anchor: {anchor}</p>
-                <p>file: {fileId}</p>
+                {page === 'about' ? <SettingsAbout /> : null}
+                {page === 'help' ? <SettingsHelp /> : null}
             </Scrollable>
         </div>
     );

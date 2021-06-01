@@ -45,15 +45,12 @@ class Workspace extends Model {
 
     closeAllFiles(): void {
         FileManager.closeAll();
-
-        this.query.reset();
-        this.selectShowAllMenuItem();
+        this.resetFilterAndMenu();
     }
 
     closeFile(file: File): void {
         FileManager.close(file);
-
-        this.selectShowAllMenuItem();
+        this.resetFilterAndMenu();
     }
 
     async createDemoFile(): Promise<void> {
@@ -83,7 +80,8 @@ class Workspace extends Model {
         this.showList();
     }
 
-    selectShowAllMenuItem(): void {
+    resetFilterAndMenu(): void {
+        this.query.reset();
         this.menu.select(this.menu.allItemsItem);
     }
 
@@ -296,9 +294,9 @@ class Workspace extends Model {
     private queryResultsUpdated() {
         if (
             !this.activeEntryId ||
-            !this.query.results.some((item) => item.id === this.activeEntryId)
+            !this.query.entries.some((item) => item.id === this.activeEntryId)
         ) {
-            this.activeEntryId = this.query.results[0]?.id;
+            this.activeEntryId = this.query.entries[0]?.id;
         }
     }
 }

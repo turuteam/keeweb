@@ -4,6 +4,7 @@ import { Entry } from 'models/entry';
 import { AppSettings } from 'models/app-settings';
 import { FileManager } from 'models/file-manager';
 import { PropertiesOfType } from 'util/types';
+import { Group } from 'models/group';
 
 interface QueryEvents extends DefaultModelEvents {
     'results-updated': () => void;
@@ -30,7 +31,8 @@ export class Query extends Model<QueryEvents> {
     readonly filter = new Filter();
     sort: QuerySort = QuerySort.TitleAsc;
 
-    private _results?: Entry[];
+    private _entries?: Entry[];
+    private _groups?: Group[];
     private _preparingFilter?: boolean;
 
     constructor() {
@@ -40,11 +42,18 @@ export class Query extends Model<QueryEvents> {
         AppSettings.onChange('expandGroups', () => this.updateResults());
     }
 
-    get results(): Entry[] {
-        if (!this._results) {
-            this._results = this.runQuery();
+    get entries(): Entry[] {
+        if (!this._entries) {
+            this.runQuery();
         }
-        return this._results;
+        return this._entries || [];
+    }
+
+    get groups(): Group[] {
+        if (!this._groups) {
+            this.runQuery();
+        }
+        return this._groups || [];
     }
 
     reset(): void {
@@ -52,7 +61,8 @@ export class Query extends Model<QueryEvents> {
     }
 
     updateResults(): void {
-        this._results = undefined;
+        this._entries = undefined;
+        this._groups = undefined;
         this.emit('results-updated');
     }
 
@@ -62,7 +72,7 @@ export class Query extends Model<QueryEvents> {
         }
     }
 
-    private runQuery(): Entry[] {
+    private runQuery(): void {
         this.prepareFilter();
 
         const entries: Entry[] = [];
@@ -101,23 +111,25 @@ export class Query extends Model<QueryEvents> {
 
         entries.sort(this.getComparator());
 
-        // if (this.filter.trash) { // TODO: trash groups
-        //     this.addTrashGroups(entries);
-        // }
+        const groups: Group[] = [];
+        if (this.filter.trash) {
+            Query.addTrashGroups(groups);
+        }
 
-        return entries;
+        this._entries = entries;
+        this._groups = groups;
     }
 
-    // private addTrashGroups() {
-    //     this.files.forEach((file) => {
-    //         const trashGroup = file.getTrashGroup && file.getTrashGroup();
-    //         if (trashGroup) {
-    //             trashGroup.getOwnSubGroups().forEach((group) => {
-    //                 collection.unshift(GroupModel.fromGroup(group, file, trashGroup));
-    //             });
-    //         }
-    //     });
-    // }
+    private static addTrashGroups(groups: Group[]) {
+        for (const file of FileManager.files) {
+            const trashGroup = file.getTrashGroup?.();
+            if (trashGroup) {
+                for (const group of trashGroup.items) {
+                    groups.push(group); // TODO: make sure this works
+                }
+            }
+        }
+    }
 
     private prepareFilter(): void {
         this._preparingFilter = true;

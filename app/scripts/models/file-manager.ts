@@ -1,7 +1,7 @@
 import { File } from 'models/file';
 import { FileInfo } from 'models/file-info';
 import { SettingsStore } from 'comp/settings/settings-store';
-import { Model } from 'util/model';
+import { DefaultModelEvents, Model } from 'util/model';
 import { Storage } from 'storage';
 import { Locale } from 'util/locale';
 import { AppSettings } from 'models/app-settings';
@@ -9,7 +9,7 @@ import { noop } from 'util/fn';
 import debounce from 'lodash/debounce';
 import { Timeouts } from 'const/timeouts';
 
-interface FileManagerEvents {
+interface FileManagerEvents extends DefaultModelEvents {
     'file-info-added': (id: string) => void;
     'file-info-removed': (id: string) => void;
     'file-added': (id: string) => void;

@@ -7,7 +7,7 @@ interface SearchContext {
     matches: string[];
 }
 
-export const EntrySearch = { matches };
+export const EntryMatcher = { matches };
 
 const BuiltInFieldsSet = new Set<string>(BuiltInFields);
 

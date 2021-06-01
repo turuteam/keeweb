@@ -9,13 +9,14 @@ import { IdGenerator } from 'util/generators/id-generator';
 import { KeyHandler } from 'comp/browser/key-handler';
 import { Keys } from 'const/keys';
 import { OpenState } from 'models/open-state';
+import { Query } from 'models/query';
 
 export type WorkspaceMode = 'open' | 'list' | 'settings' | 'panel';
 
 class Workspace extends Model {
     readonly menu = new Menu();
+    readonly query = new Query();
     mode: WorkspaceMode = 'open';
-    filter = new Filter();
     tags: string[] = [];
     activeEntryId?: string;
     unlockMessage?: string;
@@ -27,13 +28,15 @@ class Workspace extends Model {
         FileManager.on('file-added', (id) => this.fileAdded(id));
         (this as Workspace).onChange('mode', (mode, prevMode) => this.modeChanged(mode, prevMode));
 
+        this.query.on('results-updated', () => this.queryResultsUpdated());
+
         this.setKeyHandlers();
     }
 
     closeAllFiles(): void {
         FileManager.closeAll();
 
-        this.filter = new Filter();
+        this.query.reset();
         this.selectShowAllMenuItem();
     }
 
@@ -85,16 +88,11 @@ class Workspace extends Model {
         for (const file of FileManager.files) {
             file.emptyTrash();
         }
-        this.refresh();
+        this.query.updateResults();
     }
 
     selectEntry(entryId: string): void {
         this.activeEntryId = entryId;
-        this.refresh();
-    }
-
-    refresh(): void {
-        this.setFilter(this.filter);
     }
 
     lockWorkspace(): void {
@@ -156,7 +154,7 @@ class Workspace extends Model {
             return;
         }
 
-        this.refresh();
+        this.query.updateResults();
 
         file.on('reload', () => this.reloadFile(file));
         file.on('ejected', () => this.closeFile(file));
@@ -254,39 +252,6 @@ class Workspace extends Model {
         }
     }
 
-    private setFilter(filter: Filter): void {
-        this.prepareFilter(filter);
-        this.filter = filter;
-        this.filter.subGroups = AppSettings.expandGroups;
-        // if (!this.filter.advanced && this.advancedSearch) { // TODO: advanced search
-        //     this.filter.advanced = this.advancedSearch;
-        // }
-        // const entries = this.getEntries(); // TODO: filtering
-        // if (!this.activeEntryId || !entries.get(this.activeEntryId)) {
-        //     const firstEntry = entries[0];
-        //     this.activeEntryId = firstEntry ? firstEntry.id : null;
-        // }
-        // Events.emit('filter', { filter: this.filter, sort: this.sort, entries });
-        // Events.emit('entry-selected', entries.get(this.activeEntryId));
-    }
-
-    private prepareFilter(filter: Filter): void {
-        filter.textLower = filter.text ? filter.text.toLowerCase() : '';
-        filter.textParts = undefined;
-        filter.textLowerParts = undefined;
-
-        const exact = filter.advanced?.exact;
-        if (!exact && filter.text) {
-            const textParts = filter.text.split(/\s+/).filter((s) => s);
-            if (textParts.length) {
-                filter.textParts = textParts;
-                filter.textLowerParts = filter.textLower.split(/\s+/).filter((s) => s);
-            }
-        }
-
-        filter.tagLower = filter.tag ? filter.tag.toLowerCase() : '';
-    }
-
     private setKeyHandlers(): void {
         KeyHandler.onKey(
             Keys.DOM_VK_L,
@@ -310,6 +275,15 @@ class Workspace extends Model {
             KeyHandler.SHORTCUT_ACTION,
             'open'
         );
+    }
+
+    private queryResultsUpdated() {
+        if (
+            !this.activeEntryId ||
+            !this.query.results.some((item) => item.id === this.activeEntryId)
+        ) {
+            this.activeEntryId = this.query.results[0]?.id;
+        }
     }
 }
 

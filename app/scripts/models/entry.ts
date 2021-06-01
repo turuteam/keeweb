@@ -11,7 +11,7 @@ import { File } from './file';
 import { isEqual } from 'util/fn';
 import { AppSettings } from './app-settings';
 import { Filter } from './filter';
-import { EntrySearch } from 'comp/search/entry-search';
+import { EntryMatcher } from 'comp/search/entry-matcher';
 import { Ranking } from 'util/data/ranking';
 
 const UrlRegex = /^https?:\/\//i;
@@ -271,7 +271,7 @@ class Entry extends Model {
     }
 
     matches(filter: Filter): boolean {
-        return EntrySearch.matches(this, filter);
+        return EntryMatcher.matches(this, filter);
     }
 
     getAllFields(): Map<string, kdbxweb.KdbxEntryField> {

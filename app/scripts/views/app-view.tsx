@@ -87,7 +87,7 @@ export const AppView: FunctionComponent<{
                     </div>
                 ) : null}
                 {panelVisible ? <div class="app__panel" /> : null}
-                {settingsVisible ? 'settings' : null}
+                {settingsVisible ? <div>settings</div> : null}
                 {openVisible ? <OpenScreen /> : null}
             </div>
             <div class="app__footer">

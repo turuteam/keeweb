@@ -1,5 +1,5 @@
 import * as kdbxweb from 'kdbxweb';
-import { Model } from 'util/model';
+import { DefaultModelEvents, Model } from 'util/model';
 import { Entry } from 'models/entry';
 import { Group } from 'models/group';
 import { IconUrlFormat } from 'util/formatting/icon-url-format';
@@ -34,7 +34,7 @@ interface FileKdfParamsArgon2 {
 
 type FileKdfParams = FileKdfParamsAes | FileKdfParamsArgon2;
 
-interface FileEvents {
+interface FileEvents extends DefaultModelEvents {
     'reload': () => void;
     'ejected': () => void;
 }

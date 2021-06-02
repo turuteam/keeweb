@@ -11,7 +11,6 @@ import { Resizable } from 'framework/views/resizable';
 import { Scrollable } from 'framework/views/scrollable';
 import { DropdownView } from 'views/dropdown-view';
 import { ListSearchView } from 'views/list-search-view';
-import throttle from 'lodash/throttle';
 import template from 'templates/list.hbs';
 import emptyTemplate from 'templates/list-empty.hbs';
 
@@ -359,10 +358,6 @@ class ListView extends View {
         this.throttleSetViewSizeSetting(size);
         this.renderVisibleItems();
     }
-
-    throttleSetViewSizeSetting = throttle((size) => {
-        AppSettingsModel.listViewWidth = size;
-    }, 1000);
 
     filterChanged(filter) {
         this.items = filter.entries;

@@ -6,7 +6,7 @@ import { Storage } from 'storage';
 import { Locale } from 'util/locale';
 import { AppSettings } from 'models/app-settings';
 import { noop } from 'util/fn';
-import debounce from 'lodash/debounce';
+import debounce from 'lodash.debounce';
 import { Timeouts } from 'const/timeouts';
 
 interface FileManagerEvents extends DefaultModelEvents {

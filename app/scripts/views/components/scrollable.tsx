@@ -1,4 +1,4 @@
-import { debounce } from 'lodash';
+import debounce from 'lodash.debounce';
 import { FunctionComponent } from 'preact';
 import { useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { Features } from 'util/features';

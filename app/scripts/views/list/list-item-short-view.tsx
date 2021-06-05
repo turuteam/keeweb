@@ -29,7 +29,11 @@ export const ListItemShortView: FunctionComponent<{
                 <i class={`fa fa-${icon} ${color ? `${color}-color` : ''} list__item-icon`} />
             )}
             <span class="list__item-title">{title || `(${Locale.noTitle})`}</span>
-            <span class="list__item-descr thin">{description || ' '}</span>
+            {description ? (
+                <span class="list__item-descr thin">{description}</span>
+            ) : (
+                <span class="list__item-descr">&nbsp;</span>
+            )}
         </div>
     );
 };

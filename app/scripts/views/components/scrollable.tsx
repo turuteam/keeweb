@@ -7,7 +7,9 @@ import { classes } from 'util/ui/classes';
 import { Timeouts } from 'const/timeouts';
 import { Events } from 'util/events';
 
-const Scrollable: FunctionComponent = ({ children }) => {
+const Scrollable: FunctionComponent<{
+    onScroll?: (e: Event) => void;
+}> = ({ children, onScroll }) => {
     const scroller = useRef<HTMLDivElement>();
     const bar = useRef<HTMLDivElement>();
     const barWrapper = useRef<HTMLDivElement>();
@@ -15,7 +17,7 @@ const Scrollable: FunctionComponent = ({ children }) => {
     const [barWrapperInvisible, setBarWrapperInvisible] = useState(false);
 
     useLayoutEffect(() => {
-        if (!scroller.current.parentElement) {
+        if (!scroller.current?.parentElement) {
             return;
         }
 
@@ -53,7 +55,7 @@ const Scrollable: FunctionComponent = ({ children }) => {
 
     return (
         <>
-            <div class="scroller" ref={scroller}>
+            <div class="scroller" ref={scroller} onScroll={onScroll}>
                 {children}
             </div>
             <div

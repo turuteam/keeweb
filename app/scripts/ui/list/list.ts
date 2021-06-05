@@ -1,10 +1,11 @@
 import { FunctionComponent, h } from 'preact';
 import { ListView } from 'views/list/list-view';
 import { Workspace } from 'models/workspace';
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useKey, useModelField } from 'util/ui/hooks';
 import { Keys } from 'const/keys';
 import { nextItem, prevItem } from 'util/fn';
+import { AppSettings } from 'models/app-settings';
 
 export const List: FunctionComponent = () => {
     const [, setState] = useState({});
@@ -58,10 +59,42 @@ export const List: FunctionComponent = () => {
 
     const itemsCount = groups.length + entries.length;
 
+    const [scrollTop, setScrollTop] = useState(0);
+
+    const itemHeight = useMemo(() => {
+        return 47.59375; // TODO: calculate item height
+    }, [AppSettings.tableView]);
+    const visibleItemsCount = Math.ceil(window.innerHeight / itemHeight);
+    const scrollBufferSizeInItems = Math.max(4, Math.ceil(visibleItemsCount / 2));
+    const firstVisibleItem = Math.floor(scrollTop / itemHeight);
+    const lastVisibleItem = firstVisibleItem + visibleItemsCount;
+    const firstItem = Math.max(0, firstVisibleItem - scrollBufferSizeInItems);
+    const lastItem = Math.min(itemsCount, lastVisibleItem + scrollBufferSizeInItems);
+
+    const firstGroup = firstItem < groups.length ? firstItem : -1;
+    const lastGroup = lastItem < groups.length ? lastItem : groups.length - 1;
+    const firstEntry = lastItem < groups.length ? -1 : Math.max(0, firstItem - groups.length);
+    const lastEntry = lastItem - groups.length;
+
+    const firstItemOffset = firstItem * itemHeight;
+    const totalHeight = itemsCount * itemHeight;
+
+    const onScroll = (e: Event) => {
+        const target = e.target;
+        if (!(target instanceof HTMLElement)) {
+            return;
+        }
+        setScrollTop(target.scrollTop);
+    };
+
     return h(ListView, {
         itemsCount,
-        groups,
-        entries,
-        activeItemId
+        groups: firstGroup < 0 ? [] : groups.slice(firstGroup, lastGroup + 1),
+        entries: firstEntry < 0 ? [] : entries.slice(firstEntry, lastEntry + 1),
+        activeItemId,
+        firstItemOffset,
+        totalHeight,
+
+        onScroll
     });
 };

@@ -11,7 +11,11 @@ export const ListView: FunctionComponent<{
     groups: Group[];
     entries: Entry[];
     activeItemId: string | undefined;
-}> = ({ itemsCount, entries, activeItemId }) => {
+    firstItemOffset: number;
+    totalHeight: number;
+
+    onScroll: (e: Event) => void;
+}> = ({ itemsCount, entries, activeItemId, firstItemOffset, totalHeight, onScroll }) => {
     return (
         <div class="list">
             <div class="list__header">
@@ -19,8 +23,11 @@ export const ListView: FunctionComponent<{
             </div>
             <div class="list__items">
                 {itemsCount ? (
-                    <Scrollable>
-                        <div class="list__list list__items-container">
+                    <Scrollable onScroll={onScroll}>
+                        <div
+                            class="list__list list__items-container"
+                            style={{ height: totalHeight, paddingTop: firstItemOffset }}
+                        >
                             {entries.map((entry) => (
                                 <ListEntryShort
                                     key={entry.id}

@@ -1,6 +1,5 @@
 import { View, DefaultTemplateOptions } from 'framework/views/view';
 import { Events } from 'framework/events';
-import { SearchResultCollection } from 'collections/search-result-collection';
 import { DragDropInfo } from 'comp/app/drag-drop-info';
 import { Alerts } from 'comp/ui/alerts';
 import { AppSettingsModel } from 'models/app-settings-model';
@@ -10,7 +9,6 @@ import { Locale } from 'util/locale';
 import { Resizable } from 'framework/views/resizable';
 import { Scrollable } from 'framework/views/scrollable';
 import { DropdownView } from 'views/dropdown-view';
-import { ListSearchView } from 'views/list-search-view';
 
 class ListView extends View {
     tableColumns = [

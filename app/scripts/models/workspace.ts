@@ -110,6 +110,7 @@ class Workspace extends Model {
         }
         this.closeAllFiles(); // TODO: implement locking from app-view
         this.showOpen();
+        this.query.reset();
     }
 
     toggleOpen(): void {

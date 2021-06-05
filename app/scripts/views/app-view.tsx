@@ -5,6 +5,7 @@ import { Titlebar } from 'ui/titlebar';
 import { OpenScreen } from 'ui/open/open-screen';
 import { Footer } from 'ui/footer';
 import { AppMenu } from 'ui/menu/app-menu';
+import { List } from 'ui/list/list';
 import { Settings } from 'ui/settings/settings';
 import { DragHandle } from 'views/components/drag-handle';
 import { useRef } from 'preact/hooks';
@@ -74,7 +75,9 @@ export const AppView: FunctionComponent<{
                             'app__list-wrap--table': tableView
                         })}
                     >
-                        <div class="app__list" ref={appList} style={{ width: listWidth }} />
+                        <div class="app__list" ref={appList} style={{ width: listWidth }}>
+                            <List />
+                        </div>
                         <div class="app__list-drag">
                             <DragHandle
                                 target={appList}

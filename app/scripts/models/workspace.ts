@@ -1,5 +1,5 @@
 import { Model } from 'util/model';
-import { Filter } from 'models/filter';
+import { AdvancedFilter, DefaultAdvancedFilter, Filter } from 'models/filter';
 import { File } from 'models/file';
 import { Menu } from 'models/menu/menu';
 import { FileManager } from 'models/file-manager';
@@ -28,8 +28,9 @@ class Workspace extends Model {
     readonly query = new Query();
     mode: WorkspaceMode = 'open';
     tags: string[] = [];
-    activeEntryId?: string;
+    activeItemId?: string;
     unlockMessage?: string;
+    lastAdvancedFilter: AdvancedFilter = DefaultAdvancedFilter;
 
     constructor() {
         super();
@@ -37,6 +38,7 @@ class Workspace extends Model {
         FileManager.onChange('files', () => this.filesChanged());
         FileManager.on('file-added', (id) => this.fileAdded(id));
         (this as Workspace).onChange('mode', (mode, prevMode) => this.modeChanged(mode, prevMode));
+        this.query.filter.onChange('advanced', (adv) => this.advancedFilterChanged(adv));
 
         this.query.on('results-updated', () => this.queryResultsUpdated());
 
@@ -99,7 +101,7 @@ class Workspace extends Model {
     }
 
     selectEntry(entryId: string): void {
-        this.activeEntryId = entryId;
+        this.activeItemId = entryId;
     }
 
     lockWorkspace(): void {
@@ -283,10 +285,17 @@ class Workspace extends Model {
 
     private queryResultsUpdated() {
         if (
-            !this.activeEntryId ||
-            !this.query.entries.some((item) => item.id === this.activeEntryId)
+            !this.activeItemId ||
+            !this.query.groups.some((item) => item.id === this.activeItemId) ||
+            !this.query.entries.some((item) => item.id === this.activeItemId)
         ) {
-            this.activeEntryId = this.query.entries[0]?.id;
+            this.activeItemId = this.query.groups[0]?.id ?? this.query.entries[0]?.id;
+        }
+    }
+
+    private advancedFilterChanged(adv: AdvancedFilter | undefined) {
+        if (adv) {
+            this.lastAdvancedFilter = adv;
         }
     }
 }

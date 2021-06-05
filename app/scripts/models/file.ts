@@ -86,6 +86,7 @@ class File extends Model<FileEvents> {
     supportsIcons = true;
     supportsExpiration = true;
     backend?: string;
+    readOnly?: boolean;
 
     private readonly _entryMap = new Map<string, Entry>();
     private readonly _groupMap = new Map<string, Group>();

@@ -11,29 +11,8 @@ import { Resizable } from 'framework/views/resizable';
 import { Scrollable } from 'framework/views/scrollable';
 import { DropdownView } from 'views/dropdown-view';
 import { ListSearchView } from 'views/list-search-view';
-import template from 'templates/list.hbs';
-import emptyTemplate from 'templates/list-empty.hbs';
 
 class ListView extends View {
-    parent = '.app__list';
-
-    template = template;
-
-    emptyTemplate = emptyTemplate;
-
-    events = {
-        'click': 'click',
-        'click .list__table-options': 'tableOptionsClick',
-        'dragstart .list__item': 'itemDragStart'
-    };
-
-    minWidth = 200;
-    minHeight = 200;
-    maxWidth = 500;
-    maxHeight = 500;
-
-    itemsEl = null;
-
     tableColumns = [
         { val: 'title', name: 'title', enabled: true },
         { val: 'user', name: 'user', enabled: true },
@@ -44,39 +23,7 @@ class ListView extends View {
         { val: 'fileName', name: 'file', enabled: false }
     ];
 
-    constructor(model, options) {
-        super(model, options);
-
-        this.initScroll();
-        this.views.search = new ListSearchView(this.model);
-
-        this.listenTo(this.views.search, 'select-prev', this.selectPrev);
-        this.listenTo(this.views.search, 'select-next', this.selectNext);
-        this.listenTo(this.views.search, 'create-entry', this.createEntry);
-        this.listenTo(this.views.search, 'create-group', this.createGroup);
-        this.listenTo(this.views.search, 'create-template', this.createTemplate);
-        this.listenTo(this, 'show', this.viewShown);
-        this.listenTo(this, 'hide', this.viewHidden);
-        this.listenTo(this, 'view-resize', this.viewResized);
-        this.listenTo(Events, 'filter', this.filterChanged);
-        this.listenTo(Events, 'entry-updated', this.entryUpdated);
-        this.listenTo(Events, 'set-locale', this.render);
-
-        this.listenTo(this.model.settings, 'change:tableView', this.setTableView);
-
-        this.readTableColumnsEnabled();
-
-        this.items = new SearchResultCollection();
-        this.renderedItems = new Map();
-    }
-
     render() {
-        if (!this.isVisible()) {
-            this.pendingRender = true;
-            return;
-        }
-        this.pendingRender = false;
-
         if (!this.itemsEl) {
             super.render();
             this.itemsEl = this.$el.find('.list__items>.scroller');
@@ -133,22 +80,6 @@ class ListView extends View {
             this.itemsEl.html(this.emptyTemplate({}, DefaultTemplateOptions));
         }
         this.pageResized();
-    }
-
-    getItemsTemplate() {
-        if (this.model.settings.tableView) {
-            return require('templates/list-mode-table.hbs');
-        } else {
-            return require('templates/list-mode-list.hbs');
-        }
-    }
-
-    getItemTemplate() {
-        if (this.model.settings.tableView) {
-            return require('templates/list-item-table.hbs');
-        } else {
-            return require('templates/list-item-short.hbs');
-        }
     }
 
     renderVisibleItems() {
@@ -235,10 +166,6 @@ class ListView extends View {
         this.renderedItems.set(ix, el);
     }
 
-    getDescField() {
-        return this.model.sort.replace('-', '');
-    }
-
     click(e) {
         const listItemEl = e.target.closest('.list__item');
         if (!listItemEl) {
@@ -250,20 +177,6 @@ class ListView extends View {
             this.selectItem(item);
         }
         Events.emit('toggle-details', true);
-    }
-
-    selectPrev() {
-        const ix = this.items.indexOf(this.items.get(this.model.activeEntryId));
-        if (ix > 0) {
-            this.selectItem(this.items[ix - 1]);
-        }
-    }
-
-    selectNext() {
-        const ix = this.items.indexOf(this.items.get(this.model.activeEntryId));
-        if (ix < this.items.length - 1) {
-            this.selectItem(this.items[ix + 1]);
-        }
     }
 
     createEntry(arg) {
@@ -323,46 +236,10 @@ class ListView extends View {
         }
     }
 
-    viewShown() {
-        this.views.search.show();
-        if (this.pendingRender) {
-            this.render();
-        }
-    }
-
-    viewHidden() {
-        this.views.search.hide();
-    }
-
     setTableView() {
         const isTable = this.model.settings.tableView;
         this.dragView.setCoord(isTable ? 'y' : 'x');
         this.setDefaultSize();
-    }
-
-    setDefaultSize() {
-        this.setSize(this.model.settings.listViewWidth);
-    }
-
-    setSize(size) {
-        this.$el.css({ width: 'auto', height: 'auto' });
-        if (size) {
-            this.$el.css('flex', '0 0 ' + size + 'px');
-        } else {
-            this.$el.css('flex', '');
-        }
-    }
-
-    viewResized(size) {
-        this.setSize(size);
-        this.throttleSetViewSizeSetting(size);
-        this.renderVisibleItems();
-    }
-
-    filterChanged(filter) {
-        this.items = filter.entries;
-        this.renderedItems = new Map();
-        this.render();
     }
 
     entryUpdated() {

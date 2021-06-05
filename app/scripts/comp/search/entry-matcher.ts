@@ -105,14 +105,14 @@ function matchString(str: kdbxweb.KdbxEntryField, find: string): boolean {
     if (str instanceof kdbxweb.ProtectedValue) {
         return str.includes(find);
     }
-    return str.indexOf(find) >= 0;
+    return str.includes(find);
 }
 
 function matchStringLower(str: kdbxweb.KdbxEntryField, findLower: string): boolean {
     if (str instanceof kdbxweb.ProtectedValue) {
         return str.includesLower(findLower);
     }
-    return str.toLowerCase().indexOf(findLower) >= 0;
+    return str.toLowerCase().includes(findLower);
 }
 
 function matchStringMulti(
@@ -123,16 +123,7 @@ function matchStringMulti(
 ): boolean {
     for (let i = 0; i < find.length; i++) {
         const item = find[i];
-        let strMatches;
-        if (lower) {
-            strMatches =
-                str instanceof kdbxweb.ProtectedValue
-                    ? str.includesLower(item)
-                    : str.includes(item);
-        } else {
-            strMatches =
-                str instanceof kdbxweb.ProtectedValue ? str.includes(item) : str.includes(item);
-        }
+        const strMatches = lower ? matchStringLower(str, item) : matchString(str, item);
         if (strMatches) {
             if (context.matches) {
                 if (!context.matches.includes(item)) {

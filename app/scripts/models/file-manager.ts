@@ -184,6 +184,10 @@ class FileManager extends Model<FileManagerEvents> {
         this.watchFileInfo(fileInfo);
     }
 
+    hasWritableFiles(): boolean {
+        return this.files.some((f) => !f.readOnly);
+    }
+
     private fileClosed(file: File) {
         if (file.storage === 'file' && file.path) {
             Storage.file.unwatch(file.path);

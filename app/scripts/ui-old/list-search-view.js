@@ -17,7 +17,6 @@ class ListSearchView extends View {
 
     events = {
         'keydown .list__search-field': 'inputKeyDown',
-        'keypress .list__search-field': 'inputKeyPress',
         'input .list__search-field': 'inputChange',
         'focus .list__search-field': 'inputFocus',
         'click .list__search-btn-new': 'createOptionsClick',
@@ -119,16 +118,8 @@ class ListSearchView extends View {
             this.advancedSearch = { ...this.model.advancedSearch };
         }
         this.setLocale();
-        this.onKey(Keys.DOM_VK_F, this.findKeyPress, KeyHandler.SHORTCUT_ACTION);
         this.onKey(Keys.DOM_VK_N, this.newKeyPress, KeyHandler.SHORTCUT_OPT);
-        this.onKey(Keys.DOM_VK_DOWN, this.downKeyPress);
-        this.onKey(Keys.DOM_VK_UP, this.upKeyPress);
-        this.listenTo(this, 'show', this.viewShown);
-        this.listenTo(this, 'hide', this.viewHidden);
         this.listenTo(Events, 'filter', this.filterChanged);
-        this.listenTo(Events, 'set-locale', this.setLocale);
-        this.listenTo(Events, 'page-blur', this.pageBlur);
-        this.listenTo(this.model.files, 'change', this.fileListUpdated);
 
         this.once('remove', () => {
             this.removeKeypressHandler();
@@ -155,22 +146,6 @@ class ListSearchView extends View {
         }
     }
 
-    pageBlur() {
-        this.inputEl.blur();
-    }
-
-    removeKeypressHandler() {}
-
-    viewShown() {
-        const keypressHandler = (e) => this.documentKeyPress(e);
-        Events.on('keypress', keypressHandler);
-        this.removeKeypressHandler = () => Events.off('keypress', keypressHandler);
-    }
-
-    viewHidden() {
-        this.removeKeypressHandler();
-    }
-
     render() {
         let searchVal;
         if (this.inputEl) {
@@ -187,82 +162,12 @@ class ListSearchView extends View {
         }
     }
 
-    inputKeyDown(e) {
-        switch (e.which) {
-            case Keys.DOM_VK_UP:
-            case Keys.DOM_VK_DOWN:
-                break;
-            case Keys.DOM_VK_RETURN:
-                e.target.blur();
-                break;
-            case Keys.DOM_VK_ESCAPE:
-                if (this.inputEl.val()) {
-                    this.inputEl.val('');
-                    this.inputChange();
-                }
-                e.target.blur();
-                break;
-            default:
-                return;
-        }
-        e.preventDefault();
-    }
-
-    inputKeyPress(e) {
-        e.stopPropagation();
-    }
-
-    inputChange() {
-        const text = this.inputEl.val();
-        this.inputEl[0].parentElement.classList.toggle('list__search-field-wrap--text', text);
-        Events.emit('add-filter', { text });
-    }
-
-    inputFocus(e) {
-        $(e.target).select();
-    }
-
-    documentKeyPress(e) {
-        if (this.hidden) {
-            return;
-        }
-        const code = e.charCode;
-        if (!code) {
-            return;
-        }
-        this.hideSearchOptions();
-        this.inputEl.val(String.fromCharCode(code)).focus();
-        this.inputEl[0].setSelectionRange(1, 1);
-        this.inputChange();
-        e.preventDefault();
-    }
-
-    findKeyPress(e) {
-        if (!this.hidden) {
-            e.preventDefault();
-            this.hideSearchOptions();
-            this.inputEl.select().focus();
-        }
-    }
-
     newKeyPress(e) {
         if (!this.hidden) {
             e.preventDefault();
             this.hideSearchOptions();
             this.emit('create-entry');
         }
-    }
-
-    downKeyPress(e) {
-        e.preventDefault();
-        this.hideSearchOptions();
-        this.emit('select-next');
-    }
-
-    upKeyPress(e) {
-        e.preventDefault();
-        this.hideSearchOptions();
-        this.emit('select-prev');
     }
 
     filterChanged(filter) {
@@ -311,12 +216,6 @@ class ListSearchView extends View {
 
     toggleMenu() {
         Events.emit('toggle-menu');
-    }
-
-    toggleAdvCheck(e) {
-        const setting = $(e.target).data('id');
-        this.advancedSearch[setting] = e.target.checked;
-        Events.emit('add-filter', { advanced: this.advancedSearch });
     }
 
     hideSearchOptions() {
@@ -426,15 +325,6 @@ class ListSearchView extends View {
 
     addArrow(str) {
         return str.replace('{}', '→');
-    }
-
-    fileListUpdated() {
-        this.render();
-    }
-
-    clickClear() {
-        this.inputEl.val('');
-        this.inputChange();
     }
 }
 

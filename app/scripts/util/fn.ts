@@ -53,3 +53,27 @@ export function errorToString(err: unknown): string {
     }
     return str;
 }
+
+export function nextItem<T>(items: T[], predicate: (item: T) => boolean): T | null | undefined {
+    let found = false;
+    for (const item of items) {
+        if (found) {
+            return item;
+        }
+        if (predicate(item)) {
+            found = true;
+        }
+    }
+    return found ? null : undefined;
+}
+
+export function prevItem<T>(items: T[], predicate: (item: T) => boolean): T | null | undefined {
+    let prev: T | null = null;
+    for (const item of items) {
+        if (predicate(item)) {
+            return prev;
+        }
+        prev = item;
+    }
+    return undefined;
+}

@@ -1,7 +1,7 @@
 import { Model } from 'util/model';
 import { InitWithFieldsOf } from 'util/types';
 
-export interface AdvancedFilter extends Model {
+export interface AdvancedFilter {
     cs?: boolean;
     regex?: boolean;
     user?: boolean;
@@ -14,6 +14,14 @@ export interface AdvancedFilter extends Model {
     history?: boolean;
     exact?: boolean;
 }
+
+export const DefaultAdvancedFilter: AdvancedFilter = {
+    user: true,
+    url: true,
+    notes: true,
+    title: true,
+    other: true
+};
 
 export class Filter extends Model {
     text?: string;

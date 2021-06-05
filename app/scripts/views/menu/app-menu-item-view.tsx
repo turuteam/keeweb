@@ -110,10 +110,9 @@ export const AppMenuItemView: FunctionComponent<{
                 {isTrash ? (
                     <i
                         class="menu__item-empty-trash fa fa-minus-circle"
-                        tip-placement="right"
                         onClick={withoutPropagation(actionClicked)}
                     >
-                        <kw-tip text={Locale.menuEmptyTrash} />
+                        <kw-tip text={Locale.menuEmptyTrash} placement="right" />
                     </i>
                 ) : null}
             </div>

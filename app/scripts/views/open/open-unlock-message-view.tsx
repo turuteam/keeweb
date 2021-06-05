@@ -10,9 +10,9 @@ export const OpenUnlockMessageView: FunctionComponent<{
     return (
         <div class="open__message">
             <div class="open__message-content">{unlockMessage}</div>
-            <div class="open__message-cancel-btn" tip-placement="left">
+            <div class="open__message-cancel-btn">
                 <i class="fa fa-times-circle open__message-cancel-btn-icon" />
-                <kw-tip text={Locale.alertCancel} />
+                <kw-tip text={Locale.alertCancel} placement="left" />
             </div>
         </div>
     );

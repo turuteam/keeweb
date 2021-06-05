@@ -102,28 +102,8 @@ class ListSearchView extends View {
         this.sortOptions.forEach((opt) => {
             this.sortIcons[opt.value] = opt.icon;
         });
-        this.advancedSearch = {
-            user: true,
-            other: true,
-            url: true,
-            protect: false,
-            notes: true,
-            pass: false,
-            cs: false,
-            regex: false,
-            history: false,
-            title: true
-        };
-        if (this.model.advancedSearch) {
-            this.advancedSearch = { ...this.model.advancedSearch };
-        }
         this.setLocale();
         this.onKey(Keys.DOM_VK_N, this.newKeyPress, KeyHandler.SHORTCUT_OPT);
-        this.listenTo(Events, 'filter', this.filterChanged);
-
-        this.once('remove', () => {
-            this.removeKeypressHandler();
-        });
     }
 
     setLocale() {
@@ -146,44 +126,11 @@ class ListSearchView extends View {
         }
     }
 
-    render() {
-        let searchVal;
-        if (this.inputEl) {
-            searchVal = this.inputEl.val();
-        }
-        super.render({
-            adv: this.advancedSearch,
-            advEnabled: this.advancedSearchEnabled,
-            canCreate: this.model.canCreateEntries()
-        });
-        this.inputEl = this.$el.find('.list__search-field');
-        if (searchVal) {
-            this.inputEl.val(searchVal);
-        }
-    }
-
     newKeyPress(e) {
         if (!this.hidden) {
             e.preventDefault();
             this.hideSearchOptions();
             this.emit('create-entry');
-        }
-    }
-
-    filterChanged(filter) {
-        this.hideSearchOptions();
-        if (filter.filter.text !== this.inputEl.val()) {
-            this.inputEl.val(filter.text || '');
-        }
-        const sortIconCls = this.sortIcons[filter.sort] || 'sort';
-        this.$el.find('.list__search-btn-sort>i').attr('class', 'fa fa-' + sortIconCls);
-        let adv = !!filter.filter.advanced;
-        if (this.model.advancedSearch) {
-            adv = filter.filter.advanced !== this.model.advancedSearch;
-        }
-        if (this.advancedSearchEnabled !== adv) {
-            this.advancedSearchEnabled = adv;
-            this.$el.find('.list__search-adv').toggleClass('hide', !this.advancedSearchEnabled);
         }
     }
 
@@ -200,22 +147,6 @@ class ListSearchView extends View {
     sortOptionsClick(e) {
         this.toggleSortOptions();
         e.stopImmediatePropagation();
-    }
-
-    advancedSearchClick() {
-        this.advancedSearchEnabled = !this.advancedSearchEnabled;
-        this.$el.find('.list__search-adv').toggleClass('hide', !this.advancedSearchEnabled);
-        let advanced = false;
-        if (this.advancedSearchEnabled) {
-            advanced = this.advancedSearch;
-        } else if (this.model.advancedSearch) {
-            advanced = this.model.advancedSearch;
-        }
-        Events.emit('add-filter', { advanced });
-    }
-
-    toggleMenu() {
-        Events.emit('toggle-menu');
     }
 
     hideSearchOptions() {

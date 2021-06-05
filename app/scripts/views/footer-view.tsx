@@ -65,44 +65,33 @@ export const FooterView: FunctionComponent<{
                 <i class="fa fa-plus" />
                 <span class="footer__db-text">&nbsp;{Locale.footerOpen}</span>
             </div>
-            <div
-                class="footer__btn footer__btn-help"
-                tip-placement="top"
-                id="footer__btn-help"
-                onClick={helpClicked}
-            >
+            <div class="footer__btn footer__btn-help" id="footer__btn-help" onClick={helpClicked}>
                 <i class="fa fa-question" />
-                <kw-tip text={Locale.help} />
+                <kw-tip text={Locale.help} placement="top" />
             </div>
             <div
                 class="footer__btn footer__btn-settings"
-                tip-placement="top"
                 id="footer__btn-settings"
                 onClick={settingsClicked}
             >
-                <kw-tip text={Locale.settings} />
+                <kw-tip text={Locale.settings} placement="top" />
                 {updateAvailable ? (
                     <i class="fa fa-bell footer__update-icon" />
                 ) : (
                     <i class="fa fa-cog" />
                 )}
             </div>
-            <div
-                class="footer__btn footer__btn-generate"
-                tip-placement="top"
-                id="footer__btn-generate"
-            >
+            <div class="footer__btn footer__btn-generate" id="footer__btn-generate">
                 <i class="fa fa-bolt" />
-                <kw-tip text={Locale.footerTitleGen} />
+                <kw-tip text={Locale.footerTitleGen} placement="top" />
             </div>
             <div
                 class="footer__btn footer__btn-lock"
-                tip-placement="top-left"
                 id="footer__btn-lock"
                 onClick={lockWorkspaceClicked}
             >
                 <i class="fa fa-sign-out-alt" />
-                <kw-tip text={Locale.footerTitleLock} />
+                <kw-tip text={Locale.footerTitleLock} placement="top-left" />
             </div>
         </div>
     );

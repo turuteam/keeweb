@@ -6,14 +6,14 @@ export const ListItemShortView: FunctionComponent<{
     id: string;
     title?: string;
     description?: string;
-    active: boolean;
+    active?: boolean;
     expired?: boolean;
-    icon: string;
-    isCustomIcon: boolean;
+    icon?: string;
+    customIcon?: string;
     color?: string;
 
-    itemClicked: () => void;
-}> = ({ id, title, description, active, expired, icon, isCustomIcon, color, itemClicked }) => {
+    itemClicked?: () => void;
+}> = ({ id, title, description, active, expired, icon, customIcon, color, itemClicked }) => {
     return (
         <div
             class={classes({
@@ -25,10 +25,14 @@ export const ListItemShortView: FunctionComponent<{
             draggable={true}
             onClick={itemClicked}
         >
-            {isCustomIcon ? (
+            {customIcon ? (
                 <img src={icon} class={`list__item-icon list__item-icon--custom ${color ?? ''}`} />
             ) : (
-                <i class={`fa fa-${icon} ${color ? `${color}-color` : ''} list__item-icon`} />
+                <i
+                    class={`fa fa-${icon ?? 'key'} ${
+                        color ? `${color}-color` : ''
+                    } list__item-icon`}
+                />
             )}
             <span class="list__item-title">{title || `(${Locale.noTitle})`}</span>
             {description ? (

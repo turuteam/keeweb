@@ -61,9 +61,7 @@ export const List: FunctionComponent = () => {
 
     const [scrollTop, setScrollTop] = useState(0);
 
-    const itemHeight = useMemo(() => {
-        return 47.59375; // TODO: calculate item height
-    }, [AppSettings.tableView]);
+    const itemHeight = useMemo(getItemHeight, [AppSettings.tableView]);
     const visibleItemsCount = Math.ceil(window.innerHeight / itemHeight);
     const scrollBufferSizeInItems = Math.max(4, Math.ceil(visibleItemsCount / 2));
 
@@ -97,7 +95,7 @@ export const List: FunctionComponent = () => {
 
     const onScroll = (e: Event) => {
         if (e.target instanceof HTMLElement) {
-            setScrollTop(scrollTop);
+            setScrollTop(e.target.scrollTop);
         }
     };
 
@@ -112,3 +110,35 @@ export const List: FunctionComponent = () => {
         onScroll
     });
 };
+
+function getItemHeight(): number {
+    if (AppSettings.tableView) {
+        throw new Error('Not implemented');
+    }
+
+    // render() throws an error in hooks here
+
+    const item = document.createElement('div');
+    item.classList.add('hide-by-pos', 'list__item');
+
+    const icon = document.createElement('i');
+    icon.classList.add('fa', 'fa-key', 'list__item-icon');
+
+    const title = document.createElement('span');
+    title.classList.add('list__item-title');
+    title.innerText = 'title';
+
+    const descr = document.createElement('span');
+    descr.classList.add('list__item-descr');
+    descr.innerText = 'descr';
+
+    item.append(icon, title, descr);
+
+    document.body.appendChild(item);
+
+    const { height } = item.getBoundingClientRect();
+
+    item.remove();
+
+    return height;
+}

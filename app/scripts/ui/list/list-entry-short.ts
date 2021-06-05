@@ -8,8 +8,6 @@ import { DateFormat } from 'util/formatting/date-format';
 import { Locale } from 'util/locale';
 import { AppSettings } from 'models/app-settings';
 
-const DefaultIcon = 'key';
-
 export const ListEntryShort: FunctionComponent<{ entry: Entry; active: boolean }> = memo(
     ({ entry, active }) => {
         const sort = Workspace.query.sort;
@@ -29,8 +27,8 @@ export const ListEntryShort: FunctionComponent<{ entry: Entry; active: boolean }
             description: getDescription(entry, sort),
             active,
             expired: entry.expired,
-            icon: entry.icon ?? entry.customIcon ?? DefaultIcon,
-            isCustomIcon: !!entry.customIcon,
+            icon: entry.icon,
+            customIcon: entry.customIcon,
             color,
 
             itemClicked

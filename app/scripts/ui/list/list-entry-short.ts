@@ -6,6 +6,7 @@ import { Workspace } from 'models/workspace';
 import { QuerySort } from 'models/query';
 import { DateFormat } from 'util/formatting/date-format';
 import { Locale } from 'util/locale';
+import { AppSettings } from 'models/app-settings';
 
 const DefaultIcon = 'key';
 
@@ -17,14 +18,20 @@ export const ListEntryShort: FunctionComponent<{ entry: Entry; active: boolean }
             Workspace.activeItemId = entry.id;
         };
 
+        let color = entry.color ?? '';
+        if (!color && entry.customIcon && !AppSettings.colorfulIcons) {
+            color = 'grayscale';
+        }
+
         return h(ListItemShortView, {
+            id: entry.id,
             title: entry.title,
             description: getDescription(entry, sort),
             active,
             expired: entry.expired,
             icon: entry.icon ?? entry.customIcon ?? DefaultIcon,
             isCustomIcon: !!entry.customIcon,
-            color: entry.color,
+            color,
 
             itemClicked
         });

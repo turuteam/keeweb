@@ -31,9 +31,11 @@ export class Query extends Model<QueryEvents> {
     readonly filter = new Filter();
     sort: QuerySort = QuerySort.TitleAsc;
 
+    private _preparingFilter?: boolean;
     private _entries?: Entry[];
     private _groups?: Group[];
-    private _preparingFilter?: boolean;
+    private readonly _entryIx = new Map<string, number>();
+    private readonly _groupIx = new Map<string, number>();
 
     constructor() {
         super();
@@ -56,6 +58,24 @@ export class Query extends Model<QueryEvents> {
         return this._groups || [];
     }
 
+    hasItem(id: string): boolean {
+        if (!this._entries) {
+            this.runQuery();
+        }
+        return this._entryIx.has(id) || this._groupIx.has(id);
+    }
+
+    itemIndex(id: string): number | undefined {
+        if (!this._entries) {
+            this.runQuery();
+        }
+        const entryIx = this._entryIx.get(id);
+        if (entryIx !== undefined) {
+            return this.groups.length + entryIx;
+        }
+        return this._groupIx.get(id);
+    }
+
     reset(): void {
         this.filter.reset();
     }
@@ -63,6 +83,8 @@ export class Query extends Model<QueryEvents> {
     updateResults(): void {
         this._entries = undefined;
         this._groups = undefined;
+        this._entryIx.clear();
+        this._groupIx.clear();
         this.emit('results-updated');
     }
 
@@ -118,6 +140,9 @@ export class Query extends Model<QueryEvents> {
 
         this._entries = entries;
         this._groups = groups;
+
+        entries.forEach((e, ix) => this._entryIx.set(e.id, ix));
+        groups.forEach((g, ix) => this._groupIx.set(g.id, ix));
     }
 
     private static addTrashGroups(groups: Group[]) {

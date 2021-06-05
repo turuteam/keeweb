@@ -285,11 +285,7 @@ class Workspace extends Model {
     }
 
     private queryResultsUpdated() {
-        if (
-            !this.activeItemId ||
-            !this.query.groups.some((item) => item.id === this.activeItemId) ||
-            !this.query.entries.some((item) => item.id === this.activeItemId)
-        ) {
+        if (!this.activeItemId || !this.query.hasItem(this.activeItemId)) {
             this.activeItemId = this.query.groups[0]?.id ?? this.query.entries[0]?.id;
         }
     }

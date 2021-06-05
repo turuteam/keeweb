@@ -1,7 +1,7 @@
 import { FunctionComponent, h } from 'preact';
 import { ListView } from 'views/list/list-view';
 import { Workspace } from 'models/workspace';
-import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useKey, useModelField } from 'util/ui/hooks';
 import { Keys } from 'const/keys';
 import { nextItem, prevItem } from 'util/fn';
@@ -66,25 +66,39 @@ export const List: FunctionComponent = () => {
     }, [AppSettings.tableView]);
     const visibleItemsCount = Math.ceil(window.innerHeight / itemHeight);
     const scrollBufferSizeInItems = Math.max(4, Math.ceil(visibleItemsCount / 2));
-    const firstVisibleItem = Math.floor(scrollTop / itemHeight);
-    const lastVisibleItem = firstVisibleItem + visibleItemsCount;
-    const firstItem = Math.max(0, firstVisibleItem - scrollBufferSizeInItems);
-    const lastItem = Math.min(itemsCount, lastVisibleItem + scrollBufferSizeInItems);
 
-    const firstGroup = firstItem < groups.length ? firstItem : -1;
-    const lastGroup = lastItem < groups.length ? lastItem : groups.length - 1;
-    const firstEntry = lastItem < groups.length ? -1 : Math.max(0, firstItem - groups.length);
-    const lastEntry = lastItem - groups.length;
+    let firstVisibleItem = Math.floor(scrollTop / itemHeight);
+    let lastVisibleItem = firstVisibleItem + visibleItemsCount;
 
-    const firstItemOffset = firstItem * itemHeight;
+    const activeItemIndex = activeItemId ? Workspace.query.itemIndex(activeItemId) : undefined;
+    const lastActiveItemIndex = useRef<number | undefined>();
+    if (lastActiveItemIndex.current !== activeItemIndex) {
+        lastActiveItemIndex.current = activeItemIndex;
+        if (activeItemIndex && activeItemIndex < firstVisibleItem) {
+            firstVisibleItem = activeItemIndex;
+            lastVisibleItem = firstVisibleItem + visibleItemsCount;
+        } else if (activeItemIndex && activeItemIndex > lastVisibleItem) {
+            firstVisibleItem = activeItemIndex - visibleItemsCount;
+            lastVisibleItem = activeItemIndex;
+        }
+    }
+
+    const firstRenderedItem = Math.max(0, firstVisibleItem - scrollBufferSizeInItems);
+    const lastRenderedItem = Math.min(itemsCount, lastVisibleItem + scrollBufferSizeInItems);
+
+    const firstGroup = firstRenderedItem < groups.length ? firstRenderedItem : -1;
+    const lastGroup = lastRenderedItem < groups.length ? lastRenderedItem : groups.length - 1;
+    const firstEntry =
+        lastRenderedItem < groups.length ? -1 : Math.max(0, firstRenderedItem - groups.length);
+    const lastEntry = lastRenderedItem - groups.length;
+
+    const firstItemOffset = firstRenderedItem * itemHeight;
     const totalHeight = itemsCount * itemHeight;
 
     const onScroll = (e: Event) => {
-        const target = e.target;
-        if (!(target instanceof HTMLElement)) {
-            return;
+        if (e.target instanceof HTMLElement) {
+            setScrollTop(scrollTop);
         }
-        setScrollTop(target.scrollTop);
     };
 
     return h(ListView, {

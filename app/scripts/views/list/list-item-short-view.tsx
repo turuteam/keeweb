@@ -3,6 +3,7 @@ import { classes } from 'util/ui/classes';
 import { Locale } from 'util/locale';
 
 export const ListItemShortView: FunctionComponent<{
+    id: string;
     title?: string;
     description?: string;
     active: boolean;
@@ -12,7 +13,7 @@ export const ListItemShortView: FunctionComponent<{
     color?: string;
 
     itemClicked: () => void;
-}> = ({ title, description, active, expired, icon, isCustomIcon, color, itemClicked }) => {
+}> = ({ id, title, description, active, expired, icon, isCustomIcon, color, itemClicked }) => {
     return (
         <div
             class={classes({
@@ -20,6 +21,7 @@ export const ListItemShortView: FunctionComponent<{
                 'list__item--active': active,
                 'list__item--expired': expired
             })}
+            id={id}
             draggable={true}
             onClick={itemClicked}
         >

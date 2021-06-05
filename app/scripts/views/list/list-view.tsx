@@ -5,6 +5,7 @@ import { ListEntryShort } from 'ui/list/list-entry-short';
 import { Scrollable } from 'views/components/scrollable';
 import { Group } from 'models/group';
 import { Entry } from 'models/entry';
+import { useLayoutEffect } from 'preact/hooks';
 
 export const ListView: FunctionComponent<{
     itemsCount: number;
@@ -16,6 +17,27 @@ export const ListView: FunctionComponent<{
 
     onScroll: (e: Event) => void;
 }> = ({ itemsCount, entries, activeItemId, firstItemOffset, totalHeight, onScroll }) => {
+    useLayoutEffect(() => {
+        if (!activeItemId) {
+            return;
+        }
+        const activeItem = document.getElementById(activeItemId);
+        if (!activeItem) {
+            return;
+        }
+        const scroller = activeItem.closest('.scroller');
+        if (!scroller) {
+            return;
+        }
+        const itemRect = activeItem.getBoundingClientRect();
+        const listRect = scroller.getBoundingClientRect();
+        if (itemRect.top < listRect.top) {
+            scroller.scrollTop += itemRect.top - listRect.top;
+        } else if (itemRect.bottom > listRect.bottom) {
+            scroller.scrollTop += itemRect.bottom - listRect.bottom;
+        }
+    }, [activeItemId]);
+
     return (
         <div class="list">
             <div class="list__header">

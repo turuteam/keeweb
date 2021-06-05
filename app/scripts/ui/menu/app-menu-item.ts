@@ -23,7 +23,7 @@ export const AppMenuItem: FunctionComponent<{ item: MenuItem }> = ({ item }) => 
                 Alerts.info(item.disabledAlert);
             }
         } else {
-            Workspace.menu.select(item);
+            Workspace.selectMenu(item);
         }
     };
 
@@ -47,7 +47,7 @@ export const AppMenuItem: FunctionComponent<{ item: MenuItem }> = ({ item }) => 
     };
 
     const optionClicked = (option: MenuOption) => {
-        Workspace.menu.select(item, option);
+        Workspace.selectMenu(item, option);
     };
 
     const actionClicked = () => {

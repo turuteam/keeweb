@@ -14,7 +14,7 @@ export interface MenuItemFilterAllItems {
 
 export interface MenuItemFilterColor {
     type: 'color';
-    value?: string;
+    value: string;
 }
 
 export interface MenuItemFilterTag {

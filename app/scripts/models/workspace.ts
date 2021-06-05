@@ -10,6 +10,7 @@ import { KeyHandler } from 'comp/browser/key-handler';
 import { Keys } from 'const/keys';
 import { OpenState } from 'models/open-state';
 import { Query } from 'models/query';
+import { MenuOption } from 'models/menu/menu-option';
 
 export type WorkspaceMode = 'open' | 'list' | 'settings' | 'panel';
 
@@ -161,6 +162,36 @@ class Workspace extends Model {
             this.menu.setMenu('settings');
         } else if (prevMode === 'settings') {
             this.menu.setMenu('app');
+        }
+    }
+
+    selectMenu(item: MenuItem, option?: MenuOption): void {
+        this.menu.select(item, option);
+        if (option?.value) {
+            this.query.filter.batchSet(() => {
+                this.query.filter.reset();
+                this.query.filter.color = option.value;
+            });
+        } else if (item.filter) {
+            this.query.filter.batchSet(() => {
+                this.query.filter.reset();
+                switch (item.filter?.type) {
+                    case 'all':
+                        break;
+                    case 'color':
+                        this.query.filter.color = item.filter.value;
+                        break;
+                    case 'tag':
+                        this.query.filter.tag = item.filter.value;
+                        break;
+                    case 'group':
+                        this.query.filter.group = item.filter.value;
+                        break;
+                    case 'trash':
+                        this.query.filter.trash = true;
+                        break;
+                }
+            });
         }
     }
 

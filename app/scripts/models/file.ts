@@ -427,12 +427,9 @@ class File extends Model<FileEvents> {
     }
 
     *entriesMatching(filter: Filter): Generator<Entry> {
-        let top: Group | undefined; // = this
+        let top: Group | undefined;
         if (filter.trash) {
-            const recycleBinUuid = this.db.meta.recycleBinUuid?.id;
-            if (recycleBinUuid) {
-                top = this.getGroup(recycleBinUuid);
-            }
+            top = this.getTrashGroup();
         } else if (filter.group) {
             top = this.getGroup(filter.group);
         }

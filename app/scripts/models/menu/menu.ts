@@ -62,7 +62,7 @@ class Menu extends Model {
             icon: 'bookmark',
             shortcut: Keys.DOM_VK_C,
             cls: 'menu__item-colors',
-            filter: { type: 'color' }
+            filter: { type: 'color', value: '*' }
         });
         this.colorsSection = new MenuSection(this.colorsItem);
 
@@ -224,12 +224,6 @@ class Menu extends Model {
             });
             this.colorsItem.iconCls =
                 item === this.colorsItem && option ? `${option.value}-color` : undefined;
-            // TODO: set the filter
-            // const filterKey = sel.item.filterKey;
-            // const filterValue = (sel.option || sel.item).filterValue;
-            // const filter = {};
-            // filter[filterKey] = filterValue;
-            // Events.emit('set-filter', filter);
         }
     }
 

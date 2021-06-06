@@ -61,7 +61,7 @@ export const List: FunctionComponent = () => {
 
     const [scrollTop, setScrollTop] = useState(0);
 
-    const itemHeight = useMemo(getItemHeight, [AppSettings.tableView, AppSettings.fontSize]);
+    const itemHeight = getItemHeight();
     const visibleItemsCount = Math.ceil(window.innerHeight / itemHeight);
     const scrollBufferSizeInItems = Math.max(4, Math.ceil(visibleItemsCount / 2));
 
@@ -112,14 +112,9 @@ export const List: FunctionComponent = () => {
 };
 
 function getItemHeight(): number {
+    // Fixed sizes from list.scss. They're not in em to prevent jitter
     if (AppSettings.tableView) {
         throw new Error('Not implemented');
     }
-    // render() throws an error in hooks here
-    const item = document.createElement('div');
-    item.classList.add('hide-by-pos', 'list__item');
-    document.body.appendChild(item);
-    const { height } = item.getBoundingClientRect();
-    item.remove();
-    return height;
+    return 47 + AppSettings.fontSize * 8;
 }

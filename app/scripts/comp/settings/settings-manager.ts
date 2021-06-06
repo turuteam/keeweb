@@ -6,6 +6,7 @@ import { AppSettings } from 'models/app-settings';
 import { Logger } from 'util/logger';
 import { Launcher } from 'comp/launcher';
 import { noop } from 'util/fn';
+import { WindowClass } from 'comp/browser/window-class';
 
 const logger = new Logger('settings-manager');
 
@@ -125,7 +126,7 @@ const SettingsManager = {
         if (AppSettings.autoSwitchTheme) {
             theme = this.selectDarkOrLightTheme(theme);
         }
-        document.body.classList.add(this.getThemeClass(theme));
+        WindowClass.setThemeClass(theme);
         const metaThemeColor = document.head.querySelector('meta[name=theme-color]') as
             | HTMLMetaElement
             | undefined;
@@ -135,10 +136,6 @@ const SettingsManager = {
         this.activeTheme = theme;
         logger.info('Theme changed', theme);
         Events.emit('theme-changed');
-    },
-
-    getThemeClass(theme: string): string {
-        return 'th-' + theme;
     },
 
     selectDarkOrLightTheme(theme: string): string {
@@ -167,6 +164,7 @@ const SettingsManager = {
         const defaultFontSize = Features.isMobile ? 14 : 12;
         const sizeInPx = defaultFontSize + (fontSize || 0) * 2;
         document.documentElement.style.fontSize = `${sizeInPx}px`;
+        WindowClass.setFontSizeClass(fontSize);
     },
 
     setLocale(loc: string | undefined | null): void {

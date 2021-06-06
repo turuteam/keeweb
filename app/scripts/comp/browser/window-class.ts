@@ -20,5 +20,23 @@ export const WindowClass = {
 
         Events.on('enter-full-screen', () => document.body.classList.add('fullscreen'));
         Events.on('leave-full-screen', () => document.body.classList.remove('fullscreen'));
+    },
+
+    setThemeClass(theme: string): void {
+        for (const cls of document.body.classList) {
+            if (cls.startsWith('th-')) {
+                document.body.classList.remove(cls);
+            }
+        }
+        document.body.classList.add(`th-${theme}`);
+    },
+
+    setFontSizeClass(fontSize: number): void {
+        for (const cls of document.body.classList) {
+            if (cls.startsWith('font-size-')) {
+                document.body.classList.remove(cls);
+            }
+        }
+        document.body.classList.add(`font-size-${fontSize}`);
     }
 };

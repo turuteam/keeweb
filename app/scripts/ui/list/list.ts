@@ -1,7 +1,7 @@
 import { FunctionComponent, h } from 'preact';
 import { ListView } from 'views/list/list-view';
 import { Workspace } from 'models/workspace';
-import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { useKey, useModelField } from 'util/ui/hooks';
 import { Keys } from 'const/keys';
 import { nextItem, prevItem } from 'util/fn';

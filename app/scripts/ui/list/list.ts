@@ -70,12 +70,12 @@ export const List: FunctionComponent = () => {
 
     const activeItemIndex = activeItemId ? Workspace.query.itemIndex(activeItemId) : undefined;
     const lastActiveItemIndex = useRef<number | undefined>();
-    if (lastActiveItemIndex.current !== activeItemIndex) {
+    if (activeItemIndex !== undefined && lastActiveItemIndex.current !== activeItemIndex) {
         lastActiveItemIndex.current = activeItemIndex;
-        if (activeItemIndex && activeItemIndex < firstVisibleItem) {
+        if (activeItemIndex < firstVisibleItem) {
             firstVisibleItem = activeItemIndex;
             lastVisibleItem = firstVisibleItem + visibleItemsCount;
-        } else if (activeItemIndex && activeItemIndex > lastVisibleItem) {
+        } else if (activeItemIndex > lastVisibleItem) {
             firstVisibleItem = activeItemIndex - visibleItemsCount;
             lastVisibleItem = activeItemIndex;
         }

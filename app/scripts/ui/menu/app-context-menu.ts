@@ -16,8 +16,18 @@ export const AppContextMenu: FunctionComponent = () => {
     useKey(Keys.DOM_VK_RETURN, () => ContextMenu.closeWithSelectedResult(), undefined, 'dropdown');
 
     useEffect(() => {
-        const hideMenu = () => {
-            ContextMenu.hide();
+        const hideMenu = (e: KeyboardEvent) => {
+            if (
+                ![
+                    Keys.DOM_VK_UP,
+                    Keys.DOM_VK_DOWN,
+                    Keys.DOM_VK_RETURN,
+                    Keys.DOM_VK_ESCAPE,
+                    Keys.DOM_VK_RETURN
+                ].includes(e.which)
+            ) {
+                ContextMenu.hide();
+            }
         };
         document.addEventListener('keydown', hideMenu);
         return () => document.removeEventListener('keydown', hideMenu);

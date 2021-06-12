@@ -149,4 +149,24 @@ export class Model<EventSpec extends ListenerSignature<EventSpec> = DefaultModel
             }
         }
     }
+
+    reset(): void {
+        const defaults = new (this.constructor as typeof Model)();
+        const props = new Map<string, unknown>();
+        for (const key of Object.keys(this)) {
+            props.set(key, undefined);
+        }
+        for (const [key, value] of Object.entries(defaults)) {
+            props.set(key, value);
+        }
+        this.batchSet(() => {
+            for (const [key, value] of props) {
+                if (value === undefined) {
+                    delete (this as Record<string, unknown>)[key];
+                } else {
+                    (this as Record<string, unknown>)[key] = value;
+                }
+            }
+        });
+    }
 }

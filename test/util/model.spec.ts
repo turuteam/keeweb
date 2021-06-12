@@ -395,4 +395,30 @@ describe('Model', () => {
         expect(changed).to.eql(1);
         expect(changedNum).to.eql(1);
     });
+
+    it('resets model properties', () => {
+        const model = new TestModel();
+
+        model.num = 2;
+        model.numOpt = 3;
+
+        let changed = 0;
+        let changedNum = 0;
+        let changedNumOpt = 0;
+
+        model.on('change', () => changed++);
+        model.onChange('num', () => changedNum++);
+        model.onChange('numOpt', () => changedNumOpt++);
+
+        model.reset();
+
+        expect(model.num).to.eql(42);
+        expect(model.numOpt).to.eql(undefined);
+        expect(model.str).to.eql('s');
+        expect(model.strOpt).to.eql(undefined);
+
+        expect(changed).to.eql(1);
+        expect(changedNum).to.eql(1);
+        expect(changedNumOpt).to.eql(1);
+    });
 });

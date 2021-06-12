@@ -43,12 +43,4 @@ export class Filter extends Model {
         super();
         Object.assign(this, values);
     }
-
-    reset(): void {
-        this.batchSet(() => {
-            for (const key of Object.keys(this)) {
-                delete this[key as keyof Filter];
-            }
-        });
-    }
 }

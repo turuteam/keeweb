@@ -50,24 +50,12 @@ export const SettingsAboutView: FunctionComponent<{
                     </li>
                 ) : null}
                 <li>
-                    <a href="https://handlebarsjs.com/" target="_blank" rel="noreferrer">
-                        handlebars
+                    <a href="https://preactjs.com/" target="_blank" rel="noreferrer">
+                        preact
                     </a>
                     <span class="muted-color">
-                        , minimal templating on steroids, &copy; 2011-2019 by Yehuda Katz
-                    </span>
-                </li>
-                <li>
-                    <a
-                        href="https://github.com/patrick-steele-idem/morphdom"
-                        target="_blank"
-                        rel="noreferrer"
-                    >
-                        morphdom
-                    </a>
-                    <span class="muted-color">
-                        , fast and lightweight DOM diffing/patching, &copy; Patrick Steele-Idem
-                        &lt;pnidem@gmail.com&gt; (psteeleidem.com)
+                        , fast 3kB alternative to React with the same modern API, &copy;
+                        2015-present Jason Miller
                     </span>
                 </li>
                 <li>
@@ -81,12 +69,12 @@ export const SettingsAboutView: FunctionComponent<{
                     </span>
                 </li>
                 <li>
-                    <a href="https://jquery.com/" target="_blank" rel="noreferrer">
-                        jQuery
+                    <a href="https://nodejs.org/" target="_blank" rel="noreferrer">
+                        node.js
                     </a>
                     <span class="muted-color">
-                        , fast, small, and feature-rich JavaScript library, &copy; OpenJS Foundation
-                        and other contributors, https://openjsf.org/
+                        , JavaScript runtime built on Chrome's V8 JavaScript engine, &copy; Node.js
+                        contributors
                     </span>
                 </li>
             </ul>
@@ -106,18 +94,6 @@ export const SettingsAboutView: FunctionComponent<{
                     <span class="muted-color">
                         , high speed zlib port to javascript, &copy; 2014-2017 by Vitaly Puzrin and
                         Andrei Tuputcyn
-                    </span>
-                </li>
-                <li>
-                    <a
-                        href="https://github.com/inexorabletash/text-encoding"
-                        target="_blank"
-                        rel="noreferrer"
-                    >
-                        text-encoding
-                    </a>
-                    <span class="muted-color">
-                        , polyfill for the Encoding Living Standard's API, public domain
                     </span>
                 </li>
                 <li>
@@ -283,7 +259,7 @@ export const SettingsAboutView: FunctionComponent<{
                         jsqrcode
                     </a>
                     <span class="muted-color">
-                        , javascript QR code scanner,
+                        , javascript QR code scanner,{' '}
                         <a
                             href={Links.LicenseApache}
                             class="muted-color"

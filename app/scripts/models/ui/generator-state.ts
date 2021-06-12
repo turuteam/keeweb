@@ -4,6 +4,12 @@ import { PasswordGenerator, PasswordGeneratorOptions } from 'util/generators/pas
 import { Position } from 'util/types';
 import { DropdownState } from 'models/ui/dropdown-state';
 
+interface GeneratorStateOpts {
+    showToggleButton?: boolean;
+    showPresetEditor?: boolean;
+    copyResult?: boolean;
+}
+
 class GeneratorState extends Model {
     pos: Position = {};
     opt?: PasswordGeneratorOptions;
@@ -18,10 +24,11 @@ class GeneratorState extends Model {
         DropdownState.reset();
     }
 
-    show(pos: Position): void {
+    show(pos: Position, opts?: GeneratorStateOpts): void {
         const wasVisible = DropdownState.type === 'generator';
         this.batchSet(() => {
             this.reset();
+            Object.assign(this, opts);
             if (!wasVisible) {
                 this.pos = pos;
             }

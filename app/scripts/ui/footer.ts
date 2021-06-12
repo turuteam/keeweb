@@ -25,7 +25,7 @@ export const Footer: FunctionComponent = () => {
     const settingsClicked = () => Workspace.toggleSettings('general');
 
     const generateClicked = (rect: DOMRect) => {
-        GeneratorState.show({ right: rect.right, bottom: rect.top });
+        GeneratorState.show({ right: rect.right, bottom: rect.top }, { showPresetEditor: true });
     };
 
     const lockWorkspaceClicked = () => Workspace.lockWorkspace();

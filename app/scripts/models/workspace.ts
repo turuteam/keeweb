@@ -122,6 +122,10 @@ class Workspace extends Model {
         }
     }
 
+    saveAll(): void {
+        // TODO: save all files
+    }
+
     toggleSettings(page?: SettingsPage, anchor?: string, fileId?: string): void {
         if (this.mode === 'settings') {
             if (
@@ -313,6 +317,7 @@ class Workspace extends Model {
             KeyHandler.SHORTCUT_ACTION,
             'open'
         );
+        KeyHandler.onKey(Keys.DOM_VK_S, () => this.saveAll(), KeyHandler.SHORTCUT_ACTION);
     }
 
     private queryResultsUpdated() {

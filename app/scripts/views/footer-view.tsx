@@ -3,6 +3,9 @@ import { Locale } from 'util/locale';
 import { classes } from 'util/ui/classes';
 import { useRef } from 'preact/hooks';
 import { withoutPropagation } from 'util/ui/events';
+import { useKey } from 'util/ui/hooks';
+import { KeyHandler } from 'comp/browser/key-handler';
+import { Keys } from 'const/keys';
 
 export interface FooterFile {
     id: string;
@@ -34,6 +37,12 @@ export const FooterView: FunctionComponent<{
     lockWorkspaceClicked
 }) => {
     const generateButton = useRef<HTMLDivElement>();
+
+    useKey(
+        Keys.DOM_VK_G,
+        () => generateClicked(generateButton.current.getBoundingClientRect()),
+        KeyHandler.SHORTCUT_ACTION
+    );
 
     return (
         <div class="footer">

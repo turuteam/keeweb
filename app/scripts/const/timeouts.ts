@@ -29,5 +29,6 @@ export const Timeouts = {
     WindowResizeUpdateDebounce: 200,
     SaveFileInfoDebounce: 100,
     PluginsAutoUpdateAfterStart: 2000,
-    PluginsUpdate: 1000 * 60 * 60 * 24 * 7
+    PluginsUpdate: 1000 * 60 * 60 * 24 * 7,
+    ContextMenuCleanup: 1000
 };

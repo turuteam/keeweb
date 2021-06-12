@@ -1,6 +1,7 @@
 import { Model } from 'util/model';
 import { Callback, Position } from 'util/types';
 import { nextItem, prevItem } from 'util/fn';
+import { Timeouts } from 'const/timeouts';
 
 export class ContextMenuItem extends Model {
     id: string;
@@ -20,12 +21,25 @@ export class ContextMenuItem extends Model {
 
 class ContextMenu extends Model {
     id = '';
+    justHiddenMenuId = '';
     pos: Position = {};
     items: ContextMenuItem[] = [];
     selectedItem?: ContextMenuItem;
+    private _cleanupTimeout?: number;
 
     hide(): void {
-        this.reset();
+        this.batchSet(() => {
+            const id = this.id;
+            this.reset();
+            this.justHiddenMenuId = id;
+
+            if (id) {
+                this._cleanupTimeout = window.setTimeout(
+                    () => (this.justHiddenMenuId = ''),
+                    Timeouts.ContextMenuCleanup
+                );
+            }
+        });
     }
 
     toggle(
@@ -35,7 +49,7 @@ class ContextMenu extends Model {
         selectedItem?: ContextMenuItem
     ): void {
         this.batchSet(() => {
-            const wasVisible = this.id === id;
+            const wasVisible = this.id === id || this.justHiddenMenuId === id;
             this.reset();
             if (!wasVisible) {
                 this.pos = pos;
@@ -44,6 +58,9 @@ class ContextMenu extends Model {
                 this.id = id;
             }
         });
+        if (this._cleanupTimeout) {
+            clearTimeout(this._cleanupTimeout);
+        }
     }
 
     selectNext(): void {

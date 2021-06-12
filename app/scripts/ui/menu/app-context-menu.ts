@@ -5,6 +5,16 @@ import { ContextMenu } from 'models/context-menu';
 import { Keys } from 'const/keys';
 import { useEffect } from 'preact/hooks';
 
+export const AppContextMenuContainer: FunctionComponent = () => {
+    useModelWatcher(ContextMenu);
+
+    if (!ContextMenu.id) {
+        return null;
+    }
+
+    return h(AppContextMenu, null);
+};
+
 export const AppContextMenu: FunctionComponent = () => {
     useModal('dropdown');
     useModelWatcher(ContextMenu);

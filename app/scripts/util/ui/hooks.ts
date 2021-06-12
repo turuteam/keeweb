@@ -70,12 +70,14 @@ export function useModal(name: string): void {
     }, []);
 }
 
-export function useBodyClick(onClick: Callback): void {
+export function useBodyClick(onClick: (e: MouseEvent) => void): void {
     useEffect(() => {
         document.addEventListener('click', onClick);
+        document.addEventListener('mousedown', onClick);
         document.addEventListener('contextmenu', onClick);
         return () => {
             document.removeEventListener('click', onClick);
+            document.removeEventListener('mousedown', onClick);
             document.removeEventListener('contextmenu', onClick);
         };
     }, []);

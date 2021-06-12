@@ -1,5 +1,5 @@
-import { h, FunctionComponent } from 'preact';
-import { useAppSetting, useModelWatcher } from 'util/ui/hooks';
+import { FunctionComponent, h } from 'preact';
+import { useAppSetting, useKey, useModelWatcher } from 'util/ui/hooks';
 import { GeneratorState } from 'models/generator-state';
 import { GeneratorView } from 'views/generator-view';
 import { GeneratorPresets } from 'comp/app/generator-presets';
@@ -10,6 +10,7 @@ import { PropertiesOfType } from 'util/types';
 import { AppSettings } from 'models/app-settings';
 import { CopyPaste } from 'comp/browser/copy-paste';
 import { Launcher } from 'comp/launcher';
+import { Keys } from 'const/keys';
 
 const PseudoValues = [
     3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26, 28, 30, 32, 48, 64
@@ -24,13 +25,22 @@ function lengthToPseudoValue(length: number): number {
     return PseudoValues.length - 1;
 }
 
-export const Generator: FunctionComponent = () => {
+export const GeneratorContainer: FunctionComponent = () => {
     useModelWatcher(GeneratorState);
-    const generatorHidePassword = useAppSetting('generatorHidePassword');
 
     if (!GeneratorState.visible) {
         return null;
     }
+
+    return h(Generator, null);
+};
+
+export const Generator: FunctionComponent = () => {
+    useModelWatcher(GeneratorState);
+
+    const generatorHidePassword = useAppSetting('generatorHidePassword');
+
+    useKey(Keys.DOM_VK_ESCAPE, () => GeneratorState.hide());
 
     const presets = GeneratorPresets.enabled;
     const opt =

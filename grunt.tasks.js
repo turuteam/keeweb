@@ -3,7 +3,6 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build-web-app', [
         'clean',
-        'eslint',
         'webpack:app',
         'inline',
         'htmlmin',

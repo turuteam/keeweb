@@ -1,6 +1,6 @@
 import { AppSettings, AppSettingsFieldName } from 'models/app-settings';
-import { useEffect, useState } from 'preact/hooks';
-import { Callback, NonFunctionPropertyNames } from 'util/types';
+import { Ref, useEffect, useLayoutEffect, useState } from 'preact/hooks';
+import { Callback, NonFunctionPropertyNames, Position } from 'util/types';
 import { ListenerSignature, Model } from 'util/model';
 import { KeyHandler } from 'comp/browser/key-handler';
 import { Keys } from 'const/keys';
@@ -73,6 +73,32 @@ export function useModal(name: string): void {
 export function useBodyClick(onClick: Callback): void {
     useEffect(() => {
         document.addEventListener('click', onClick);
-        return () => document.removeEventListener('click', onClick);
+        document.addEventListener('contextmenu', onClick);
+        return () => {
+            document.removeEventListener('click', onClick);
+            document.removeEventListener('contextmenu', onClick);
+        };
     }, []);
+}
+
+export function usePositionable(
+    pos: Position,
+    el: Ref<HTMLDivElement>
+): { top: number; left: number } {
+    const [top, setTop] = useState(pos.top ?? -100000);
+    const [left, setLeft] = useState(pos.left ?? -100000);
+
+    useLayoutEffect(() => {
+        if ((pos.top === undefined || pos.left === undefined) && el.current) {
+            const rect = el.current.getBoundingClientRect();
+            if (pos.top === undefined && pos.bottom) {
+                setTop(pos.bottom - rect.height);
+            }
+            if (pos.left === undefined && pos.right) {
+                setLeft(pos.right - rect.width);
+            }
+        }
+    }, [pos]);
+
+    return { top, left };
 }

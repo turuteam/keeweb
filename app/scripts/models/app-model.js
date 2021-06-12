@@ -84,20 +84,6 @@ class AppModel {
         return matches.map((m) => m[0]);
     }
 
-    getEntryTemplates() {
-        const entryTemplates = [];
-        this.files.forEach((file) => {
-            file.forEachEntryTemplate?.((entry) => {
-                entryTemplates.push({ file, entry });
-            });
-        });
-        return entryTemplates;
-    }
-
-    canCreateEntries() {
-        return this.files.some((f) => f.active && !f.readOnly);
-    }
-
     createNewEntry(args) {
         const sel = this.getFirstSelectedGroupForCreation();
         if (args?.template) {

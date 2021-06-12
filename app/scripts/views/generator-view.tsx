@@ -6,8 +6,8 @@ import {
 } from 'util/generators/password-generator';
 import { Position, PropertiesOfType } from 'util/types';
 import { classes } from 'util/ui/classes';
-import { useLayoutEffect, useRef, useState } from 'preact/hooks';
-import { useBodyClick } from 'util/ui/hooks';
+import { useRef } from 'preact/hooks';
+import { useBodyClick, usePositionable } from 'util/ui/hooks';
 import { withoutPropagation } from 'util/ui/events';
 
 export const GeneratorView: FunctionComponent<{
@@ -55,23 +55,10 @@ export const GeneratorView: FunctionComponent<{
 
     useBodyClick(bodyClicked);
 
-    const [top, setTop] = useState(pos.top);
-    const [left, setLeft] = useState(pos.left);
-
-    useLayoutEffect(() => {
-        if (!top || !left) {
-            const rect = el.current.getBoundingClientRect();
-            if (!top && pos.bottom) {
-                setTop(pos.bottom - rect.height);
-            }
-            if (!left && pos.right) {
-                setLeft(pos.right - rect.width);
-            }
-        }
-    }, []);
+    const position = usePositionable(pos, el);
 
     return (
-        <div class="gen" style={{ top, left }} onClick={withoutPropagation()} ref={el}>
+        <div class="gen" style={position} onClick={withoutPropagation()} ref={el}>
             <div>
                 {Locale.genLen}: <span class="gen__length-range-val">{opt.length}</span>
                 <i class="fa fa-sync-alt gen__btn-refresh gen__top-btn" onClick={refreshClicked}>

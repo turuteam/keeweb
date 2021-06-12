@@ -9,6 +9,7 @@ import { List } from 'ui/list/list';
 import { Settings } from 'ui/settings/settings';
 import { DragHandle } from 'views/components/drag-handle';
 import { Generator } from 'ui/generator';
+import { AppContextMenuContainer } from 'ui/menu/app-context-menu-container';
 import { useRef } from 'preact/hooks';
 import { classes } from 'util/ui/classes';
 
@@ -99,6 +100,7 @@ export const AppView: FunctionComponent<{
                 <Footer />
             </div>
             <Generator />
+            <AppContextMenuContainer />
         </div>
     );
 };

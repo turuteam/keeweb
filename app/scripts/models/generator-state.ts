@@ -14,11 +14,11 @@ class GeneratorState extends Model {
     password = '';
     derivedPreset?: PasswordGeneratorOptions;
 
-    hide() {
+    hide(): void {
         this.visible = false;
     }
 
-    show(pos: Position) {
+    show(pos: Position): void {
         this.batchSet(() => {
             this.reset();
             this.pos = pos;
@@ -26,7 +26,7 @@ class GeneratorState extends Model {
         });
     }
 
-    showWithPassword(pos: Position, password: kdbxweb.ProtectedValue) {
+    showWithPassword(pos: Position, password: kdbxweb.ProtectedValue): void {
         this.batchSet(() => {
             this.reset();
             this.pos = pos;

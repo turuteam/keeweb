@@ -2,7 +2,7 @@ import { FunctionComponent } from 'preact';
 import { StringFormat } from 'util/formatting/string-format';
 import { Locale } from 'util/locale';
 import { AdvancedFilter } from 'models/filter';
-import { PropertiesOfType } from 'util/types';
+import { Position, PropertiesOfType } from 'util/types';
 import { useEffect, useRef } from 'preact/hooks';
 import { useEvent, useKey } from 'util/ui/hooks';
 import { Keys } from 'const/keys';
@@ -20,6 +20,8 @@ export const ListSearchView: FunctionComponent<{
     advChecked: (field: PropertiesOfType<AdvancedFilter, boolean | undefined>) => void;
     searchChanged: (text: string) => void;
     clearClicked: () => void;
+    newClicked: (shift: boolean, pos: Position) => void;
+    sortClicked: (pos: Position) => void;
 }> = ({
     canCreate,
     showAdvanced,
@@ -29,9 +31,12 @@ export const ListSearchView: FunctionComponent<{
     toggleAdvClicked,
     advChecked,
     searchChanged,
-    clearClicked
+    clearClicked,
+    newClicked,
+    sortClicked
 }) => {
     const input = useRef<HTMLInputElement>();
+    const el = useRef<HTMLDivElement>();
 
     useKey(
         Keys.DOM_VK_F,
@@ -81,8 +86,25 @@ export const ListSearchView: FunctionComponent<{
         e.preventDefault();
     };
 
+    const getContextMenuPosition = () => {
+        return {
+            right: el.current.getBoundingClientRect().right + 1,
+            top: input.current.getBoundingClientRect().bottom
+        };
+    };
+
+    const newClickedInternal = (e: MouseEvent) => {
+        e.stopPropagation();
+        newClicked(e.shiftKey, getContextMenuPosition());
+    };
+
+    const sortClickedInternal = (e: MouseEvent) => {
+        e.stopPropagation();
+        sortClicked(getContextMenuPosition());
+    };
+
     return (
-        <div class="list__search">
+        <div class="list__search" ref={el}>
             <div class="list__search-header">
                 <div class="list__search-btn-menu">
                     <i class="fa fa-bars" />
@@ -113,12 +135,12 @@ export const ListSearchView: FunctionComponent<{
                     </div>
                 </div>
                 {canCreate ? (
-                    <div class="list__search-btn-new">
+                    <div class="list__search-btn-new" onClick={newClickedInternal}>
                         <kw-tip text={Locale.searchAddNew} />
                         <i class="fa fa-plus" />
                     </div>
                 ) : null}
-                <div class="list__search-btn-sort">
+                <div class="list__search-btn-sort" onClick={sortClickedInternal}>
                     <kw-tip text={Locale.searchSort} />
                     <i class="fa fa-sort-alpha-down" />
                 </div>

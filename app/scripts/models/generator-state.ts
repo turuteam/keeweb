@@ -19,11 +19,16 @@ class GeneratorState extends Model {
     }
 
     show(pos: Position): void {
+        const wasVisible = DropdownState.type === 'generator';
         this.batchSet(() => {
             this.reset();
-            this.pos = pos;
+            if (!wasVisible) {
+                this.pos = pos;
+            }
         });
-        DropdownState.set('generator');
+        if (!wasVisible) {
+            DropdownState.set('generator');
+        }
     }
 
     showWithPassword(pos: Position, password: kdbxweb.ProtectedValue): void {

@@ -1,5 +1,7 @@
 import { FunctionComponent } from 'preact';
 import { Locale } from 'util/locale';
+import { useRef } from 'preact/hooks';
+import { withoutPropagation } from 'util/ui/events';
 
 interface StorageProvider {
     name: string;
@@ -24,6 +26,7 @@ export const OpenButtonsView: FunctionComponent<{
     newClicked: () => void;
     openDemoClicked: () => void;
     settingsClicked: () => void;
+    generateClicked: (rect: DOMRect) => void;
 }> = ({
     secondRowVisible,
     showOpen,
@@ -41,9 +44,12 @@ export const OpenButtonsView: FunctionComponent<{
     moreClicked,
     newClicked,
     openDemoClicked,
-    settingsClicked
+    settingsClicked,
+    generateClicked
 }) => {
     let tabIndex = 100;
+
+    const generateButton = useRef<HTMLDivElement>();
 
     return (
         <>
@@ -124,7 +130,14 @@ export const OpenButtonsView: FunctionComponent<{
                         </div>
                     ) : null}
                     {showGenerator ? (
-                        <div class="open__icon open__icon-generate" tabIndex={++tabIndex}>
+                        <div
+                            class="open__icon open__icon-generate"
+                            tabIndex={++tabIndex}
+                            ref={generateButton}
+                            onClick={withoutPropagation(() =>
+                                generateClicked(generateButton.current.getBoundingClientRect())
+                            )}
+                        >
                             <i class="fa fa-bolt open__icon-i" />
                             <div class="open__icon-text">{Locale.openGenerate}</div>
                         </div>

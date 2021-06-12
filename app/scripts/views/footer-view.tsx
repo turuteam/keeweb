@@ -1,6 +1,8 @@
 import { FunctionComponent } from 'preact';
 import { Locale } from 'util/locale';
 import { classes } from 'util/ui/classes';
+import { useRef } from 'preact/hooks';
+import { withoutPropagation } from 'util/ui/events';
 
 export interface FooterFile {
     id: string;
@@ -18,6 +20,7 @@ export const FooterView: FunctionComponent<{
     openClicked: () => void;
     helpClicked: () => void;
     settingsClicked: () => void;
+    generateClicked: (rect: DOMRect) => void;
     lockWorkspaceClicked: () => void;
 }> = ({
     files,
@@ -27,8 +30,11 @@ export const FooterView: FunctionComponent<{
     openClicked,
     helpClicked,
     settingsClicked,
+    generateClicked,
     lockWorkspaceClicked
 }) => {
+    const generateButton = useRef<HTMLDivElement>();
+
     return (
         <div class="footer">
             {files.map((file) => (
@@ -81,7 +87,14 @@ export const FooterView: FunctionComponent<{
                     <i class="fa fa-cog" />
                 )}
             </div>
-            <div class="footer__btn footer__btn-generate" id="footer__btn-generate">
+            <div
+                class="footer__btn footer__btn-generate"
+                id="footer__btn-generate"
+                ref={generateButton}
+                onClick={withoutPropagation(() =>
+                    generateClicked(generateButton.current.getBoundingClientRect())
+                )}
+            >
                 <i class="fa fa-bolt" />
                 <kw-tip text={Locale.footerTitleGen} placement="top" />
             </div>

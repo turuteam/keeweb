@@ -130,7 +130,7 @@ export const ListSearchView: FunctionComponent<{
                                 type="checkbox"
                                 id="list__search-adv-check-user"
                                 onClick={() => advChecked('user')}
-                                checked={adv?.user}
+                                checked={!!adv?.user}
                             />
                             <label for="list__search-adv-check-user">
                                 {StringFormat.capFirst(Locale.user)}
@@ -141,7 +141,7 @@ export const ListSearchView: FunctionComponent<{
                                 type="checkbox"
                                 id="list__search-adv-check-other"
                                 onClick={() => advChecked('other')}
-                                checked={adv?.other}
+                                checked={!!adv?.other}
                             />
                             <label for="list__search-adv-check-other">{Locale.searchOther}</label>
                         </div>
@@ -150,7 +150,7 @@ export const ListSearchView: FunctionComponent<{
                                 type="checkbox"
                                 id="list__search-adv-check-website"
                                 onClick={() => advChecked('url')}
-                                checked={adv?.url}
+                                checked={!!adv?.url}
                             />
                             <label for="list__search-adv-check-website">
                                 {StringFormat.capFirst(Locale.website)}
@@ -161,7 +161,7 @@ export const ListSearchView: FunctionComponent<{
                                 type="checkbox"
                                 id="list__search-adv-check-protect"
                                 onClick={() => advChecked('protect')}
-                                checked={adv?.protect}
+                                checked={!!adv?.protect}
                             />
                             <label for="list__search-adv-check-protect">
                                 {Locale.searchProtect}
@@ -172,7 +172,7 @@ export const ListSearchView: FunctionComponent<{
                                 type="checkbox"
                                 id="list__search-adv-check-notes"
                                 onClick={() => advChecked('notes')}
-                                checked={adv?.notes}
+                                checked={!!adv?.notes}
                             />
                             <label for="list__search-adv-check-notes">
                                 {StringFormat.capFirst(Locale.notes)}
@@ -183,7 +183,7 @@ export const ListSearchView: FunctionComponent<{
                                 type="checkbox"
                                 id="list__search-adv-check-pass"
                                 onClick={() => advChecked('pass')}
-                                checked={adv?.pass}
+                                checked={!!adv?.pass}
                             />
                             <label for="list__search-adv-check-pass">
                                 {StringFormat.capFirst(Locale.password)}
@@ -194,7 +194,7 @@ export const ListSearchView: FunctionComponent<{
                                 type="checkbox"
                                 id="list__search-adv-check-title"
                                 onClick={() => advChecked('title')}
-                                checked={adv?.title}
+                                checked={!!adv?.title}
                             />
                             <label for="list__search-adv-check-title">
                                 {StringFormat.capFirst(Locale.title)}
@@ -206,7 +206,7 @@ export const ListSearchView: FunctionComponent<{
                                 type="checkbox"
                                 id="list__search-adv-check-cs"
                                 onClick={() => advChecked('cs')}
-                                checked={adv?.cs}
+                                checked={!!adv?.cs}
                             />
                             <label for="list__search-adv-check-cs">{Locale.searchCase}</label>
                         </div>
@@ -215,7 +215,7 @@ export const ListSearchView: FunctionComponent<{
                                 type="checkbox"
                                 id="list__search-adv-check-regex"
                                 onClick={() => advChecked('regex')}
-                                checked={adv?.regex}
+                                checked={!!adv?.regex}
                             />
                             <label for="list__search-adv-check-regex">{Locale.searchRegex}</label>
                         </div>
@@ -224,7 +224,7 @@ export const ListSearchView: FunctionComponent<{
                                 type="checkbox"
                                 id="list__search-adv-check-history"
                                 onClick={() => advChecked('history')}
-                                checked={adv?.history}
+                                checked={!!adv?.history}
                             />
                             <label for="list__search-adv-check-history">
                                 {StringFormat.capFirst(Locale.history)}
@@ -235,7 +235,7 @@ export const ListSearchView: FunctionComponent<{
                                 type="checkbox"
                                 id="list__search-adv-check-exact"
                                 onClick={() => advChecked('exact')}
-                                checked={adv?.exact}
+                                checked={!!adv?.exact}
                             />
                             <label for="list__search-adv-check-exact">{Locale.searchExact}</label>
                         </div>

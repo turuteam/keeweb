@@ -4,6 +4,7 @@ import { Updater } from 'comp/app/updater';
 import { FileManager } from 'models/file-manager';
 import { Workspace } from 'models/workspace';
 import { useModelField } from 'util/ui/hooks';
+import { GeneratorState } from 'models/generator-state';
 
 export const Footer: FunctionComponent = () => {
     const files = useModelField(FileManager, 'files');
@@ -23,6 +24,14 @@ export const Footer: FunctionComponent = () => {
 
     const settingsClicked = () => Workspace.toggleSettings('general');
 
+    const generateClicked = (rect: DOMRect) => {
+        if (GeneratorState.visible) {
+            GeneratorState.hide();
+        } else {
+            GeneratorState.show({ right: rect.right, bottom: rect.top });
+        }
+    };
+
     const lockWorkspaceClicked = () => Workspace.lockWorkspace();
 
     return h(FooterView, {
@@ -33,6 +42,7 @@ export const Footer: FunctionComponent = () => {
         openClicked,
         helpClicked,
         settingsClicked,
+        generateClicked,
         lockWorkspaceClicked
     });
 };

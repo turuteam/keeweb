@@ -9,6 +9,7 @@ import { Logger } from 'util/logger';
 import { useModelField } from 'util/ui/hooks';
 import { OpenController } from 'comp/app/open-controller';
 import { OpenState } from 'models/open-state';
+import { GeneratorState } from 'models/generator-state';
 
 const logger = new Logger('open');
 
@@ -62,12 +63,20 @@ export const OpenButtons: FunctionComponent = () => {
         Workspace.showSettings();
     };
 
+    const generateClicked = (rect: DOMRect) => {
+        if (GeneratorState.visible) {
+            GeneratorState.hide();
+        } else {
+            GeneratorState.show({ top: rect.top, left: rect.left });
+        }
+    };
+
     return h(OpenButtonsView, {
         secondRowVisible,
         showOpen: AppSettings.canOpen,
         showCreate: AppSettings.canCreate,
         showYubiKey,
-        showDemoInFirstRow: true, // AppSettings.canOpenDemo && !AppSettings.demoOpened, // TODO
+        showDemoInFirstRow: AppSettings.canOpenDemo && !AppSettings.demoOpened,
         showDemoInSecondRow: AppSettings.canOpenDemo && AppSettings.demoOpened,
         showMore,
         showLogo,
@@ -79,6 +88,7 @@ export const OpenButtons: FunctionComponent = () => {
         newClicked,
         moreClicked,
         openDemoClicked,
-        settingsClicked
+        settingsClicked,
+        generateClicked
     });
 };

@@ -149,7 +149,7 @@ export const PasswordGenerator = {
     },
 
     deriveOpts(password: kdbxweb.ProtectedValue): PasswordGeneratorOptions {
-        const opts: PasswordGeneratorOptions = { length: 0 };
+        const opts: PasswordGeneratorOptions = { length: 0, name: 'Derived' };
         if (password) {
             const charRanges = CharRanges;
             password.forEachChar((charCode) => {

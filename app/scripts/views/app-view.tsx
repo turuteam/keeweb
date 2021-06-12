@@ -8,6 +8,7 @@ import { AppMenu } from 'ui/menu/app-menu';
 import { List } from 'ui/list/list';
 import { Settings } from 'ui/settings/settings';
 import { DragHandle } from 'views/components/drag-handle';
+import { Generator } from 'ui/generator';
 import { useRef } from 'preact/hooks';
 import { classes } from 'util/ui/classes';
 
@@ -97,6 +98,7 @@ export const AppView: FunctionComponent<{
             <div class="app__footer">
                 <Footer />
             </div>
+            <Generator />
         </div>
     );
 };

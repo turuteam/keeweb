@@ -1,6 +1,6 @@
 import { AppSettings, AppSettingsFieldName } from 'models/app-settings';
 import { useEffect, useState } from 'preact/hooks';
-import { NonFunctionPropertyNames } from 'util/types';
+import { Callback, NonFunctionPropertyNames } from 'util/types';
 import { ListenerSignature, Model } from 'util/model';
 import { KeyHandler } from 'comp/browser/key-handler';
 import { Keys } from 'const/keys';
@@ -67,5 +67,12 @@ export function useModal(name: string): void {
     useEffect(() => {
         FocusManager.pushModal(name);
         return () => FocusManager.popModal();
+    }, []);
+}
+
+export function useBodyClick(onClick: Callback): void {
+    useEffect(() => {
+        document.addEventListener('click', onClick);
+        return () => document.removeEventListener('click', onClick);
     }, []);
 }

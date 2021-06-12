@@ -17,3 +17,10 @@ export type InitWithFieldsOf<T> = {
 };
 
 export type Callback = () => void;
+
+export interface Position {
+    left?: number;
+    top?: number;
+    right?: number;
+    bottom?: number;
+}

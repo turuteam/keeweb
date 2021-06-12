@@ -54,7 +54,13 @@ export const GeneratorView: FunctionComponent<{
     const position = usePositionable(pos, el);
 
     return (
-        <div class="gen" style={position} onClick={withoutPropagation()} ref={el}>
+        <div
+            class="gen"
+            style={position}
+            onClick={withoutPropagation()}
+            onMouseUp={withoutPropagation()}
+            ref={el}
+        >
             <div>
                 {Locale.genLen}: <span class="gen__length-range-val">{opt.length}</span>
                 <i class="fa fa-sync-alt gen__btn-refresh gen__top-btn" onClick={refreshClicked}>

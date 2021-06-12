@@ -1,4 +1,4 @@
-import { ContextMenu, ContextMenuItem } from 'models/context-menu';
+import { ContextMenu, ContextMenuItem } from 'models/menu/context-menu';
 import { StringFormat } from 'util/formatting/string-format';
 import { Locale } from 'util/locale';
 import { Features } from 'util/features';

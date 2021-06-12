@@ -1,7 +1,7 @@
 import { Model } from 'util/model';
 import { Callback, Position } from 'util/types';
 import { nextItem, prevItem } from 'util/fn';
-import { DropdownState } from 'models/dropdown-state';
+import { DropdownState } from 'models/ui/dropdown-state';
 
 export class ContextMenuItem extends Model {
     id: string;

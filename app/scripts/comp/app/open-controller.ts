@@ -9,7 +9,7 @@ import { errorToString } from 'util/fn';
 import { DropboxChooser } from 'storage/dropbox-chooser';
 import { Logger } from 'util/logger';
 import { FileController } from 'comp/app/file-controller';
-import { OpenState } from 'models/open-state';
+import { OpenState } from 'models/ui/open-state';
 
 const logger = new Logger('open');
 

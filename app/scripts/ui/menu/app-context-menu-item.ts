@@ -1,6 +1,6 @@
 import { FunctionComponent, h } from 'preact';
 import { AppContextMenuItemView } from 'views/menu/app-context-menu-item-view';
-import { ContextMenu, ContextMenuItem } from 'models/context-menu';
+import { ContextMenu, ContextMenuItem } from 'models/menu/context-menu';
 
 export const AppContextMenuItem: FunctionComponent<{ item: ContextMenuItem; active: boolean }> = ({
     item,

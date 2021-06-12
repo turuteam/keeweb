@@ -2,7 +2,7 @@ import { h, FunctionComponent } from 'preact';
 import { OpenDropzoneView } from 'views/open/open-dropzone-view';
 import { AppSettings } from 'models/app-settings';
 import { OpenController } from 'comp/app/open-controller';
-import { OpenState } from 'models/open-state';
+import { OpenState } from 'models/ui/open-state';
 
 export const OpenDropzone: FunctionComponent = () => {
     const onDragOver = (e: DragEvent) => {

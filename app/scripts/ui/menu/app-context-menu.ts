@@ -1,10 +1,10 @@
 import { FunctionComponent, h } from 'preact';
 import { AppContextMenuView } from 'views/menu/app-context-menu-view';
 import { useKey, useModal, useModelField, useModelWatcher } from 'util/ui/hooks';
-import { ContextMenu } from 'models/context-menu';
+import { ContextMenu } from 'models/menu/context-menu';
 import { Keys } from 'const/keys';
 import { useEffect } from 'preact/hooks';
-import { DropdownState } from 'models/dropdown-state';
+import { DropdownState } from 'models/ui/dropdown-state';
 
 export const AppContextMenuContainer: FunctionComponent = () => {
     const dropdownType = useModelField(DropdownState, 'type');

@@ -1,6 +1,6 @@
 import { FunctionComponent } from 'preact';
 import { AppContextMenuItem } from 'ui/menu/app-context-menu-item';
-import { ContextMenuItem } from 'models/context-menu';
+import { ContextMenuItem } from 'models/menu/context-menu';
 import { useRef } from 'preact/hooks';
 import { withoutPropagation } from 'util/ui/events';
 import { usePositionable } from 'util/ui/hooks';

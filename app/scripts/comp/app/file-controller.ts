@@ -3,7 +3,7 @@ import { Logger } from 'util/logger';
 import { Storage } from 'storage';
 import { Locale } from 'util/locale';
 import { IdGenerator } from 'util/generators/id-generator';
-import { OpenParams } from 'models/open-state';
+import { OpenParams } from 'models/ui/open-state';
 import { FileManager } from 'models/file-manager';
 import { File } from 'models/file';
 import { FileInfo } from 'models/file-info';

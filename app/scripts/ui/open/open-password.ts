@@ -7,7 +7,7 @@ import { AppSettings } from 'models/app-settings';
 import { Keys } from 'const/keys';
 import { OpenController } from 'comp/app/open-controller';
 import { Alerts } from 'comp/ui/alerts';
-import { OpenState } from 'models/open-state';
+import { OpenState } from 'models/ui/open-state';
 
 export const OpenPassword: FunctionComponent = () => {
     useModelWatcher(OpenState);

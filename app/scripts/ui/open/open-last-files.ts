@@ -5,7 +5,7 @@ import { Storage } from 'storage';
 import { AppSettings } from 'models/app-settings';
 import { Alerts } from 'comp/ui/alerts';
 import { Locale } from 'util/locale';
-import { OpenState } from 'models/open-state';
+import { OpenState } from 'models/ui/open-state';
 
 export const OpenLastFiles: FunctionComponent = () => {
     const lastOpenFiles = FileManager.fileInfos.map((fi) => {

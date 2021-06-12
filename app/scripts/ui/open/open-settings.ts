@@ -6,7 +6,7 @@ import { AppSettings } from 'models/app-settings';
 import { UsbListener } from 'comp/devices/usb-listener';
 import { useModelField } from 'util/ui/hooks';
 import { OpenController } from 'comp/app/open-controller';
-import { OpenState } from 'models/open-state';
+import { OpenState } from 'models/ui/open-state';
 
 export const OpenSettings: FunctionComponent = () => {
     const name = useModelField(OpenState, 'name');

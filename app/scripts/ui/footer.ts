@@ -4,7 +4,7 @@ import { Updater } from 'comp/app/updater';
 import { FileManager } from 'models/file-manager';
 import { Workspace } from 'models/workspace';
 import { useModelField } from 'util/ui/hooks';
-import { GeneratorState } from 'models/generator-state';
+import { GeneratorState } from 'models/ui/generator-state';
 
 export const Footer: FunctionComponent = () => {
     const files = useModelField(FileManager, 'files');

@@ -8,8 +8,8 @@ import { Workspace } from 'models/workspace';
 import { Logger } from 'util/logger';
 import { useModelField } from 'util/ui/hooks';
 import { OpenController } from 'comp/app/open-controller';
-import { OpenState } from 'models/open-state';
-import { GeneratorState } from 'models/generator-state';
+import { OpenState } from 'models/ui/open-state';
+import { GeneratorState } from 'models/ui/generator-state';
 
 const logger = new Logger('open');
 
@@ -64,11 +64,7 @@ export const OpenButtons: FunctionComponent = () => {
     };
 
     const generateClicked = (rect: DOMRect) => {
-        if (GeneratorState.visible) {
-            GeneratorState.hide();
-        } else {
-            GeneratorState.show({ top: rect.top, left: rect.left });
-        }
+        GeneratorState.show({ top: rect.top, left: rect.left });
     };
 
     return h(OpenButtonsView, {

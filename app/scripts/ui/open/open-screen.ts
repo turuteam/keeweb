@@ -5,7 +5,7 @@ import { Keys } from 'const/keys';
 import { KeyHandler } from 'comp/browser/key-handler';
 import { AppSettings } from 'models/app-settings';
 import { OpenController } from 'comp/app/open-controller';
-import { OpenState } from 'models/open-state';
+import { OpenState } from 'models/ui/open-state';
 
 export const OpenScreen: FunctionComponent = () => {
     useModal('open');

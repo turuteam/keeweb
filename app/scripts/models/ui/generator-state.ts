@@ -2,7 +2,7 @@ import * as kdbxweb from 'kdbxweb';
 import { Model } from 'util/model';
 import { PasswordGenerator, PasswordGeneratorOptions } from 'util/generators/password-generator';
 import { Position } from 'util/types';
-import { DropdownState } from 'models/dropdown-state';
+import { DropdownState } from 'models/ui/dropdown-state';
 
 class GeneratorState extends Model {
     pos: Position = {};

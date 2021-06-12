@@ -8,7 +8,7 @@ import { AppSettings } from 'models/app-settings';
 import { IdGenerator } from 'util/generators/id-generator';
 import { KeyHandler } from 'comp/browser/key-handler';
 import { Keys } from 'const/keys';
-import { OpenState } from 'models/open-state';
+import { OpenState } from 'models/ui/open-state';
 import { Query } from 'models/query';
 import { MenuOption } from 'models/menu/menu-option';
 

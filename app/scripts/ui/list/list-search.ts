@@ -7,7 +7,7 @@ import { AdvancedFilter } from 'models/filter';
 import { FileManager } from 'models/file-manager';
 import { ContextMenuNew } from 'comp/context-menu/context-menu-new';
 import { ContextMenuSort } from 'comp/context-menu/context-menu-sort';
-import { ContextMenu } from 'models/context-menu';
+import { ContextMenu } from 'models/menu/context-menu';
 import { Keys } from 'const/keys';
 import { KeyHandler } from 'comp/browser/key-handler';
 

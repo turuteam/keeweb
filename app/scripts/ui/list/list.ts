@@ -104,6 +104,7 @@ export const List: FunctionComponent = () => {
         groups: firstGroup < 0 ? [] : groups.slice(firstGroup, lastGroup + 1),
         entries: firstEntry < 0 ? [] : entries.slice(firstEntry, lastEntry + 1),
         activeItemId,
+        activeItemIndex,
         firstItemOffset,
         totalHeight,
 

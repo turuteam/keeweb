@@ -12,11 +12,20 @@ export const ListView: FunctionComponent<{
     groups: Group[];
     entries: Entry[];
     activeItemId: string | undefined;
+    activeItemIndex: number | undefined;
     firstItemOffset: number;
     totalHeight: number;
 
     onScroll: (e: Event) => void;
-}> = ({ itemsCount, entries, activeItemId, firstItemOffset, totalHeight, onScroll }) => {
+}> = ({
+    itemsCount,
+    entries,
+    activeItemId,
+    activeItemIndex,
+    firstItemOffset,
+    totalHeight,
+    onScroll
+}) => {
     useLayoutEffect(() => {
         if (!activeItemId) {
             return;
@@ -36,7 +45,7 @@ export const ListView: FunctionComponent<{
         } else if (itemRect.bottom > listRect.bottom) {
             scroller.scrollTop += itemRect.bottom - listRect.bottom;
         }
-    }, [activeItemId]);
+    }, [activeItemId, activeItemIndex]);
 
     return (
         <div class="list">

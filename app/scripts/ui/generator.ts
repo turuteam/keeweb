@@ -1,5 +1,5 @@
 import { FunctionComponent, h } from 'preact';
-import { useAppSetting, useKey, useModelWatcher } from 'util/ui/hooks';
+import { useAppSetting, useKey, useModelField, useModelWatcher } from 'util/ui/hooks';
 import { GeneratorState } from 'models/generator-state';
 import { GeneratorView } from 'views/generator-view';
 import { GeneratorPresets } from 'comp/app/generator-presets';
@@ -11,6 +11,7 @@ import { AppSettings } from 'models/app-settings';
 import { CopyPaste } from 'comp/browser/copy-paste';
 import { Launcher } from 'comp/launcher';
 import { Keys } from 'const/keys';
+import { DropdownState } from 'models/dropdown-state';
 
 const PseudoValues = [
     3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26, 28, 30, 32, 48, 64
@@ -26,9 +27,9 @@ function lengthToPseudoValue(length: number): number {
 }
 
 export const GeneratorContainer: FunctionComponent = () => {
-    useModelWatcher(GeneratorState);
+    const dropdownType = useModelField(DropdownState, 'type');
 
-    if (!GeneratorState.visible) {
+    if (dropdownType !== 'generator') {
         return null;
     }
 
@@ -107,10 +108,6 @@ export const Generator: FunctionComponent = () => {
         AppSettings.generatorHidePassword = !AppSettings.generatorHidePassword;
     };
 
-    const bodyClicked = () => {
-        GeneratorState.hide();
-    };
-
     const okClicked = () => {
         if (GeneratorState.copyResult) {
             if (!Launcher) {
@@ -138,7 +135,6 @@ export const Generator: FunctionComponent = () => {
         optionChanged,
         hideChanged,
         presetSelected,
-        bodyClicked,
         okClicked
     });
 };

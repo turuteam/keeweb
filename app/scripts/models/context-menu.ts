@@ -1,7 +1,7 @@
 import { Model } from 'util/model';
 import { Callback, Position } from 'util/types';
 import { nextItem, prevItem } from 'util/fn';
-import { Timeouts } from 'const/timeouts';
+import { DropdownState } from 'models/dropdown-state';
 
 export class ContextMenuItem extends Model {
     id: string;
@@ -20,26 +20,13 @@ export class ContextMenuItem extends Model {
 }
 
 class ContextMenu extends Model {
-    id = '';
-    justHiddenMenuId = '';
     pos: Position = {};
     items: ContextMenuItem[] = [];
     selectedItem?: ContextMenuItem;
-    private _cleanupTimeout?: number;
 
     hide(): void {
-        this.batchSet(() => {
-            const id = this.id;
-            this.reset();
-            this.justHiddenMenuId = id;
-
-            if (id) {
-                this._cleanupTimeout = window.setTimeout(
-                    () => (this.justHiddenMenuId = ''),
-                    Timeouts.ContextMenuCleanup
-                );
-            }
-        });
+        this.reset();
+        DropdownState.reset();
     }
 
     toggle(
@@ -48,18 +35,17 @@ class ContextMenu extends Model {
         items: ContextMenuItem[],
         selectedItem?: ContextMenuItem
     ): void {
+        const wasVisible = DropdownState.type === 'menu' && DropdownState.id === id;
         this.batchSet(() => {
-            const wasVisible = this.id === id || this.justHiddenMenuId === id;
             this.reset();
             if (!wasVisible) {
                 this.pos = pos;
                 this.items = items;
                 this.selectedItem = selectedItem;
-                this.id = id;
             }
         });
-        if (this._cleanupTimeout) {
-            clearTimeout(this._cleanupTimeout);
+        if (!wasVisible) {
+            DropdownState.set('menu', id);
         }
     }
 

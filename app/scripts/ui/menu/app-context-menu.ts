@@ -1,14 +1,15 @@
 import { FunctionComponent, h } from 'preact';
 import { AppContextMenuView } from 'views/menu/app-context-menu-view';
-import { useKey, useModal, useModelWatcher } from 'util/ui/hooks';
+import { useKey, useModal, useModelField, useModelWatcher } from 'util/ui/hooks';
 import { ContextMenu } from 'models/context-menu';
 import { Keys } from 'const/keys';
 import { useEffect } from 'preact/hooks';
+import { DropdownState } from 'models/dropdown-state';
 
 export const AppContextMenuContainer: FunctionComponent = () => {
-    useModelWatcher(ContextMenu);
+    const dropdownType = useModelField(DropdownState, 'type');
 
-    if (!ContextMenu.id) {
+    if (dropdownType !== 'menu') {
         return null;
     }
 
@@ -43,13 +44,9 @@ export const AppContextMenu: FunctionComponent = () => {
         return () => document.removeEventListener('keydown', hideMenu);
     }, []);
 
-    const bodyClicked = () => ContextMenu.hide();
-
     return h(AppContextMenuView, {
         pos: ContextMenu.pos,
         items: ContextMenu.items,
-        selectedItem: ContextMenu.selectedItem,
-
-        bodyClicked
+        selectedItem: ContextMenu.selectedItem
     });
 };

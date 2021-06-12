@@ -3,19 +3,15 @@ import { AppContextMenuItem } from 'ui/menu/app-context-menu-item';
 import { ContextMenuItem } from 'models/context-menu';
 import { useRef } from 'preact/hooks';
 import { withoutPropagation } from 'util/ui/events';
-import { useBodyClick, usePositionable } from 'util/ui/hooks';
+import { usePositionable } from 'util/ui/hooks';
 import { Position } from 'util/types';
 
 export const AppContextMenuView: FunctionComponent<{
     pos: Position;
     items: ContextMenuItem[];
     selectedItem: ContextMenuItem | undefined;
-
-    bodyClicked: () => void;
-}> = ({ pos, items, selectedItem, bodyClicked }) => {
+}> = ({ pos, items, selectedItem }) => {
     const el = useRef<HTMLDivElement>();
-
-    useBodyClick(bodyClicked);
     const position = usePositionable(pos, el);
 
     return (

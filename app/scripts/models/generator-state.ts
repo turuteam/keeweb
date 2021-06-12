@@ -2,9 +2,9 @@ import * as kdbxweb from 'kdbxweb';
 import { Model } from 'util/model';
 import { PasswordGenerator, PasswordGeneratorOptions } from 'util/generators/password-generator';
 import { Position } from 'util/types';
+import { DropdownState } from 'models/dropdown-state';
 
 class GeneratorState extends Model {
-    visible = false;
     pos: Position = {};
     opt?: PasswordGeneratorOptions;
     selectedPreset?: PasswordGeneratorOptions;
@@ -15,15 +15,15 @@ class GeneratorState extends Model {
     derivedPreset?: PasswordGeneratorOptions;
 
     hide(): void {
-        this.visible = false;
+        DropdownState.reset();
     }
 
     show(pos: Position): void {
         this.batchSet(() => {
             this.reset();
             this.pos = pos;
-            this.visible = true;
         });
+        DropdownState.set('generator');
     }
 
     showWithPassword(pos: Position, password: kdbxweb.ProtectedValue): void {
@@ -32,8 +32,8 @@ class GeneratorState extends Model {
             this.pos = pos;
             this.derivedPreset = PasswordGenerator.deriveOpts(password);
             this.opt = this.derivedPreset;
-            this.visible = true;
         });
+        DropdownState.set('generator');
     }
 }
 

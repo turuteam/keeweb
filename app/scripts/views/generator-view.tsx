@@ -7,7 +7,7 @@ import {
 import { Position, PropertiesOfType } from 'util/types';
 import { classes } from 'util/ui/classes';
 import { useRef } from 'preact/hooks';
-import { useBodyClick, usePositionable } from 'util/ui/hooks';
+import { usePositionable } from 'util/ui/hooks';
 import { withoutPropagation } from 'util/ui/events';
 
 export const GeneratorView: FunctionComponent<{
@@ -27,7 +27,6 @@ export const GeneratorView: FunctionComponent<{
     optionChanged: (prop: PropertiesOfType<PasswordGeneratorOptions, boolean | undefined>) => void;
     hideChanged: () => void;
     presetSelected: (preset: string) => void;
-    bodyClicked: () => void;
     okClicked: () => void;
 }> = ({
     pos,
@@ -46,14 +45,11 @@ export const GeneratorView: FunctionComponent<{
     optionChanged,
     hideChanged,
     presetSelected,
-    bodyClicked,
     okClicked
 }) => {
     const el = useRef<HTMLDivElement>();
     const rangeInput = useRef<HTMLInputElement>();
     const presetSelect = useRef<HTMLSelectElement>();
-
-    useBodyClick(bodyClicked);
 
     const position = usePositionable(pos, el);
 

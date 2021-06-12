@@ -9,7 +9,6 @@ import { Workspace } from 'models/workspace';
 import { useEffect } from 'preact/hooks';
 import { Events } from 'util/events';
 import { useAppSetting, useModelField } from 'util/ui/hooks';
-import { ContextMenu } from 'models/context-menu';
 
 export const App: FunctionComponent = () => {
     const mode = useModelField(Workspace, 'mode');
@@ -31,12 +30,6 @@ export const App: FunctionComponent = () => {
         };
         Events.on('drag-handle-set', dragHandleSet);
         return () => Events.off('drag-handle-set', dragHandleSet);
-    }, []);
-
-    useEffect(() => {
-        document.addEventListener('click', () => {
-            ContextMenu.justHiddenMenuId = '';
-        });
     }, []);
 
     const menuVisible = mode === 'list' || mode === 'settings';

@@ -25,11 +25,7 @@ export const Footer: FunctionComponent = () => {
     const settingsClicked = () => Workspace.toggleSettings('general');
 
     const generateClicked = (rect: DOMRect) => {
-        if (GeneratorState.visible) {
-            GeneratorState.hide();
-        } else {
-            GeneratorState.show({ right: rect.right, bottom: rect.top });
-        }
+        GeneratorState.show({ right: rect.right, bottom: rect.top });
     };
 
     const lockWorkspaceClicked = () => Workspace.lockWorkspace();

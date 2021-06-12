@@ -3,6 +3,7 @@ import { AppContextMenuView } from 'views/menu/app-context-menu-view';
 import { useKey, useModal, useModelWatcher } from 'util/ui/hooks';
 import { ContextMenu } from 'models/context-menu';
 import { Keys } from 'const/keys';
+import { useEffect } from 'preact/hooks';
 
 export const AppContextMenu: FunctionComponent = () => {
     useModal('dropdown');
@@ -13,6 +14,14 @@ export const AppContextMenu: FunctionComponent = () => {
     useKey(Keys.DOM_VK_ESCAPE, () => ContextMenu.hide(), undefined, 'dropdown');
     useKey(Keys.DOM_VK_ENTER, () => ContextMenu.closeWithSelectedResult(), undefined, 'dropdown');
     useKey(Keys.DOM_VK_RETURN, () => ContextMenu.closeWithSelectedResult(), undefined, 'dropdown');
+
+    useEffect(() => {
+        const hideMenu = () => {
+            ContextMenu.hide();
+        };
+        document.addEventListener('keydown', hideMenu);
+        return () => document.removeEventListener('keydown', hideMenu);
+    }, []);
 
     const bodyClicked = () => ContextMenu.hide();
 

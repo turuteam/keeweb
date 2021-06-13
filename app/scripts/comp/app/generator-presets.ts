@@ -144,7 +144,7 @@ export const GeneratorPresets = {
         this.save(setting);
     },
 
-    setPreset(name: string, props: PasswordGeneratorCustomPreset): void {
+    setPreset(name: string, props: Partial<PasswordGeneratorCustomPreset>): void {
         const setting = this.getOrCreateSetting();
         const preset = setting.user.filter((p) => p.name === name)[0];
         if (preset) {
@@ -166,7 +166,7 @@ export const GeneratorPresets = {
         this.save(setting);
     },
 
-    setDefault(name: string): void {
+    setDefault(name: string | null): void {
         const setting = this.getOrCreateSetting();
         if (name) {
             setting.default = name;

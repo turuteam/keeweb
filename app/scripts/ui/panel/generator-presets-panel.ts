@@ -1,4 +1,4 @@
-import { FunctionComponent, h, render } from 'preact';
+import { FunctionComponent, h } from 'preact';
 import { GeneratorPresetsPanelView } from 'views/panel/generator-presets-panel-view';
 import { Workspace } from 'models/workspace';
 import { GeneratorPresets } from 'comp/app/generator-presets';

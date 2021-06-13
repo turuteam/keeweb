@@ -90,6 +90,11 @@ class Workspace extends Model {
         this.menu.select(this.menu.allItemsItem);
     }
 
+    selectAllAndShowList(): void {
+        this.selectAllItems();
+        this.showList();
+    }
+
     renameTag(from: string, to: string): void {
         for (const file of FileManager.files) {
             file.renameTag(from, to);

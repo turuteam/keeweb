@@ -12,6 +12,7 @@ import { CopyPaste } from 'comp/browser/copy-paste';
 import { Launcher } from 'comp/launcher';
 import { Keys } from 'const/keys';
 import { DropdownState } from 'models/ui/dropdown-state';
+import { Workspace } from 'models/workspace';
 
 const PseudoValues = [
     3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26, 28, 30, 32, 48, 64
@@ -92,6 +93,11 @@ export const Generator: FunctionComponent = () => {
     };
 
     const presetSelected = (presetName: string) => {
+        if (presetName === '...') {
+            GeneratorState.hide();
+            Workspace.showPanel('generator-presets');
+            return;
+        }
         const preset =
             presetName === GeneratorState.derivedPreset?.name
                 ? GeneratorState.derivedPreset

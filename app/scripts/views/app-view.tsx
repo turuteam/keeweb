@@ -7,6 +7,7 @@ import { Footer } from 'ui/footer';
 import { AppMenu } from 'ui/menu/app-menu';
 import { List } from 'ui/list/list';
 import { Settings } from 'ui/settings/settings';
+import { AppPanel } from 'ui/panel/app-panel';
 import { DragHandle } from 'views/components/drag-handle';
 import { GeneratorContainer } from 'ui/generator';
 import { AppContextMenuContainer } from 'ui/menu/app-context-menu';
@@ -92,7 +93,11 @@ export const AppView: FunctionComponent<{
                         <div class="app__details" />
                     </div>
                 ) : null}
-                {panelVisible ? <div class="app__panel" /> : null}
+                {panelVisible ? (
+                    <div class="app__panel">
+                        <AppPanel />
+                    </div>
+                ) : null}
                 {settingsVisible ? <Settings /> : null}
                 {openVisible ? <OpenScreen /> : null}
             </div>

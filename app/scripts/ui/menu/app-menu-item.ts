@@ -53,8 +53,10 @@ export const AppMenuItem: FunctionComponent<{ item: MenuItem }> = ({ item }) => 
     const actionClicked = () => {
         if (item.filter?.type === 'trash') {
             askUserAndEmptyTrash();
-        } else {
-            Alerts.notImplemented(); // TODO: item editing
+        } else if (item.filter?.type === 'group') {
+            Workspace.showPanel('group');
+        } else if (item.filter?.type === 'tag') {
+            Workspace.showPanel('tag');
         }
     };
 

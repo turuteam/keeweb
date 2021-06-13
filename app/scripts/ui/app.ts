@@ -32,7 +32,7 @@ export const App: FunctionComponent = () => {
         return () => Events.off('drag-handle-set', dragHandleSet);
     }, []);
 
-    const menuVisible = mode === 'list' || mode === 'settings';
+    const menuVisible = mode === 'list' || mode === 'settings' || mode === 'panel';
     const listVisible = mode === 'list';
     const settingsVisible = mode === 'settings';
     const panelVisible = mode === 'panel';

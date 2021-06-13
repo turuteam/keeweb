@@ -14,6 +14,8 @@ import { MenuOption } from 'models/menu/menu-option';
 
 export type WorkspaceMode = 'open' | 'list' | 'settings' | 'panel';
 
+export type WorkspacePanel = 'generator-presets' | 'group' | 'tag';
+
 export type SettingsPage =
     | 'general'
     | 'shortcuts'
@@ -28,6 +30,7 @@ class Workspace extends Model {
     readonly menu = new Menu();
     readonly query = new Query();
     mode: WorkspaceMode = 'open';
+    panel?: WorkspacePanel;
     tags: string[] = [];
     activeItemId?: string;
     unlockMessage?: string;
@@ -161,6 +164,13 @@ class Workspace extends Model {
         this.menu.selectSettingsPage(page, anchor, fileId);
     }
 
+    showPanel(panel: WorkspacePanel) {
+        this.batchSet(() => {
+            this.panel = panel;
+            this.mode = 'panel';
+        });
+    }
+
     modeChanged(mode: WorkspaceMode, prevMode: WorkspaceMode) {
         if (mode === 'settings') {
             this.menu.setMenu('settings');
@@ -196,6 +206,9 @@ class Workspace extends Model {
                         break;
                 }
             });
+        }
+        if (this.mode === 'panel') {
+            this.showList();
         }
     }
 

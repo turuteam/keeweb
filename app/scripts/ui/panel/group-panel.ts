@@ -54,7 +54,7 @@ export const GroupPanel: FunctionComponent = () => {
         enableSearching: group.getEffectiveEnableSearching(),
         icon: group.icon ?? 'folder',
         customIcon: group.customIcon,
-        canAutoType: !Launcher,
+        canAutoType: !!Launcher,
         autoTypeEnabled: group.getEffectiveEnableAutoType(),
         autoTypeSeq,
         autoTypeSeqInvalid,

@@ -54,9 +54,9 @@ export const AppMenuItem: FunctionComponent<{ item: MenuItem }> = ({ item }) => 
         if (item.filter?.type === 'trash') {
             askUserAndEmptyTrash();
         } else if (item.filter?.type === 'group') {
-            Workspace.showPanel('group');
+            Workspace.togglePanel('group');
         } else if (item.filter?.type === 'tag') {
-            Workspace.showPanel('tag');
+            Workspace.togglePanel('tag');
         }
     };
 

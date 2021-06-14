@@ -153,6 +153,14 @@ class Workspace extends Model {
         }
     }
 
+    togglePanel(panel: WorkspacePanel) {
+        if (this.mode === 'panel' && this.panel === panel) {
+            this.showList();
+        } else {
+            this.showPanel(panel);
+        }
+    }
+
     showList() {
         if (FileManager.hasOpenFiles) {
             this.mode = 'list';

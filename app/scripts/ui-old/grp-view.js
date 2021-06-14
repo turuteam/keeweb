@@ -1,83 +1,8 @@
 import { View } from 'framework/views/view';
-import { Events } from 'framework/events';
-import { AutoType } from 'auto-type';
-import { Scrollable } from 'framework/views/scrollable';
 import { AutoTypeHintView } from 'views/auto-type/auto-type-hint-view';
 import { IconSelectView } from 'views/icon-select-view';
-import template from 'templates/grp.hbs';
 
 class GrpView extends View {
-    parent = '.app__panel';
-
-    template = template;
-
-    events = {
-        'click .grp__icon': 'showIconsSelect',
-        'click .grp__buttons-trash': 'moveToTrash',
-        'click .back-button': 'returnToApp',
-        'input #grp__field-title': 'changeTitle',
-        'focus #grp__field-auto-type-seq': 'focusAutoTypeSeq',
-        'input #grp__field-auto-type-seq': 'changeAutoTypeSeq',
-        'change #grp__check-search': 'setEnableSearching',
-        'change #grp__check-auto-type': 'setEnableAutoType'
-    };
-
-    render() {
-        this.removeSubView();
-        super.render({
-            title: this.model.title,
-            icon: this.model.icon || 'folder',
-            customIcon: this.model.customIcon,
-            enableSearching: this.model.getEffectiveEnableSearching(),
-            readonly: this.model.top,
-            canAutoType: AutoType.enabled,
-            autoTypeSeq: this.model.autoTypeSeq,
-            autoTypeEnabled: this.model.getEffectiveEnableAutoType(),
-            defaultAutoTypeSeq: this.model.getParentEffectiveAutoTypeSeq()
-        });
-        if (!this.model.title) {
-            this.$el.find('#grp__field-title').focus();
-        }
-        this.createScroll({
-            root: this.$el.find('.grp')[0],
-            scroller: this.$el.find('.scroller')[0],
-            bar: this.$el.find('.scroller__bar')[0]
-        });
-        this.pageResized();
-    }
-
-    removeSubView() {
-        if (this.views.sub) {
-            this.views.sub.remove();
-            delete this.views.sub;
-        }
-    }
-
-    changeTitle(e) {
-        const title = $.trim(e.target.value);
-        if (title) {
-            if (!this.model.top && title !== this.model.title) {
-                this.model.setName(title);
-            }
-        } else {
-            if (this.model.isJustCreated) {
-                this.model.removeWithoutHistory();
-                Events.emit('edit-group');
-            }
-        }
-    }
-
-    changeAutoTypeSeq(e) {
-        const el = e.target;
-        const seq = $.trim(el.value);
-        AutoType.validate(null, seq, (err) => {
-            $(e.target).toggleClass('input--error', !!err);
-            if (!err) {
-                this.model.setAutoTypeSeq(seq);
-            }
-        });
-    }
-
     focusAutoTypeSeq(e) {
         if (!this.views.hint) {
             this.views.hint = new AutoTypeHintView({ input: e.target });
@@ -118,27 +43,4 @@ class GrpView extends View {
         }
         this.render();
     }
-
-    moveToTrash() {
-        this.model.moveToTrash();
-        Events.emit('select-all');
-    }
-
-    setEnableSearching(e) {
-        const enabled = e.target.checked;
-        this.model.setEnableSearching(enabled);
-    }
-
-    setEnableAutoType(e) {
-        const enabled = e.target.checked;
-        this.model.setEnableAutoType(enabled);
-    }
-
-    returnToApp() {
-        Events.emit('edit-group');
-    }
 }
-
-Object.assign(GrpView.prototype, Scrollable);
-
-export { GrpView };

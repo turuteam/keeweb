@@ -12,7 +12,7 @@ export const GroupPanel: FunctionComponent = () => {
     useModelWatcher(group);
 
     const [title, setTitle] = useState(group.title ?? '');
-    const [autoTypeSeq, setAutoTypeSeq] = useState(group.getEffectiveAutoTypeSeq());
+    const [autoTypeSeq, setAutoTypeSeq] = useState(group.autoTypeSeq ?? '');
     const [autoTypeSeqInvalid, setAutoTypeSeqInvalid] = useState(false);
 
     const backClicked = () => Workspace.showList();
@@ -54,7 +54,7 @@ export const GroupPanel: FunctionComponent = () => {
         enableSearching: group.getEffectiveEnableSearching(),
         icon: group.icon ?? 'folder',
         customIcon: group.customIcon,
-        canAutoType: !!Launcher,
+        canAutoType: !Launcher,
         autoTypeEnabled: group.getEffectiveEnableAutoType(),
         autoTypeSeq,
         autoTypeSeqInvalid,

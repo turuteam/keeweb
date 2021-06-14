@@ -4,7 +4,9 @@ import { Scrollable } from 'views/components/scrollable';
 import { Locale } from 'util/locale';
 import { Logger } from 'util/logger';
 import { StringFormat } from 'util/formatting/string-format';
+import { AutoTypeHint } from 'ui/auto-type/auto-type-hint';
 import { classes } from 'util/ui/classes';
+import { useRef } from 'preact/hooks';
 
 export const GroupPanelView: FunctionComponent<{
     title: string;
@@ -111,13 +113,14 @@ export const GroupPanelView: FunctionComponent<{
                                     })}
                                     id="grp__field-auto-type-seq"
                                     value={autoTypeSeq}
-                                    onClick={(e) =>
+                                    onInput={(e) =>
                                         autoTypeSeqChanged((e.target as HTMLInputElement).value)
                                     }
                                     size={50}
                                     maxLength={1024}
                                     placeholder={`${Locale.grpAutoTypeSeqDefault}: ${defaultAutoTypeSeq}`}
                                 />
+                                <AutoTypeHint for="grp__field-auto-type-seq" />
                             </div>
                         </>
                     ) : null}

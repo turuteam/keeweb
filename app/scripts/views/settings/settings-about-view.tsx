@@ -88,12 +88,12 @@ export const SettingsAboutView: FunctionComponent<{
                     <span class="muted-color">, web kdbx library, &copy; 2016 Antelle</span>
                 </li>
                 <li>
-                    <a href="https://nodeca.github.io/pako/" target="_blank" rel="noreferrer">
+                    <a href="https://101arrowz.github.io/fflate/" target="_blank" rel="noreferrer">
                         pako
                     </a>
                     <span class="muted-color">
-                        , high speed zlib port to javascript, &copy; 2014-2017 by Vitaly Puzrin and
-                        Andrei Tuputcyn
+                        , high performance (de)compression in an 8kB package, &copy; 2020 Arjun
+                        Barrett
                     </span>
                 </li>
                 <li>

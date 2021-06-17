@@ -1,5 +1,4 @@
 import { View } from 'framework/views/view';
-import { IconMap } from 'const/icon-map';
 import { Logger } from 'util/logger';
 import template from 'templates/icon-select.hbs';
 
@@ -14,23 +13,6 @@ class IconSelectView extends View {
         'click .icon-select__icon-select': 'selectIcon',
         'change .icon-select__file-input': 'iconSelected'
     };
-
-    special = {
-        select: null,
-        download: null
-    };
-
-    render() {
-        const customIcons = this.model.file.getCustomIcons();
-        const hasCustomIcons = Object.keys(customIcons).length > 0;
-        super.render({
-            sel: this.model.iconId,
-            icons: IconMap,
-            canDownloadFavicon: !!this.model.url,
-            customIcons,
-            hasCustomIcons
-        });
-    }
 
     iconClick(e) {
         const target = $(e.target).closest('.icon-select__icon');

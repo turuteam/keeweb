@@ -2,7 +2,7 @@ import { View } from 'framework/views/view';
 import { AutoType } from 'auto-type';
 import { Shortcuts } from 'comp/app/shortcuts';
 import { Locale } from 'util/locale';
-import { AutoTypeHintView } from 'views/auto-type/auto-type-hint-view';
+import { AutoTypeHintView } from 'views/auxiliary/auto-type-hint-view';
 import template from 'templates/details/details-auto-type.hbs';
 
 class DetailsAutoTypeView extends View {

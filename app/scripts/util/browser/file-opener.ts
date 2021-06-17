@@ -5,12 +5,15 @@ let el: HTMLInputElement | undefined;
 const logger = new Logger('file-reader');
 
 export const FileOpener = {
-    open(selected: (file: File) => void): void {
+    open(selected: (file: File) => void, accept?: string): void {
         el?.remove();
 
         el = document.createElement('input');
         el.type = 'file';
         el.classList.add('hide-by-pos');
+        if (accept) {
+            el.accept = accept;
+        }
         el.click();
         el.addEventListener('change', () => {
             const file = el?.files?.[0];

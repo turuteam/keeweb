@@ -14,6 +14,7 @@ export const GroupPanel: FunctionComponent = () => {
     const [title, setTitle] = useState(group.title ?? '');
     const [autoTypeSeq, setAutoTypeSeq] = useState(group.autoTypeSeq ?? '');
     const [autoTypeSeqInvalid, setAutoTypeSeqInvalid] = useState(false);
+    const [iconSelectVisible, setIconSelectVisible] = useState(false);
 
     const backClicked = () => Workspace.showList();
 
@@ -48,23 +49,44 @@ export const GroupPanel: FunctionComponent = () => {
         Workspace.selectAllAndShowList();
     };
 
+    const iconClicked = () => {
+        setIconSelectVisible(!iconSelectVisible);
+    };
+
+    const iconSelected = (iconId: number) => {
+        group.setIcon(iconId);
+        setIconSelectVisible(false);
+    };
+
+    const customIconSelected = (id: string) => {
+        group.setCustomIcon(id);
+        setIconSelectVisible(false);
+    };
+
     return h(GroupPanelView, {
+        file: group.file,
         title,
         readOnly: group.top,
         enableSearching: group.getEffectiveEnableSearching(),
         icon: group.icon ?? 'folder',
+        iconId: group.iconId,
         customIcon: group.customIcon,
+        customIconId: group.customIconId,
         canAutoType: !!Launcher,
         autoTypeEnabled: group.getEffectiveEnableAutoType(),
         autoTypeSeq,
         autoTypeSeqInvalid,
         defaultAutoTypeSeq: group.getParentEffectiveAutoTypeSeq(),
+        iconSelectVisible,
 
         backClicked,
         titleChanged,
         enableSearchingChanged,
         autoTypeEnabledChanged,
         autoTypeSeqChanged,
-        trashClicked
+        trashClicked,
+        iconClicked,
+        iconSelected,
+        customIconSelected
     });
 };

@@ -1,5 +1,5 @@
 import { FunctionComponent, h } from 'preact';
-import { AutoTypeHintView } from 'views/auto-type/auto-type-hint-view';
+import { AutoTypeHintView } from 'views/auxiliary/auto-type-hint-view';
 import { Links } from 'const/links';
 import { Features } from 'util/features';
 import { useLayoutEffect, useRef, useState } from 'preact/hooks';

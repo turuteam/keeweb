@@ -68,4 +68,4 @@ export const IconMap = [
     'dollar-sign',
     'signature',
     'mobile'
-] as const;
+];

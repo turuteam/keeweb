@@ -39,7 +39,7 @@ export const IconSelect: FunctionComponent<{
     return h(IconSelectView, {
         icons: IconMap,
         customIcons: file.getCustomIcons(),
-        selectedIcon: icon,
+        selectedIcon: customIcon ? undefined : icon,
         selectedCustomIcon: customIcon,
         canDownloadFavicon: !!websiteUrl,
         downloadingFavicon: IconSelectState.downloading,

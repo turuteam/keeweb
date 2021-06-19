@@ -8,18 +8,30 @@ export const IconSelectView: FunctionComponent<{
     selectedIcon: number | undefined;
     selectedCustomIcon: string | undefined;
     canDownloadFavicon: boolean;
+    downloadingFavicon: boolean;
+    downloadFaviconError: boolean;
+    selectedIconDataUrl?: string;
 
     iconSelected: (iconId: number) => void;
+    customIconSelected: (iconId: string) => void;
     selectOtherClicked: () => void;
+    otherSelected: () => void;
+    downloadFaviconClicked: () => void;
 }> = ({
     icons,
     customIcons,
     selectedIcon,
     selectedCustomIcon,
     canDownloadFavicon,
+    downloadingFavicon,
+    downloadFaviconError,
+    selectedIconDataUrl,
 
     iconSelected,
-    selectOtherClicked
+    customIconSelected,
+    selectOtherClicked,
+    otherSelected,
+    downloadFaviconClicked
 }) => {
     const iconClicked = (e: MouseEvent) => {
         if (!(e.target instanceof HTMLElement)) {
@@ -30,6 +42,21 @@ export const IconSelectView: FunctionComponent<{
             return;
         }
         iconSelected(+iconId);
+    };
+
+    const customIconClicked = (e: MouseEvent) => {
+        if (!(e.target instanceof HTMLElement)) {
+            return;
+        }
+        const iconEl = e.target.closest('[data-icon-id]');
+        if (!(iconEl instanceof HTMLElement)) {
+            return;
+        }
+        const iconId = iconEl.dataset.iconId as string;
+        if (!iconId) {
+            return;
+        }
+        customIconSelected(iconId);
     };
 
     return (
@@ -53,25 +80,42 @@ export const IconSelectView: FunctionComponent<{
                 {canDownloadFavicon ? (
                     <span
                         class="icon-select__icon icon-select__icon-btn icon-select__icon-download"
-                        data-val="special"
-                        data-special="download"
+                        onClick={downloadFaviconClicked}
                     >
-                        <i class="fa fa-cloud-download-alt" />
+                        <i
+                            class={classes({
+                                'fa': true,
+                                'fa-cloud-download-alt':
+                                    !downloadingFavicon && !downloadFaviconError,
+                                'fa-spinner spin': downloadingFavicon,
+                                'fa-ban': downloadFaviconError
+                            })}
+                        />
                         <kw-tip text={Locale.iconFavTitle} />
                     </span>
                 ) : null}
-                <span
-                    class="icon-select__icon icon-select__icon-btn icon-select__icon-select"
-                    data-val="special"
-                    data-special="select"
-                    onClick={selectOtherClicked}
-                >
-                    <i class="fa fa-ellipsis-h" />
-                    <kw-tip text={Locale.iconSelCustom} />
-                </span>
+                {selectedIconDataUrl ? (
+                    <span
+                        class="icon-select__icon icon-select__icon-btn icon-select__icon-select"
+                        onClick={otherSelected}
+                    >
+                        <img src={selectedIconDataUrl} />
+                    </span>
+                ) : (
+                    <span
+                        class="icon-select__icon icon-select__icon-btn icon-select__icon-select"
+                        onClick={selectOtherClicked}
+                    >
+                        <i class="fa fa-ellipsis-h" />
+                        <kw-tip text={Locale.iconSelCustom} />
+                    </span>
+                )}
             </div>
             {customIcons.size > 0 ? (
-                <div class="icon-select__items icon-select__items--custom">
+                <div
+                    class="icon-select__items icon-select__items--custom"
+                    onClick={customIconClicked}
+                >
                     {[...customIcons.entries()].map(([id, icon]) => (
                         <span
                             key={id}

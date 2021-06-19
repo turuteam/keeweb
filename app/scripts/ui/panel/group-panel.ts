@@ -5,6 +5,7 @@ import { Group } from 'models/group';
 import { useModelWatcher } from 'util/ui/hooks';
 import { Launcher } from 'comp/launcher';
 import { useState } from 'preact/hooks';
+import { IconSelectState } from 'models/ui/icon-select-state';
 
 export const GroupPanel: FunctionComponent = () => {
     const group = Workspace.menu.selectedItem as Group;
@@ -50,6 +51,7 @@ export const GroupPanel: FunctionComponent = () => {
     };
 
     const iconClicked = () => {
+        IconSelectState.reset();
         setIconSelectVisible(!iconSelectVisible);
     };
 

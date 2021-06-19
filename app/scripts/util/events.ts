@@ -27,6 +27,7 @@ export interface GlobalEventSpec {
     'leave-full-screen': () => void;
     'drag-handle-set': (name: string, size: number | null) => void;
     'plugin-gallery-load-complete': () => void;
+    'custom-icon-downloaded': (data: string) => void;
 }
 
 class Events extends TypedEmitter<GlobalEventSpec> {

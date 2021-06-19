@@ -7,4 +7,8 @@ describe('IconUrlFormat', () => {
             'data:image/png;base64,AQI='
         );
     });
+
+    it('converts to base64', () => {
+        expect(IconUrlFormat.dataUrlToBase64('data:image/png;base64,AQI=')).to.eql('AQI=');
+    });
 });

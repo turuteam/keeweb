@@ -2,7 +2,10 @@ import { FunctionComponent, h } from 'preact';
 import { IconSelectView } from 'views/auxiliary/icon-select-view';
 import { IconMap } from 'const/icon-map';
 import { File } from 'models/file';
-import { FileOpener } from 'util/browser/file-opener';
+import { IconSelectState } from 'models/ui/icon-select-state';
+import { IconSelectController } from 'comp/app/icon-select-controller';
+import { useModelWatcher } from 'util/ui/hooks';
+import { IconUrlFormat } from 'util/formatting/icon-url-format';
 
 export const IconSelect: FunctionComponent<{
     file: File;
@@ -12,11 +15,25 @@ export const IconSelect: FunctionComponent<{
 
     iconSelected: (iconId: number) => void;
     customIconSelected: (id: string) => void;
-}> = ({ file, icon, customIcon, websiteUrl, iconSelected }) => {
+}> = ({ file, icon, customIcon, websiteUrl, iconSelected, customIconSelected }) => {
+    useModelWatcher(IconSelectState);
+
     const selectOtherClicked = () => {
-        FileOpener.open((file) => {
-            console.log('f', file);
-        }, 'image/*');
+        IconSelectController.openFile();
+    };
+
+    const downloadFaviconClicked = () => {
+        if (websiteUrl) {
+            IconSelectController.downloadFavicon(websiteUrl);
+        }
+    };
+
+    const otherSelected = () => {
+        if (IconSelectState.selectedIconDataUrl) {
+            const base64data = IconUrlFormat.dataUrlToBase64(IconSelectState.selectedIconDataUrl);
+            const id = file.addCustomIcon(base64data);
+            customIconSelected(id);
+        }
     };
 
     return h(IconSelectView, {
@@ -25,8 +42,14 @@ export const IconSelect: FunctionComponent<{
         selectedIcon: icon,
         selectedCustomIcon: customIcon,
         canDownloadFavicon: !!websiteUrl,
+        downloadingFavicon: IconSelectState.downloading,
+        downloadFaviconError: IconSelectState.downloadError,
+        selectedIconDataUrl: IconSelectState.selectedIconDataUrl,
 
         iconSelected,
-        selectOtherClicked
+        customIconSelected,
+        otherSelected,
+        selectOtherClicked,
+        downloadFaviconClicked
     });
 };

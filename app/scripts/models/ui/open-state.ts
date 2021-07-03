@@ -3,6 +3,7 @@ import { Model } from 'util/model';
 import { StorageFileOptions } from 'storage/types';
 import { FileChalRespConfig, FileInfo } from 'models/file-info';
 import { FileManager } from 'models/file-manager';
+import { UrlFormat } from 'util/formatting/url-format';
 
 export interface OpenParams {
     id?: string;
@@ -229,6 +230,16 @@ class OpenState extends Model implements OpenParams {
         this.batchSet(() => {
             this.busy = false;
             this.storageInProgress = undefined;
+        });
+    }
+
+    setStorageFile(storage: string, file: { path: string; name: string; rev?: string }) {
+        this.batchSet(() => {
+            this.reset();
+            this.storage = storage;
+            this.path = file.path;
+            this.name = UrlFormat.getDataFileName(file.name);
+            this.rev = file.rev;
         });
     }
 }

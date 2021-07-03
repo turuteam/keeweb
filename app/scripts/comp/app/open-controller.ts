@@ -11,9 +11,10 @@ import { Logger } from 'util/logger';
 import { FileController } from 'comp/app/file-controller';
 import { OpenState } from 'models/ui/open-state';
 import { StorageBase } from 'storage/storage-base';
-import { BrowserAuthStartedError, OAuthRejectedError } from 'storage/types';
+import { BrowserAuthStartedError, OAuthRejectedError, StorageListItem } from 'storage/types';
 import { FunctionComponent, h } from 'preact';
-import { OpenStorageFileList, OpenStorageFileListFile } from 'ui/open/open-storage-file-list';
+import { OpenStorageFileList } from 'ui/open/open-storage-file-list';
+import { UrlFormat } from 'util/formatting/url-format';
 
 const logger = new Logger('open');
 
@@ -220,15 +221,20 @@ class OpenController {
 
     private showStorageFileListAlert(
         storage: StorageBase,
-        files: OpenStorageFileListFile[],
+        files: StorageListItem[],
         currentDir?: string
     ) {
         const listView: FunctionComponent = () => {
-            const fileSelected = (file: OpenStorageFileListFile) => {
+            const fileSelected = (file: StorageListItem) => {
                 if (file.dir) {
                     this.listStorage(storage, file.path, currentDir);
                 } else {
-                    // this.openStorageFile(storage, file);
+                    alert.closeWithResult('');
+                    OpenState.setStorageFile(storage.name, {
+                        path: file.path,
+                        name: UrlFormat.getDataFileName(file.name),
+                        rev: file.rev
+                    });
                 }
             };
 
@@ -238,7 +244,7 @@ class OpenController {
             });
         };
 
-        Alerts.alert({
+        const alert = Alerts.alert({
             header: Locale.openSelectFile,
             body: Locale.openSelectFileBody,
             icon: storage.icon || 'file-alt',

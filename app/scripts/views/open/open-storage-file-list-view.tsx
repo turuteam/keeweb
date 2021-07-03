@@ -16,7 +16,7 @@ export const OpenStorageFileListView: FunctionComponent<{
     canShowHiddenFiles: boolean;
     showHiddenFiles: boolean;
 
-    fileSelected: (file: OpenStorageFileListViewFile) => void;
+    fileSelected: (filePath: string) => void;
     showHiddenFilesChanged: () => void;
 }> = ({
     density,
@@ -35,10 +35,10 @@ export const OpenStorageFileListView: FunctionComponent<{
         if (!(withPath instanceof HTMLElement)) {
             return;
         }
-        const path = withPath.dataset.path;
-        const file = files.find((f) => f.path === path);
-        if (file) {
-            fileSelected(file);
+        const filePath = withPath.dataset.path;
+        if (typeof filePath === 'string') {
+            e.stopPropagation();
+            fileSelected(filePath);
         }
     };
 

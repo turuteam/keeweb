@@ -5,15 +5,12 @@ import { Storage } from 'storage';
 import { Alerts } from 'comp/ui/alerts';
 import { UsbListener } from 'comp/app/usb-listener';
 import { YubiKey } from 'comp/app/yubikey';
-import { Features } from 'util/features';
 import { UrlFormat } from 'util/formatting/url-format';
 import { Locale } from 'util/locale';
 import { Logger } from 'util/logger';
 import { OpenConfigView } from 'views/open-config-view';
-import { StorageFileListView } from 'views/storage-file-list-view';
 import { OpenChalRespView } from 'views/open-chal-resp-view';
 import { omit } from 'util/fn';
-import { GeneratorView } from 'views/generator-view';
 import { NativeModules } from 'comp/launcher/native-modules';
 
 const logger = new Logger('open-view');
@@ -69,21 +66,6 @@ class OpenView extends View {
         } else {
             this.params.encryptedPassword = null;
         }
-    }
-
-    openStorageFile(storage, file) {
-        if (this.busy) {
-            return;
-        }
-        this.params.id = null;
-        this.params.storage = storage.name;
-        this.params.path = file.path;
-        this.params.name = UrlFormat.getDataFileName(file.name);
-        this.params.rev = file.rev;
-        this.params.fileData = null;
-        this.encryptedPassword = null;
-        this.displayOpenFile();
-        this.displayOpenDeviceOwnerAuth();
     }
 
     showConfig(storage) {
@@ -183,35 +165,6 @@ class OpenView extends View {
             this.displayOpenFile();
             this.displayOpenDeviceOwnerAuth();
         }
-    }
-
-    toggleGenerator(e) {
-        e.stopPropagation();
-        if (this.views.gen) {
-            this.views.gen.remove();
-            return;
-        }
-        const el = this.$el.find('.open__icon-generate');
-        const rect = el[0].getBoundingClientRect();
-        const pos = {
-            left: rect.left,
-            top: rect.top
-        };
-        if (Features.isMobile) {
-            pos.left = '50vw';
-            pos.top = '50vh';
-            pos.transform = 'translate(-50%, -50%)';
-        }
-        const generator = new GeneratorView({
-            copy: true,
-            noTemplateEditor: true,
-            pos
-        });
-        generator.render();
-        generator.once('remove', () => {
-            delete this.views.gen;
-        });
-        this.views.gen = generator;
     }
 
     usbDevicesChanged() {

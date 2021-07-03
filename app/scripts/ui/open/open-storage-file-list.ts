@@ -2,17 +2,12 @@ import { h, FunctionComponent } from 'preact';
 import { OpenStorageFileListView } from 'views/open/open-storage-file-list-view';
 import { UrlFormat } from 'util/formatting/url-format';
 import { useState } from 'preact/hooks';
-
-export interface OpenStorageFileListFile {
-    path: string;
-    name: string;
-    dir?: boolean;
-}
+import { StorageListItem } from 'storage/types';
 
 export const OpenStorageFileList: FunctionComponent<{
-    files: OpenStorageFileListFile[];
+    files: StorageListItem[];
 
-    fileSelected: (file: OpenStorageFileListFile) => void;
+    fileSelected: (file: StorageListItem) => void;
 }> = ({ files: inputFiles, fileSelected }) => {
     const [showHiddenFiles, setShowHiddenFiles] = useState(false);
 
@@ -37,13 +32,20 @@ export const OpenStorageFileList: FunctionComponent<{
         setShowHiddenFiles(!showHiddenFiles);
     };
 
+    const filePathSelected = (filePath: string) => {
+        const file = inputFiles.find((f) => f.path === filePath);
+        if (file) {
+            fileSelected(file);
+        }
+    };
+
     return h(OpenStorageFileListView, {
         density,
         files,
         canShowHiddenFiles,
         showHiddenFiles,
 
-        fileSelected,
+        fileSelected: filePathSelected,
         showHiddenFilesChanged
     });
 };

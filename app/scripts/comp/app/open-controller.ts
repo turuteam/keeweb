@@ -10,6 +10,10 @@ import { DropboxChooser } from 'storage/dropbox-chooser';
 import { Logger } from 'util/logger';
 import { FileController } from 'comp/app/file-controller';
 import { OpenState } from 'models/ui/open-state';
+import { StorageBase } from 'storage/storage-base';
+import { BrowserAuthStartedError, OAuthRejectedError } from 'storage/types';
+import { FunctionComponent, h } from 'preact';
+import { OpenStorageFileList, OpenStorageFileListFile } from 'ui/open/open-storage-file-list';
 
 const logger = new Logger('open');
 
@@ -162,6 +166,87 @@ class OpenController {
         }
 
         this.readFile(files[0]).catch((e) => logger.error('Error reading dropped files', e));
+    }
+
+    listStorage(storage: StorageBase, dir?: string, prevDir?: string): void {
+        if (OpenState.busy || !storage.list) {
+            return;
+        }
+        OpenState.setStorageProgress(storage.name);
+        storage
+            .list(dir)
+            .then((files) => {
+                OpenState.resetStorageProgress();
+
+                if (!files.length) {
+                    Alerts.error({
+                        header: Locale.openNothingFound,
+                        body: Locale.openNothingFoundBody
+                    });
+                    return;
+                }
+
+                const collator = new Intl.Collator(undefined, { sensitivity: 'base' });
+                files.sort((x, y) => {
+                    if (x.dir !== y.dir) {
+                        return (y.dir ? 1 : 0) - (x.dir ? 1 : 0);
+                    }
+                    return collator.compare(x.path, y.path);
+                });
+                if (dir) {
+                    files.unshift({
+                        path: prevDir ?? '',
+                        name: '..',
+                        dir: true
+                    });
+                }
+
+                this.showStorageFileListAlert(storage, files, dir);
+            })
+            .catch((e) => {
+                OpenState.resetStorageProgress();
+                if (e instanceof BrowserAuthStartedError || e instanceof OAuthRejectedError) {
+                    return;
+                }
+                if (!Alerts.alertDisplayed) {
+                    Alerts.error({
+                        header: Locale.openError,
+                        body: Locale.openListErrorBody,
+                        pre: errorToString(e)
+                    });
+                }
+            });
+    }
+
+    private showStorageFileListAlert(
+        storage: StorageBase,
+        files: OpenStorageFileListFile[],
+        currentDir?: string
+    ) {
+        const listView: FunctionComponent = () => {
+            const fileSelected = (file: OpenStorageFileListFile) => {
+                if (file.dir) {
+                    this.listStorage(storage, file.path, currentDir);
+                } else {
+                    // this.openStorageFile(storage, file);
+                }
+            };
+
+            return h(OpenStorageFileList, {
+                files,
+                fileSelected
+            });
+        };
+
+        Alerts.alert({
+            header: Locale.openSelectFile,
+            body: Locale.openSelectFileBody,
+            icon: storage.icon || 'file-alt',
+            buttons: [{ result: '', title: Locale.alertCancel }],
+            esc: '',
+            click: '',
+            view: listView
+        });
     }
 
     private static getOpenFileFormat(

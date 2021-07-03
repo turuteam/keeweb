@@ -21,6 +21,7 @@ export interface ModalViewProps {
     checkbox?: string;
     buttons: ModalViewButton[];
     hidden?: boolean;
+    view?: FunctionComponent;
 
     modalClicked: () => void;
     buttonClicked: (result: string) => void;
@@ -39,6 +40,7 @@ export const ModalView: FunctionComponent<ModalViewProps> = ({
     hint,
     checkbox,
     buttons,
+    view: InnerView,
 
     modalClicked,
     buttonClicked,
@@ -77,6 +79,7 @@ export const ModalView: FunctionComponent<ModalViewProps> = ({
                             <label for="modal__check">{checkbox}</label>
                         </div>
                     ) : null}
+                    {InnerView ? <InnerView /> : null}
                 </div>
                 <div class="modal__buttons">
                     {buttons.map((btn) => (

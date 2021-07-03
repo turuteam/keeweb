@@ -5,7 +5,6 @@ import { Storage } from 'storage';
 import { Alerts } from 'comp/ui/alerts';
 import { UsbListener } from 'comp/app/usb-listener';
 import { YubiKey } from 'comp/app/yubikey';
-import { Comparators } from 'util/data/comparators';
 import { Features } from 'util/features';
 import { UrlFormat } from 'util/formatting/url-format';
 import { Locale } from 'util/locale';
@@ -70,93 +69,6 @@ class OpenView extends View {
         } else {
             this.params.encryptedPassword = null;
         }
-    }
-
-    openStorage(e) {
-        if (this.busy) {
-            return;
-        }
-        const storage = Storage[$(e.target).closest('.open__icon').data('storage')];
-        if (!storage) {
-            return;
-        }
-        if (storage.needShowOpenConfig && storage.needShowOpenConfig()) {
-            this.showConfig(storage);
-        } else if (storage.list) {
-            this.listStorage(storage);
-        } else {
-            Alerts.notImplemented();
-        }
-    }
-
-    listStorage(storage, config) {
-        if (this.busy) {
-            return;
-        }
-        this.closeConfig();
-        const icon = this.$el.find('.open__icon-storage[data-storage=' + storage.name + ']');
-        this.busy = true;
-        icon.toggleClass('flip3d', true);
-        storage.list(config && config.dir, (err, files) => {
-            icon.toggleClass('flip3d', false);
-            this.busy = false;
-            if (err || !files) {
-                err = err ? err.toString() : '';
-                if (err === 'browser-auth-started') {
-                    return;
-                }
-                if (err.lastIndexOf('OAuth', 0) !== 0 && !Alerts.alertDisplayed) {
-                    Alerts.error({
-                        header: Locale.openError,
-                        body: Locale.openListErrorBody,
-                        pre: err.toString()
-                    });
-                }
-                return;
-            }
-            if (!files.length) {
-                Alerts.error({
-                    header: Locale.openNothingFound,
-                    body: Locale.openNothingFoundBody
-                });
-                return;
-            }
-
-            const fileNameComparator = Comparators.stringComparator('path', true);
-            files.sort((x, y) => {
-                if (x.dir !== y.dir) {
-                    return !!y.dir - !!x.dir;
-                }
-                return fileNameComparator(x, y);
-            });
-            if (config && config.dir) {
-                files.unshift({
-                    path: config.prevDir,
-                    name: '..',
-                    dir: true
-                });
-            }
-            const listView = new StorageFileListView({ files });
-            listView.on('selected', (file) => {
-                if (file.dir) {
-                    this.listStorage(storage, {
-                        dir: file.path,
-                        prevDir: (config && config.dir) || ''
-                    });
-                } else {
-                    this.openStorageFile(storage, file);
-                }
-            });
-            Alerts.alert({
-                header: Locale.openSelectFile,
-                body: Locale.openSelectFileBody,
-                icon: storage.icon || 'file-alt',
-                buttons: [{ result: '', title: Locale.alertCancel }],
-                esc: '',
-                click: '',
-                view: listView
-            });
-        });
     }
 
     openStorageFile(storage, file) {

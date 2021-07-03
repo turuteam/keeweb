@@ -1,4 +1,4 @@
-import { h, render } from 'preact';
+import { FunctionComponent, h, render } from 'preact';
 import { Locale } from 'util/locale';
 import { Modal, ModalEmitterEvents } from 'ui/modal';
 import { TypedEmitter } from 'tiny-typed-emitter';
@@ -29,6 +29,7 @@ export interface AlertConfig {
     opaque?: boolean;
     wide?: boolean;
     checkbox?: string;
+    view?: FunctionComponent;
 
     success?: (result: string, checked?: boolean) => void;
     complete?: (result: string, checked?: boolean) => void;
@@ -74,6 +75,7 @@ export class Alert {
             hint: this.config.hint,
             checkbox: this.config.checkbox,
             buttons: this.config.buttons ?? [],
+            view: this.config.view,
 
             modalClicked: () => this.modalClicked(),
             buttonClicked: (result) => this.buttonClicked(result),

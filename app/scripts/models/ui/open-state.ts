@@ -44,6 +44,7 @@ class OpenState extends Model implements OpenParams {
     capsLockPressed = false;
     visualFocus = false;
     dragInProgress = false;
+    storageInProgress?: string;
 
     init(): void {
         const fileInfo = FileManager.getFirstFileInfoToOpen();
@@ -214,6 +215,20 @@ class OpenState extends Model implements OpenParams {
             this.openingFile = false;
             this.openError = true;
             this.invalidKey = invalidKey;
+        });
+    }
+
+    setStorageProgress(storage: string) {
+        this.batchSet(() => {
+            this.busy = true;
+            this.storageInProgress = storage;
+        });
+    }
+
+    resetStorageProgress() {
+        this.batchSet(() => {
+            this.busy = false;
+            this.storageInProgress = undefined;
         });
     }
 }

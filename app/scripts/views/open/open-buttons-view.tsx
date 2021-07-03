@@ -2,6 +2,7 @@ import { FunctionComponent } from 'preact';
 import { Locale } from 'util/locale';
 import { useRef } from 'preact/hooks';
 import { withoutPropagation } from 'util/ui/events';
+import { classes } from 'util/ui/classes';
 
 interface StorageProvider {
     name: string;
@@ -20,11 +21,13 @@ export const OpenButtonsView: FunctionComponent<{
     showGenerator: boolean;
     showSettings: boolean;
     storageProviders: StorageProvider[];
+    storageInProgress?: string;
 
     openClicked: () => void;
     moreClicked: () => void;
     newClicked: () => void;
     openDemoClicked: () => void;
+    storageClicked: (prv: string) => void;
     settingsClicked: () => void;
     generateClicked: (rect: DOMRect) => void;
 }> = ({
@@ -39,11 +42,13 @@ export const OpenButtonsView: FunctionComponent<{
     showGenerator,
     showSettings,
     storageProviders,
+    storageInProgress,
 
     openClicked,
     moreClicked,
     newClicked,
     openDemoClicked,
+    storageClicked,
     settingsClicked,
     generateClicked
 }) => {
@@ -111,9 +116,14 @@ export const OpenButtonsView: FunctionComponent<{
                 <div class="open__icons open__icons--lower">
                     {storageProviders.map((prv) => (
                         <div
-                            class="open__icon open__icon-storage"
+                            class={classes({
+                                'open__icon': true,
+                                'open__icon-storage': true,
+                                'flip3d': prv.name === storageInProgress
+                            })}
                             tabIndex={++tabIndex}
                             key={prv.name}
+                            onClick={() => storageClicked(prv.name)}
                         >
                             {prv.icon ? <i class={`fa fa-${prv.icon} open__icon-i`} /> : null}
                             <div class="open__icon-text">{Locale.get(prv.name)}</div>

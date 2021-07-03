@@ -210,7 +210,7 @@ class StorageGDrive extends StorageBase {
         return { rev: newRev, path: newPath };
     }
 
-    async list(dir: string): Promise<StorageListItem[]> {
+    async list(dir?: string): Promise<StorageListItem[]> {
         await this.oauthAuthorize();
 
         this._logger.info('List');

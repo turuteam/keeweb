@@ -186,7 +186,7 @@ class StorageOneDrive extends StorageBase {
         return { rev: storageRev };
     }
 
-    async list(dir: string): Promise<StorageListItem[]> {
+    async list(dir?: string): Promise<StorageListItem[]> {
         await this.oauthAuthorize();
         this._logger.info('List');
         const ts = this._logger.ts();

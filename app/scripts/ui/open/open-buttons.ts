@@ -10,11 +10,13 @@ import { useModelField } from 'util/ui/hooks';
 import { OpenController } from 'comp/app/open-controller';
 import { OpenState } from 'models/ui/open-state';
 import { GeneratorState } from 'models/ui/generator-state';
+import { Alerts } from 'comp/ui/alerts';
 
 const logger = new Logger('open');
 
 export const OpenButtons: FunctionComponent = () => {
     const secondRowVisible = useModelField(OpenState, 'secondRowVisible');
+    const storageInProgress = useModelField(OpenState, 'storageInProgress');
 
     const storageProviders = [];
 
@@ -44,10 +46,16 @@ export const OpenButtons: FunctionComponent = () => {
         !FileManager.getFileByName('yubikey');
 
     const openClicked = () => {
+        if (OpenState.busy) {
+            return;
+        }
         OpenController.chooseFile();
     };
 
     const newClicked = () => {
+        if (OpenState.busy) {
+            return;
+        }
         Workspace.createNewFile().catch((e) => logger.error(e));
     };
 
@@ -56,10 +64,30 @@ export const OpenButtons: FunctionComponent = () => {
     };
 
     const openDemoClicked = () => {
+        if (OpenState.busy) {
+            return;
+        }
         Workspace.createDemoFile().catch((e) => logger.error(e));
     };
 
+    const storageClicked = (storageName: string) => {
+        if (OpenState.busy) {
+            return;
+        }
+        const storage = Storage.get(storageName);
+        if (storage?.needShowOpenConfig) {
+            // TODO: show config
+        } else if (storage?.list) {
+            OpenController.listStorage(storage);
+        } else {
+            Alerts.notImplemented();
+        }
+    };
+
     const settingsClicked = () => {
+        if (OpenState.busy) {
+            return;
+        }
         Workspace.showSettings();
     };
 
@@ -79,11 +107,13 @@ export const OpenButtons: FunctionComponent = () => {
         showGenerator: AppSettings.canOpenGenerator,
         showSettings: AppSettings.canOpenSettings,
         storageProviders,
+        storageInProgress,
 
         openClicked,
         newClicked,
         moreClicked,
         openDemoClicked,
+        storageClicked,
         settingsClicked,
         generateClicked
     });

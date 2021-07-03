@@ -107,7 +107,7 @@ class StorageDropbox extends StorageBase {
         };
     }
 
-    needShowOpenConfig(): boolean {
+    get needShowOpenConfig(): boolean {
         return !this.isValidKey() || !this.getSecret();
     }
 
@@ -405,7 +405,7 @@ class StorageDropbox extends StorageBase {
         this._logger.info('Removed', path, this._logger.ts(ts));
     }
 
-    async list(dir: string): Promise<StorageListItem[]> {
+    async list(dir?: string): Promise<StorageListItem[]> {
         this._logger.info('List');
         const ts = this._logger.ts();
         const response = await this.apiCall({

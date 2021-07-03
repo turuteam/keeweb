@@ -32,7 +32,7 @@ class StorageWebDav extends StorageBase {
         return AppSettings.webdav;
     }
 
-    needShowOpenConfig(): boolean {
+    get needShowOpenConfig(): boolean {
         return true;
     }
 

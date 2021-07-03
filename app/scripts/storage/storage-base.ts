@@ -11,7 +11,9 @@ import { HttpRequestConfig, HttpResponse } from 'comp/launcher/desktop-ipc';
 import { AppSettings } from 'models/app-settings';
 import { noop } from 'util/fn';
 import {
+    BrowserAuthStartedError,
     HttpRequestError,
+    OAuthRejectedError,
     StorageFileData,
     StorageFileOptions,
     StorageFileStat,
@@ -95,7 +97,7 @@ abstract class StorageBase {
 
     abstract remove?(id: string, opts?: StorageFileOptions): Promise<void>;
 
-    abstract list?(dir: string): Promise<StorageListItem[]>;
+    abstract list?(dir?: string): Promise<StorageListItem[]>;
 
     abstract mkdir?(path: string): Promise<void>;
 
@@ -340,7 +342,7 @@ abstract class StorageBase {
             return new Promise((resolve, reject) => {
                 oauthListener.on('ready', () => {
                     Launcher?.openLink(url);
-                    reject(new Error('Browser auth started'));
+                    reject(new BrowserAuthStartedError());
                 });
                 oauthListener.on('error', reject);
                 oauthListener.on('result', (state, code) => {
@@ -393,7 +395,7 @@ abstract class StorageBase {
                     processWindowMessage(locationSearch);
                 } else {
                     this._logger.error('OAuth error', 'popup closed');
-                    reject(new Error('OAuth: popup closed'));
+                    reject(new OAuthRejectedError('popup closed'));
                 }
             };
 
@@ -444,7 +446,7 @@ abstract class StorageBase {
                 );
                 throw new Error(record.error);
             } else {
-                throw new Error(`OAuth token without token type`);
+                throw new Error('OAuth token without token type');
             }
         }
 
@@ -612,7 +614,7 @@ abstract class StorageBase {
         this.oauthProcessReturn(res.data);
     }
 
-    needShowOpenConfig(): boolean {
+    get needShowOpenConfig(): boolean {
         return false;
     }
 

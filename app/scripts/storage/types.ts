@@ -35,6 +35,18 @@ export class StorageRevConflictError extends Error {
     }
 }
 
+export class BrowserAuthStartedError extends Error {
+    constructor() {
+        super('Browser auth started');
+    }
+}
+
+export class OAuthRejectedError extends Error {
+    constructor(message: string) {
+        super(`OAuth error: ${message}`);
+    }
+}
+
 export interface StorageOAuthConfig {
     scope: string;
     url: string;

@@ -4,6 +4,26 @@ import { AppSettings } from 'models/app-settings';
 import { Launcher } from 'comp/launcher';
 
 export const SettingsGeneralLock: FunctionComponent = () => {
+    const idleMinutesChanged = (idleMinutes: number) => {
+        AppSettings.idleMinutes = idleMinutes;
+    };
+
+    const lockOnMinimizeChanged = () => {
+        AppSettings.lockOnMinimize = !AppSettings.lockOnMinimize;
+    };
+
+    const lockOnCopyChanged = () => {
+        AppSettings.lockOnCopy = !AppSettings.lockOnCopy;
+    };
+
+    const lockOnAutoTypeChanged = () => {
+        AppSettings.lockOnAutoType = !AppSettings.lockOnAutoType;
+    };
+
+    const lockOnOsLockChanged = () => {
+        AppSettings.lockOnOsLock = !AppSettings.lockOnOsLock;
+    };
+
     return h(SettingsGeneralLockView, {
         idleMinutes: AppSettings.idleMinutes,
         canDetectMinimize: !!Launcher,
@@ -12,6 +32,12 @@ export const SettingsGeneralLock: FunctionComponent = () => {
         canAutoType: !!Launcher,
         lockOnAutoType: AppSettings.lockOnAutoType,
         canDetectOsSleep: !!Launcher,
-        lockOnOsLock: AppSettings.lockOnOsLock
+        lockOnOsLock: AppSettings.lockOnOsLock,
+
+        idleMinutesChanged,
+        lockOnMinimizeChanged,
+        lockOnCopyChanged,
+        lockOnAutoTypeChanged,
+        lockOnOsLockChanged
     });
 };

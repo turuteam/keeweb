@@ -668,6 +668,20 @@ class FileController {
             this.backupFile(file, data).catch(noop);
         }
     }
+
+    deleteAllCachedFiles(): void {
+        for (const fileInfo of FileManager.fileInfos) {
+            if (fileInfo.storage && !fileInfo.modified) {
+                Storage.cache.remove(fileInfo.id).catch(noop);
+            }
+        }
+    }
+
+    deleteAllStoredTokens(): void {
+        for (const storage of Object.values(Storage.getAll())) {
+            storage.deleteStoredToken();
+        }
+    }
 }
 
 const instance = new FileController();

@@ -11,6 +11,12 @@ export const SettingsGeneralLockView: FunctionComponent<{
     lockOnAutoType: boolean;
     canDetectOsSleep: boolean;
     lockOnOsLock: boolean;
+
+    idleMinutesChanged: (idleMinutes: number) => void;
+    lockOnMinimizeChanged: () => void;
+    lockOnCopyChanged: () => void;
+    lockOnAutoTypeChanged: () => void;
+    lockOnOsLockChanged: () => void;
 }> = ({
     idleMinutes,
     canDetectMinimize,
@@ -19,7 +25,13 @@ export const SettingsGeneralLockView: FunctionComponent<{
     canAutoType,
     lockOnAutoType,
     canDetectOsSleep,
-    lockOnOsLock
+    lockOnOsLock,
+
+    idleMinutesChanged,
+    lockOnMinimizeChanged,
+    lockOnCopyChanged,
+    lockOnAutoTypeChanged,
+    lockOnOsLockChanged
 }) => {
     return (
         <>
@@ -30,6 +42,7 @@ export const SettingsGeneralLockView: FunctionComponent<{
                     class="settings__general-idle-minutes settings__select input-base"
                     id="settings__general-idle-minutes"
                     value={idleMinutes}
+                    onChange={(e) => idleMinutesChanged(+(e.target as HTMLSelectElement).value)}
                 >
                     <option value="0">{Locale.setGenNoAutoLock}</option>
                     <option value="5">
@@ -65,6 +78,7 @@ export const SettingsGeneralLockView: FunctionComponent<{
                         class="settings__input input-base settings__general-lock-on-minimize"
                         id="settings__general-lock-on-minimize"
                         checked={lockOnMinimize}
+                        onClick={lockOnMinimizeChanged}
                     />
                     <label for="settings__general-lock-on-minimize">
                         {Locale.setGenLockMinimize}
@@ -78,6 +92,7 @@ export const SettingsGeneralLockView: FunctionComponent<{
                     class="settings__input input-base settings__general-lock-on-copy"
                     id="settings__general-lock-on-copy"
                     checked={lockOnCopy}
+                    onClick={lockOnCopyChanged}
                 />
                 <label for="settings__general-lock-on-copy">{Locale.setGenLockCopy}</label>
             </div>
@@ -89,6 +104,7 @@ export const SettingsGeneralLockView: FunctionComponent<{
                         class="settings__input input-base settings__general-lock-on-auto-type"
                         id="settings__general-lock-on-auto-type"
                         checked={lockOnAutoType}
+                        onClick={lockOnAutoTypeChanged}
                     />
                     <label for="settings__general-lock-on-auto-type">
                         {Locale.setGenLockAutoType}
@@ -103,6 +119,7 @@ export const SettingsGeneralLockView: FunctionComponent<{
                         class="settings__input input-base settings__general-lock-on-os-lock"
                         id="settings__general-lock-on-os-lock"
                         checked={lockOnOsLock}
+                        onClick={lockOnOsLockChanged}
                     />
                     <label for="settings__general-lock-on-os-lock">
                         {Locale.setGenLockOrSleep}

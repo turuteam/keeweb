@@ -69,4 +69,12 @@ export class FileInfo extends Model {
         }
         return new FileInfo(rec as { id: string; name: string });
     }
+
+    clearKeyFile(): void {
+        this.batchSet(() => {
+            this.keyFileName = undefined;
+            this.keyFilePath = undefined;
+            this.keyFileHash = undefined;
+        });
+    }
 }

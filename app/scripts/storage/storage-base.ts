@@ -130,7 +130,7 @@ abstract class StorageBase {
         }
     }
 
-    private deleteStoredToken(): void {
+    deleteStoredToken(): void {
         RuntimeData.delete(`${this.name}OAuthToken`);
     }
 

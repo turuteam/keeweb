@@ -14,7 +14,21 @@ export const SettingsGeneralStorageView: FunctionComponent<{
     disableOfflineStorage: boolean;
     shortLivedStorageToken: boolean;
     storageProviders: SettingsGeneralStorageProviderItem[];
-}> = ({ disableOfflineStorage, shortLivedStorageToken, storageProviders }) => {
+
+    disableOfflineStorageChanged: () => void;
+    shortLivedStorageTokenChanged: () => void;
+    storageEnabledChanged: (storageName: string) => void;
+    logoutFromStorage: (storageName: string) => void;
+}> = ({
+    disableOfflineStorage,
+    shortLivedStorageToken,
+    storageProviders,
+
+    disableOfflineStorageChanged,
+    shortLivedStorageTokenChanged,
+    storageEnabledChanged,
+    logoutFromStorage
+}) => {
     return (
         <>
             <h2 id="storage">{Locale.setGenStorage}</h2>
@@ -24,6 +38,7 @@ export const SettingsGeneralStorageView: FunctionComponent<{
                     class="settings__input input-base settings__general-disable-offline-storage"
                     id="settings__general-disable-offline-storage"
                     checked={disableOfflineStorage}
+                    onClick={disableOfflineStorageChanged}
                 />
                 <label for="settings__general-disable-offline-storage">
                     {Locale.setGenDisableOfflineStorage}
@@ -35,6 +50,7 @@ export const SettingsGeneralStorageView: FunctionComponent<{
                     class="settings__input input-base settings__general-short-lived-storage-token"
                     id="settings__general-short-lived-storage-token"
                     checked={shortLivedStorageToken}
+                    onClick={shortLivedStorageTokenChanged}
                 />
                 <label for="settings__general-short-lived-storage-token">
                     {Locale.setGenShortLivedStorageToken}
@@ -48,8 +64,8 @@ export const SettingsGeneralStorageView: FunctionComponent<{
                             type="checkbox"
                             id={`settings__general-prv-check-${prv.name}`}
                             class="settings__general-prv-check"
-                            data-storage={prv.name}
                             checked={prv.enabled}
+                            onClick={() => storageEnabledChanged(prv.name)}
                         />
                         <label for={`settings__general-prv-check-${prv.name}`}>{prv.locName}</label>
                     </h4>
@@ -61,7 +77,7 @@ export const SettingsGeneralStorageView: FunctionComponent<{
                     {prv.loggedIn ? (
                         <button
                             class="btn-silent settings__general-prv-logout"
-                            data-storage={prv.name}
+                            onClick={() => logoutFromStorage(prv.name)}
                         >
                             {Locale.setGenStorageLogout}
                         </button>

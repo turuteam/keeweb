@@ -11,6 +11,11 @@ export const SettingsGeneralUpdateView: FunctionComponent<{
     updateInProgress: boolean;
     updateReady: boolean;
     updateFound: boolean;
+
+    installUpdateClicked: () => void;
+    checkUpdateClicked: () => void;
+    downloadAndInstallUpdateClicked: () => void;
+    autoUpdateChanged: (autoUpdate: AppSettingsAutoUpdate | null) => void;
 }> = ({
     updateWaitingReload,
     autoUpdate,
@@ -18,7 +23,12 @@ export const SettingsGeneralUpdateView: FunctionComponent<{
     updateInfo,
     updateInProgress,
     updateReady,
-    updateFound
+    updateFound,
+
+    installUpdateClicked,
+    checkUpdateClicked,
+    downloadAndInstallUpdateClicked,
+    autoUpdateChanged
 }) => {
     return (
         <>
@@ -32,7 +42,10 @@ export const SettingsGeneralUpdateView: FunctionComponent<{
                         </a>
                     </div>
                     <div class="settings__general-update-buttons">
-                        <button class="settings__general-restart-btn">
+                        <button
+                            class="settings__general-restart-btn"
+                            onClick={installUpdateClicked}
+                        >
                             {Locale.setGenReloadToUpdate}
                         </button>
                     </div>
@@ -42,16 +55,17 @@ export const SettingsGeneralUpdateView: FunctionComponent<{
                 <>
                     <h2>{Locale.setGenUpdate}</h2>
                     <div>
-                        <select class="settings__general-auto-update settings__select input-base">
-                            <option value="install" selected={autoUpdate === 'install'}>
-                                {Locale.setGenUpdateAuto}
-                            </option>
-                            <option value="check" selected={autoUpdate === 'check'}>
-                                {Locale.setGenUpdateCheck}
-                            </option>
-                            <option value="" selected={!autoUpdate}>
-                                {Locale.setGenNoUpdate}
-                            </option>
+                        <select
+                            class="settings__general-auto-update settings__select input-base"
+                            value={autoUpdate || ''}
+                            onChange={(e) => {
+                                const val = (e.target as HTMLSelectElement).value || null;
+                                autoUpdateChanged(val as AppSettingsAutoUpdate | null);
+                            }}
+                        >
+                            <option value="install">{Locale.setGenUpdateAuto}</option>
+                            <option value="check">{Locale.setGenUpdateCheck}</option>
+                            <option value="">{Locale.setGenNoUpdate}</option>
                         </select>
                         <div>{updateInfo}</div>
                         <a href={Links.ReleaseNotes} target="_blank" rel="noreferrer">
@@ -64,17 +78,26 @@ export const SettingsGeneralUpdateView: FunctionComponent<{
                                 {Locale.setGenUpdateChecking}
                             </button>
                         ) : (
-                            <button class="settings__general-update-btn btn-silent">
+                            <button
+                                class="settings__general-update-btn btn-silent"
+                                onClick={checkUpdateClicked}
+                            >
                                 {Locale.setGenCheckUpdate}
                             </button>
                         )}
                         {updateReady ? (
-                            <button class="settings__general-restart-btn">
+                            <button
+                                class="settings__general-restart-btn"
+                                onClick={installUpdateClicked}
+                            >
                                 {Locale.setGenRestartToUpdate}
                             </button>
                         ) : null}
                         {updateFound ? (
-                            <button class="settings__general-update-found-btn">
+                            <button
+                                class="settings__general-update-found-btn"
+                                onClick={downloadAndInstallUpdateClicked}
+                            >
                                 {Locale.setGenDownloadAndRestart}
                             </button>
                         ) : null}

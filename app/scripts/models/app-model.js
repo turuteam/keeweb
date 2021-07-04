@@ -181,25 +181,6 @@ class AppModel {
         );
     }
 
-    deleteAllCachedFiles() {
-        for (const fileInfo of this.fileInfos) {
-            if (fileInfo.storage && !fileInfo.modified) {
-                Storage.cache.remove(fileInfo.id);
-            }
-        }
-    }
-
-    clearStoredKeyFiles() {
-        for (const fileInfo of this.fileInfos) {
-            fileInfo.set({
-                keyFileName: null,
-                keyFilePath: null,
-                keyFileHash: null
-            });
-        }
-        this.fileInfos.save();
-    }
-
     unsetKeyFile(fileId) {
         const fileInfo = this.fileInfos.get(fileId);
         fileInfo.set({

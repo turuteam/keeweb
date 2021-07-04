@@ -64,7 +64,7 @@ class Updater extends Model {
         );
     }
 
-    private scheduleNextCheck() {
+    scheduleNextCheck(): void {
         if (this._nextCheckTimeout) {
             clearTimeout(this._nextCheckTimeout);
             this._nextCheckTimeout = undefined;
@@ -89,7 +89,7 @@ class Updater extends Model {
         logger.info(`Next update check will happen in ${Math.round(timeDiff / 1000)}s`);
     }
 
-    private async check(startedByUser: boolean) {
+    async check(startedByUser: boolean) {
         if (!this.enabled || this.updateInProgress) {
             return;
         }
@@ -174,6 +174,11 @@ class Updater extends Model {
         } else if (SemVer.compareVersions(updateVersion, RuntimeInfo.version) > 0) {
             this.updateStatus = 'found';
         }
+    }
+
+    async updateAndRestart() {
+        await this.update();
+        await this.installAndRestart();
     }
 
     private async update() {

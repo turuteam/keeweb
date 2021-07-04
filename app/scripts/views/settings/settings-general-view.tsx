@@ -18,6 +18,11 @@ export const SettingsGeneralView: FunctionComponent<{
         if (selectedMenuAnchor) {
             const el = document.getElementById(selectedMenuAnchor);
             el?.scrollIntoView();
+        } else {
+            const scroller = contentRef.current.closest('.scroller');
+            if (scroller) {
+                scroller.scrollTop = 0;
+            }
         }
     }, [selectedMenuAnchor]);
 

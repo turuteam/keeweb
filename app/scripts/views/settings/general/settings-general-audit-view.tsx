@@ -9,13 +9,36 @@ export const SettingsGeneralAuditView: FunctionComponent<{
     excludePinsFromAudit: boolean;
     checkPasswordsOnHIBP: boolean;
     auditPasswordAge: number;
+    showAboutHIBP: boolean;
+
+    auditPasswordsChanged: () => void;
+    auditPasswordEntropyChanged: () => void;
+    excludePinsFromAuditChanged: () => void;
+    checkPasswordsOnHIBPChanged: () => void;
+    showAboutHIBPChanged: () => void;
+    auditPasswordAgeChanged: (age: number) => void;
 }> = ({
     auditPasswords,
     auditPasswordEntropy,
     excludePinsFromAudit,
     checkPasswordsOnHIBP,
-    auditPasswordAge
+    auditPasswordAge,
+    showAboutHIBP,
+
+    auditPasswordsChanged,
+    auditPasswordEntropyChanged,
+    excludePinsFromAuditChanged,
+    checkPasswordsOnHIBPChanged,
+    showAboutHIBPChanged,
+    auditPasswordAgeChanged
 }) => {
+    const checkPasswordsOnHIBPClickedInternal = (e: Event) => {
+        if ((e.target as HTMLElement).closest('a')) {
+            return;
+        }
+        checkPasswordsOnHIBPChanged();
+    };
+
     return (
         <>
             <h2 id="audit">{Locale.setGenAudit}</h2>
@@ -25,6 +48,7 @@ export const SettingsGeneralAuditView: FunctionComponent<{
                     class="settings__input input-base settings__general-audit-passwords"
                     id="settings__general-audit-passwords"
                     checked={auditPasswords}
+                    onClick={auditPasswordsChanged}
                 />
                 <label for="settings__general-audit-passwords">{Locale.setGenAuditPasswords}</label>
             </div>
@@ -35,6 +59,7 @@ export const SettingsGeneralAuditView: FunctionComponent<{
                     class="settings__input input-base settings__general-audit-password-entropy"
                     id="settings__general-audit-password-entropy"
                     checked={auditPasswordEntropy}
+                    onClick={auditPasswordEntropyChanged}
                 />
                 <label for="settings__general-audit-password-entropy">
                     {Locale.setGenAuditPasswordEntropy}
@@ -47,6 +72,7 @@ export const SettingsGeneralAuditView: FunctionComponent<{
                     class="settings__input input-base settings__general-exclude-pins-from-audit"
                     id="settings__general-exclude-pins-from-audit"
                     checked={excludePinsFromAudit}
+                    onClick={excludePinsFromAuditChanged}
                 />
                 <label for="settings__general-exclude-pins-from-audit">
                     {Locale.setGenExcludePinsFromAudit}
@@ -59,6 +85,7 @@ export const SettingsGeneralAuditView: FunctionComponent<{
                     class="settings__input input-base settings__general-check-passwords-on-hibp"
                     id="settings__general-check-passwords-on-hibp"
                     checked={checkPasswordsOnHIBP}
+                    onClick={checkPasswordsOnHIBPClickedInternal}
                 />
                 <label for="settings__general-check-passwords-on-hibp">
                     <LocalizedWith str={Locale.setGenCheckPasswordsOnHIBP}>
@@ -67,18 +94,23 @@ export const SettingsGeneralAuditView: FunctionComponent<{
                         </a>
                     </LocalizedWith>
                 </label>
-                <i class="fa fa-info-circle info-btn settings__general-toggle-help-hibp" />
-                <div class="settings__general-help-hibp hide">
-                    <LocalizedWith str={Locale.setGenHelpHIBP}>
-                        <a
-                            href={Links.HaveIBeenPwnedPrivacy}
-                            rel="noreferrer noopener"
-                            target="_blank"
-                        >
-                            {Locale.setGenHelpHIBPLink}
-                        </a>
-                    </LocalizedWith>
-                </div>
+                <i
+                    class="fa fa-info-circle info-btn settings__general-toggle-help-hibp"
+                    onClick={showAboutHIBPChanged}
+                />
+                {showAboutHIBP ? (
+                    <div class="settings__general-help-hibp">
+                        <LocalizedWith str={Locale.setGenHelpHIBP}>
+                            <a
+                                href={Links.HaveIBeenPwnedPrivacy}
+                                rel="noreferrer noopener"
+                                target="_blank"
+                            >
+                                {Locale.setGenHelpHIBPLink}
+                            </a>
+                        </LocalizedWith>
+                    </div>
+                ) : null}
             </div>
 
             <div>
@@ -89,6 +121,9 @@ export const SettingsGeneralAuditView: FunctionComponent<{
                     class="settings__select input-base settings__general-audit-password-age"
                     id="settings__general-audit-password-age"
                     value={auditPasswordAge}
+                    onChange={(e) =>
+                        auditPasswordAgeChanged(+(e.target as HTMLSelectElement).value)
+                    }
                 >
                     <option value="0">{Locale.setGenAuditPasswordAgeOff}</option>
                     <option value="1">{Locale.setGenAuditPasswordAgeOneYear}</option>

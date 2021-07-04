@@ -188,6 +188,13 @@ class FileManager extends Model<FileManagerEvents> {
         return this.files.some((f) => !f.readOnly);
     }
 
+    clearStoredKeyFiles(): void {
+        for (const fileInfo of this.fileInfos) {
+            fileInfo.clearKeyFile();
+        }
+        this.saveFileInfosDelayed();
+    }
+
     private fileClosed(file: File) {
         if (file.storage === 'file' && file.path) {
             Storage.file.unwatch(file.path);

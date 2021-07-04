@@ -2,7 +2,6 @@ import { Model } from 'util/model';
 import { MenuOption } from './menu-option';
 import { Keys } from 'const/keys';
 import { AlertConfig } from 'comp/ui/alerts';
-import { LocaleKey } from 'util/locale';
 import { InitWithFieldsOf } from 'util/types';
 import { File } from 'models/file';
 import { IdGenerator } from 'util/generators/id-generator';

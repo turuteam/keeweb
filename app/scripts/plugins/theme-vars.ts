@@ -1,25 +1,35 @@
 import { Color } from 'util/data/color';
 
-const ThemeVarsScss = require('!!raw-loader!../../styles/base/_theme-vars.scss') as string;
-const ThemeDefaults = require('!!raw-loader!../../styles/themes/_theme-defaults.scss') as string;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+const ThemeVarsScss = require('!!raw-loader!../../styles/base/_theme-vars.scss').default as string;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+const ThemeDefaults = require('!!raw-loader!../../styles/themes/_theme-defaults.scss')
+    .default as string;
 
 type StyleVar = Color | string | number;
 
+function checkColor(colorVar: StyleVar): Color {
+    if (colorVar instanceof Color) {
+        return colorVar;
+    } else if (typeof colorVar === 'string') {
+        return new Color(colorVar);
+    } else {
+        throw new TypeError(`Not a color: ${colorVar}`);
+    }
+}
+
 const ThemeFunctions: Record<string, (...args: StyleVar[]) => StyleVar> = {
     'mix'(color1: StyleVar, color2: StyleVar, percent: StyleVar): StyleVar {
-        if (!(color1 instanceof Color)) throw new TypeError('color1 is not a Color');
-        if (!(color2 instanceof Color)) throw new TypeError('color2 is not a Color');
         if (typeof percent !== 'number') throw new TypeError('percent is not a number');
-        return color1.mix(color2, percent).toRgba();
+        return checkColor(color1).mix(checkColor(color2), percent).toRgba();
     },
     'semi-mute-percent'(mutePercent: StyleVar): StyleVar {
         if (typeof mutePercent !== 'number') throw new TypeError('mutePercent is not a number');
         return mutePercent / 2;
     },
     'rgba'(color: StyleVar, alpha: StyleVar): StyleVar {
-        if (!(color instanceof Color)) throw new TypeError('color is not a Color');
         if (typeof alpha !== 'number') throw new TypeError('alpha is not a number');
-        const res = new Color(color);
+        const res = new Color(checkColor(color));
         res.a = alpha;
         return res.toRgba();
     },
@@ -29,28 +39,23 @@ const ThemeFunctions: Record<string, (...args: StyleVar[]) => StyleVar> = {
         thBg: StyleVar,
         thText: StyleVar
     ): StyleVar {
-        if (!(color instanceof Color)) throw new TypeError('color is not a Color');
         if (typeof lshift !== 'number') throw new TypeError('lshift is not a number');
-        if (!(thBg instanceof Color)) throw new TypeError('thBg is not a Color');
-        if (!(thText instanceof Color)) throw new TypeError('thText is not a Color');
-        if (color.l - lshift >= thBg.l) {
-            return thText.toRgba();
+        if (checkColor(color).l - lshift >= checkColor(thBg).l) {
+            return checkColor(thText).toRgba();
         }
-        return thBg.toRgba();
+        return checkColor(thBg).toRgba();
     },
     'lightness-alpha'(color: StyleVar, lightness: StyleVar, alpha: StyleVar): StyleVar {
-        if (!(color instanceof Color)) throw new TypeError('color is not a Color');
         if (typeof lightness !== 'number') throw new TypeError('lightness is not a number');
         if (typeof alpha !== 'number') throw new TypeError('alpha is not a number');
-        const res = new Color(color);
+        const res = new Color(checkColor(color));
         res.l += Math.min(0, Math.max(1, lightness));
         res.a += Math.min(0, Math.max(1, alpha));
         return res.toHsla();
     },
     'shade'(color: StyleVar, percent: StyleVar): StyleVar {
-        if (!(color instanceof Color)) throw new TypeError('color is not a Color');
         if (typeof percent !== 'number') throw new TypeError('percent is not a number');
-        return Color.black.mix(color, percent).toRgba();
+        return Color.black.mix(checkColor(color), percent).toRgba();
     }
 };
 

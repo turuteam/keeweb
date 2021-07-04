@@ -61,7 +61,7 @@ export interface PluginSetting {
     type: 'text' | 'select' | 'checkbox';
     value?: string | boolean;
     placeholder?: string;
-    maxlength?: string;
+    maxlength?: number;
     options?: PluginSettingOption[];
 }
 

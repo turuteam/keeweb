@@ -70,7 +70,7 @@ export const SettingsGeneralStorageView: FunctionComponent<{
                         <label for={`settings__general-prv-check-${prv.name}`}>{prv.locName}</label>
                     </h4>
                     {prv.enabled && prv.hasConfig ? (
-                        <div class={`settings__general-prv-wrap settings__general-${prv.name}}`}>
+                        <div class={`settings__general-prv-wrap settings__general-${prv.name}`}>
                             <SettingsGeneralStorageProvider name={prv.name} />
                         </div>
                     ) : null}

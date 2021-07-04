@@ -7,6 +7,7 @@ import { SignatureVerifier } from 'util/data/signature-verifier';
 import { Logger } from 'util/logger';
 import { PluginGalleryData, PluginManifest, StoredPlugin, StoredPlugins } from 'plugins/types';
 import { Timeouts } from 'const/timeouts';
+import { errorToString } from 'util/fn';
 
 const logger = new Logger('plugin-mgr');
 
@@ -14,6 +15,9 @@ class PluginManager extends Model {
     plugins: Plugin[] = [];
     autoUpdateAppVersion?: string;
     autoUpdateDate?: Date;
+
+    installing = new Set<string>();
+    installErrors = new Map<string, string>();
 
     async init() {
         const ts = logger.ts();
@@ -44,13 +48,25 @@ class PluginManager extends Model {
         expectedManifest?: PluginManifest,
         skipSignatureValidation?: boolean
     ): Promise<void> {
-        const plugin = await Plugin.loadFromUrl(url, expectedManifest);
-        await this.uninstall(plugin.id);
-        if (skipSignatureValidation) {
-            plugin.skipSignatureValidation = true;
+        this.installErrors.delete(url);
+        this.installing = new Set(this.installing).add(url);
+        try {
+            const plugin = await Plugin.loadFromUrl(url, expectedManifest);
+            await this.uninstall(plugin.id);
+            if (skipSignatureValidation) {
+                plugin.skipSignatureValidation = true;
+            }
+            await plugin.install(true, false);
+            this.plugins = this.plugins.concat(plugin);
+
+            this.installErrors.delete(url);
+        } catch (e) {
+            this.installErrors.set(url, errorToString(e));
+        } finally {
+            const installing = new Set(this.installing);
+            installing.delete(url);
+            this.installing = installing;
         }
-        await plugin.install(true, false);
-        this.plugins = this.plugins.concat(plugin);
         await this.saveState();
     }
 

@@ -26,7 +26,6 @@ export interface GlobalEventSpec {
     'enter-full-screen': () => void;
     'leave-full-screen': () => void;
     'drag-handle-set': (name: string, size: number | null) => void;
-    'plugin-gallery-load-complete': () => void;
     'custom-icon-downloaded': (data: string) => void;
 }
 

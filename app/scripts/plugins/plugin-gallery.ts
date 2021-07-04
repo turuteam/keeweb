@@ -1,17 +1,17 @@
 import * as kdbxweb from 'kdbxweb';
-import { Events } from 'util/events';
 import { SettingsStore } from 'comp/settings/settings-store';
 import { Links } from 'const/links';
 import { SignatureVerifier } from 'util/data/signature-verifier';
 import { Logger } from 'util/logger';
 import { PluginGalleryData } from 'plugins/types';
+import { Model } from 'util/model';
 
-const PluginGallery = {
-    logger: new Logger('plugin-gallery'),
+class PluginGallery extends Model {
+    logger = new Logger('plugin-gallery');
 
-    gallery: undefined as PluginGalleryData | undefined,
-    loading: false,
-    loadError: false,
+    gallery?: PluginGalleryData;
+    loading = false;
+    loadError = false;
 
     async loadPlugins(): Promise<PluginGalleryData> {
         if (this.gallery) {
@@ -49,18 +49,16 @@ const PluginGallery = {
             this.gallery = data;
             await this.saveGallery(data);
 
-            Events.emit('plugin-gallery-load-complete');
             return this.gallery;
         } catch (e) {
             this.loading = false;
             this.loadError = true;
             this.logger.error('Error loading plugin gallery', e);
-            Events.emit('plugin-gallery-load-complete');
             throw e;
         }
-    },
+    }
 
-    async verifySignature(gallery: PluginGalleryData): Promise<void> {
+    private async verifySignature(gallery: PluginGalleryData): Promise<void> {
         const dataToVerify = JSON.stringify(gallery, null, 2).replace(gallery.signature, '');
         const valid = await SignatureVerifier.verify(
             kdbxweb.ByteUtils.stringToBytes(dataToVerify),
@@ -70,7 +68,7 @@ const PluginGallery = {
             this.logger.error('JSON signature invalid');
             throw new Error('JSON signature invalid');
         }
-    },
+    }
 
     async getCachedGallery(): Promise<PluginGalleryData | undefined> {
         const ts = this.logger.ts();
@@ -84,11 +82,13 @@ const PluginGallery = {
                 this.logger.error('Cannot load cached plugin gallery: signature validation error');
             }
         }
-    },
+    }
 
-    saveGallery(data: PluginGalleryData): Promise<void> {
+    private saveGallery(data: PluginGalleryData): Promise<void> {
         return SettingsStore.save('plugin-gallery', data);
     }
-};
+}
 
-export { PluginGallery };
+const instance = new PluginGallery();
+
+export { instance as PluginGallery };

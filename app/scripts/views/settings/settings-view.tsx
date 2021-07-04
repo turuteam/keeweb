@@ -4,6 +4,7 @@ import { Scrollable } from 'views/components/scrollable';
 import { Locale } from 'util/locale';
 import { SettingsGeneral } from 'ui/settings/settings-general';
 import { SettingsShortcuts } from 'ui/settings/settings-shortcuts';
+import { SettingsPlugins } from 'ui/settings/settings-plugins';
 import { SettingsAbout } from 'ui/settings/settings-about';
 import { SettingsHelp } from 'ui/settings/settings-help';
 
@@ -21,6 +22,7 @@ export const SettingsView: FunctionComponent<{
             <Scrollable>
                 {page === 'general' ? <SettingsGeneral /> : null}
                 {page === 'shortcuts' ? <SettingsShortcuts /> : null}
+                {page === 'plugins' ? <SettingsPlugins /> : null}
                 {page === 'about' ? <SettingsAbout /> : null}
                 {page === 'help' ? <SettingsHelp /> : null}
             </Scrollable>

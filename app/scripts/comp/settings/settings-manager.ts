@@ -2,7 +2,7 @@ import { Events } from 'util/events';
 import { Features } from 'util/features';
 import { Locale } from 'util/locale';
 import { ThemeWatcher } from 'comp/browser/theme-watcher';
-import { AppSettings } from 'models/app-settings';
+import { AppSettings, AppSettingsFontSize } from 'models/app-settings';
 import { Logger } from 'util/logger';
 import { Launcher } from 'comp/launcher';
 import { noop } from 'util/fn';
@@ -152,7 +152,7 @@ const SettingsManager = {
         }
     },
 
-    setFontSize(fontSize: number): void {
+    setFontSize(fontSize: AppSettingsFontSize): void {
         const defaultFontSize = Features.isMobile ? 14 : 12;
         const sizeInPx = defaultFontSize + (fontSize || 0) * 2;
         document.documentElement.style.fontSize = `${sizeInPx}px`;

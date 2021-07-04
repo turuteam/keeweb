@@ -6,6 +6,7 @@ import { Workspace } from 'models/workspace';
 
 export const SettingsGeneral: FunctionComponent = () => {
     useModelWatcher(AppSettings);
+
     const selectedItem = useModelField(Workspace.menu, 'selectedItem');
 
     return h(SettingsGeneralView, {

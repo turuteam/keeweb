@@ -3,8 +3,9 @@ import { SettingsGeneralAppearanceView } from 'views/settings/general/settings-g
 import { SettingsManager } from 'comp/settings/settings-manager';
 import { Locale } from 'util/locale';
 import { ThemeWatcher } from 'comp/browser/theme-watcher';
-import { AppSettings } from 'models/app-settings';
+import { AppSettings, AppSettingsFontSize, AppSettingsTitlebarStyle } from 'models/app-settings';
 import { Features } from 'util/features';
+import { Workspace } from 'models/workspace';
 
 export const SettingsGeneralAppearance: FunctionComponent = () => {
     const getAllThemes = () => {
@@ -30,6 +31,57 @@ export const SettingsGeneralAppearance: FunctionComponent = () => {
         return themes;
     };
 
+    const goToPlugins = () => {
+        Workspace.selectMenu(Workspace.menu.pluginsSection.items[0]);
+    };
+
+    const localeChanged = (locale: string) => {
+        if (locale === '...') {
+            goToPlugins();
+        } else {
+            AppSettings.locale = locale;
+            SettingsManager.setLocale(locale);
+        }
+    };
+
+    const themeChanged = (theme: string) => {
+        if (theme === '...') {
+            goToPlugins();
+        } else {
+            const changedInSettings = AppSettings.theme !== theme;
+            if (changedInSettings) {
+                AppSettings.theme = theme;
+            }
+            SettingsManager.setTheme(theme);
+        }
+    };
+
+    const autoSwitchThemeChanged = () => {
+        AppSettings.autoSwitchTheme = !AppSettings.autoSwitchTheme;
+        SettingsManager.darkModeChanged();
+    };
+
+    const fontSizeChanged = (fontSize: AppSettingsFontSize) => {
+        AppSettings.fontSize = fontSize;
+        SettingsManager.setFontSize(fontSize);
+    };
+
+    const titlebarStyleChanged = (titlebarStyle: AppSettingsTitlebarStyle) => {
+        AppSettings.titlebarStyle = titlebarStyle;
+    };
+
+    const expandGroupsChanged = () => {
+        AppSettings.expandGroups = !AppSettings.expandGroups;
+    };
+
+    const tableViewChanged = () => {
+        AppSettings.tableView = !AppSettings.tableView;
+    };
+
+    const colorfulIconsChanged = () => {
+        AppSettings.colorfulIcons = !AppSettings.colorfulIcons;
+    };
+
     return h(SettingsGeneralAppearanceView, {
         locales: SettingsManager.allLocales,
         activeLocale: Locale.localeName,
@@ -43,6 +95,15 @@ export const SettingsGeneralAppearance: FunctionComponent = () => {
         expandGroups: AppSettings.expandGroups,
         canSetTableView: !Features.isMobile,
         tableView: AppSettings.tableView,
-        colorfulIcons: AppSettings.colorfulIcons
+        colorfulIcons: AppSettings.colorfulIcons,
+
+        localeChanged,
+        themeChanged,
+        autoSwitchThemeChanged,
+        fontSizeChanged,
+        titlebarStyleChanged,
+        expandGroupsChanged,
+        tableViewChanged,
+        colorfulIconsChanged
     });
 };

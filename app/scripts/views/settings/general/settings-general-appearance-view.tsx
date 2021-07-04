@@ -17,6 +17,15 @@ export const SettingsGeneralAppearanceView: FunctionComponent<{
     canSetTableView: boolean;
     tableView: boolean;
     colorfulIcons: boolean;
+
+    localeChanged: (locale: string) => void;
+    themeChanged: (theme: string) => void;
+    autoSwitchThemeChanged: () => void;
+    fontSizeChanged: (fontSize: AppSettingsFontSize) => void;
+    titlebarStyleChanged: (titlebarStyle: AppSettingsTitlebarStyle) => void;
+    expandGroupsChanged: () => void;
+    tableViewChanged: () => void;
+    colorfulIconsChanged: () => void;
 }> = ({
     locales,
     activeLocale,
@@ -30,7 +39,16 @@ export const SettingsGeneralAppearanceView: FunctionComponent<{
     expandGroups,
     canSetTableView,
     tableView,
-    colorfulIcons
+    colorfulIcons,
+
+    localeChanged,
+    themeChanged,
+    autoSwitchThemeChanged,
+    fontSizeChanged,
+    titlebarStyleChanged,
+    expandGroupsChanged,
+    tableViewChanged,
+    colorfulIconsChanged
 }) => {
     return (
         <>
@@ -40,9 +58,11 @@ export const SettingsGeneralAppearanceView: FunctionComponent<{
                 <select
                     class="settings__general-locale settings__select input-base"
                     id="settings__general-locale"
+                    value={activeLocale}
+                    onChange={(e) => localeChanged((e.target as HTMLSelectElement).value)}
                 >
                     {Object.entries(locales).map(([key, name]) => (
-                        <option key={key} value={key} selected={key === activeLocale}>
+                        <option key={key} value={key}>
                             {name}
                         </option>
                     ))}
@@ -61,7 +81,7 @@ export const SettingsGeneralAppearanceView: FunctionComponent<{
                                 'settings__general-theme': true,
                                 'settings__general-theme--selected': key === activeTheme
                             })}
-                            data-theme={key}
+                            onClick={() => themeChanged(key)}
                         >
                             <div class="settings__general-theme-name">{name}</div>
                             <button class="settings__general-theme-button">
@@ -71,7 +91,7 @@ export const SettingsGeneralAppearanceView: FunctionComponent<{
                     ))}
                     <div
                         class="settings__general-theme settings__general-theme-plugins"
-                        data-theme="..."
+                        onClick={() => themeChanged('...')}
                     >
                         <div class="settings__general-theme-plugins-name">
                             {Locale.setGenMoreThemes}
@@ -86,6 +106,7 @@ export const SettingsGeneralAppearanceView: FunctionComponent<{
                     class="settings__input input-base settings__general-auto-switch-theme"
                     id="settings__general-auto-switch-theme"
                     checked={autoSwitchTheme}
+                    onClick={autoSwitchThemeChanged}
                 />
                 <label for="settings__general-auto-switch-theme">
                     {Locale.setGenAutoSwitchTheme}
@@ -96,16 +117,16 @@ export const SettingsGeneralAppearanceView: FunctionComponent<{
                 <select
                     class="settings__general-font-size settings__select input-base"
                     id="settings__general-font-size"
+                    value={fontSize}
+                    onChange={(e) =>
+                        fontSizeChanged(
+                            +(e.target as HTMLSelectElement).value as AppSettingsFontSize
+                        )
+                    }
                 >
-                    <option value="0" selected={fontSize === 0}>
-                        {Locale.setGenFontSizeNormal}
-                    </option>
-                    <option value="1" selected={fontSize === 1}>
-                        {Locale.setGenFontSizeLarge}
-                    </option>
-                    <option value="2" selected={fontSize === 2}>
-                        {Locale.setGenFontSizeLargest}
-                    </option>
+                    <option value="0">{Locale.setGenFontSizeNormal}</option>
+                    <option value="1">{Locale.setGenFontSizeLarge}</option>
+                    <option value="2">{Locale.setGenFontSizeLargest}</option>
                 </select>
             </div>
             {supportsTitleBarStyles ? (
@@ -117,18 +138,18 @@ export const SettingsGeneralAppearanceView: FunctionComponent<{
                         <select
                             class="settings__general-titlebar-style settings__select input-base"
                             id="settings__general-titlebar-style"
+                            value={titlebarStyle}
+                            onChange={(e) =>
+                                titlebarStyleChanged(
+                                    (e.target as HTMLSelectElement)
+                                        .value as AppSettingsTitlebarStyle
+                                )
+                            }
                         >
-                            <option value="default" selected={titlebarStyle === 'default'}>
-                                {Locale.setGenTitlebarStyleDefault}
-                            </option>
-                            <option value="hidden" selected={titlebarStyle === 'hidden'}>
-                                {Locale.setGenTitlebarStyleHidden}
-                            </option>
+                            <option value="default">{Locale.setGenTitlebarStyleDefault}</option>
+                            <option value="hidden">{Locale.setGenTitlebarStyleHidden}</option>
                             {supportsCustomTitleBarAndDraggableWindow ? (
-                                <option
-                                    value="hidden-inset"
-                                    selected={titlebarStyle === 'hidden-inset'}
-                                >
+                                <option value="hidden-inset">
                                     {Locale.setGenTitlebarStyleHiddenInset}
                                 </option>
                             ) : null}
@@ -142,6 +163,7 @@ export const SettingsGeneralAppearanceView: FunctionComponent<{
                     class="settings__input input-base settings__general-expand"
                     id="settings__general-expand"
                     checked={expandGroups}
+                    onClick={expandGroupsChanged}
                 />
                 <label for="settings__general-expand">{Locale.setGenShowSubgroups}</label>
             </div>
@@ -153,6 +175,7 @@ export const SettingsGeneralAppearanceView: FunctionComponent<{
                             class="settings__input input-base settings__general-table-view"
                             id="settings__general-table-view"
                             checked={tableView}
+                            onClick={tableViewChanged}
                         />
                         <label for="settings__general-table-view">{Locale.setGenTableView}</label>
                     </div>
@@ -164,6 +187,7 @@ export const SettingsGeneralAppearanceView: FunctionComponent<{
                     class="settings__input input-base settings__general-colorful-icons"
                     id="settings__general-colorful-icons"
                     checked={colorfulIcons}
+                    onClick={colorfulIconsChanged}
                 />
                 <label for="settings__general-colorful-icons">{Locale.setGenColorfulIcons}</label>
             </div>

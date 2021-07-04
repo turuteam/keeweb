@@ -65,9 +65,6 @@ class AppView extends View {
         this.views.menu.listenDrag(this.views.menuDrag);
         this.views.list.listenDrag(this.views.listDrag);
 
-        this.listenTo(this.model.settings, 'change:theme', this.setTheme);
-        this.listenTo(this.model.settings, 'change:locale', this.setLocale);
-        this.listenTo(this.model.settings, 'change:fontSize', this.setFontSize);
         this.listenTo(this.model.settings, 'change:autoSaveInterval', this.setupAutoSave);
         this.listenTo(this.model.files, 'change', this.fileListUpdated);
 
@@ -788,23 +785,6 @@ class AppView extends View {
 
     drop(e) {
         e.preventDefault();
-    }
-
-    setTheme() {
-        SettingsManager.setTheme(this.model.settings.theme);
-    }
-
-    setFontSize() {
-        SettingsManager.setFontSize(this.model.settings.fontSize);
-    }
-
-    setLocale() {
-        SettingsManager.setLocale(this.model.settings.locale);
-        if (this.views.settings.isVisible()) {
-            this.hideSettings();
-            this.showSettings();
-        }
-        this.$el.find('.app__beta:first').text(Locale.appBeta);
     }
 
     extLinkClick(e) {

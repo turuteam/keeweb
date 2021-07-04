@@ -3,11 +3,9 @@ import { View } from 'framework/views/view';
 import { Storage } from 'storage';
 import { Updater } from 'comp/app/updater';
 import { Launcher } from 'comp/launcher';
-import { SettingsManager } from 'comp/settings/settings-manager';
 import { Alerts } from 'comp/ui/alerts';
 import { Links } from 'const/links';
 import { AppSettingsModel } from 'models/app-settings-model';
-import { UpdateModel } from 'models/update-model';
 import { Locale } from 'util/locale';
 import { SettingsLogsView } from 'views/settings/settings-logs-view';
 import { minmax } from 'util/fn';
@@ -66,59 +64,6 @@ class SettingsGeneralView extends View {
         'click .settings__general-show-logs-link': 'showLogs',
         'click .settings__general-reload-app-link': 'reloadApp'
     };
-
-    constructor(model, options) {
-        super(model, options);
-        this.listenTo(UpdateModel, 'change', this.render);
-        this.listenTo(Events, 'theme-applied', this.render);
-    }
-
-    changeTheme(e) {
-        const theme = e.target.closest('.settings__general-theme').dataset.theme;
-        if (theme === '...') {
-            this.goToPlugins();
-        } else {
-            const changedInSettings = AppSettingsModel.theme !== theme;
-            if (changedInSettings) {
-                AppSettingsModel.theme = theme;
-            } else {
-                SettingsManager.setTheme(theme);
-            }
-        }
-    }
-
-    changeAuthSwitchTheme(e) {
-        const autoSwitchTheme = e.target.checked;
-        AppSettingsModel.autoSwitchTheme = autoSwitchTheme;
-        SettingsManager.darkModeChanged();
-        this.render();
-    }
-
-    changeLocale(e) {
-        const locale = e.target.value;
-        if (locale === '...') {
-            e.target.value = AppSettingsModel.locale || 'en-US';
-            this.goToPlugins();
-        } else {
-            AppSettingsModel.locale = locale;
-        }
-    }
-
-    goToPlugins() {
-        this.appModel.menu.select({
-            item: this.appModel.menu.pluginsSection.items[0]
-        });
-    }
-
-    changeFontSize(e) {
-        const fontSize = +e.target.value;
-        AppSettingsModel.fontSize = fontSize;
-    }
-
-    changeTitlebarStyle(e) {
-        const titlebarStyle = e.target.value;
-        AppSettingsModel.titlebarStyle = titlebarStyle;
-    }
 
     changeClipboard(e) {
         const clipboardSeconds = +e.target.value;
@@ -220,18 +165,6 @@ class SettingsGeneralView extends View {
         AppSettingsModel.lockOnOsLock = lockOnOsLock;
     }
 
-    changeTableView(e) {
-        const tableView = e.target.checked || false;
-        AppSettingsModel.tableView = tableView;
-        Events.emit('refresh');
-    }
-
-    changeColorfulIcons(e) {
-        const colorfulIcons = e.target.checked || false;
-        AppSettingsModel.colorfulIcons = colorfulIcons;
-        Events.emit('refresh');
-    }
-
     changeUseMarkdown(e) {
         const useMarkdown = e.target.checked || false;
         AppSettingsModel.useMarkdown = useMarkdown;
@@ -299,12 +232,6 @@ class SettingsGeneralView extends View {
         Updater.update(true, () => {
             Updater.installAndRestart();
         });
-    }
-
-    changeExpandGroups(e) {
-        const expand = e.target.checked;
-        AppSettingsModel.expandGroups = expand;
-        Events.emit('refresh');
     }
 
     changeDisableOfflineStorage(e) {

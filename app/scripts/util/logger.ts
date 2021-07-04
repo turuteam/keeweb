@@ -12,7 +12,7 @@ enum Level {
 const MaxLogsToSave = 100;
 
 interface LogItem {
-    level: string;
+    level: Level;
     args: unknown[];
 }
 
@@ -50,7 +50,7 @@ class Logger {
     debug(...args: unknown[]): void {
         args[0] = `${this.getPrefix()}${String(args[0])}`;
         if (this.level >= Level.Debug) {
-            Logger.saveLast('debug', args);
+            Logger.saveLast(Level.Debug, args);
             console.log(...args);
         }
     }
@@ -58,7 +58,7 @@ class Logger {
     info(...args: unknown[]): void {
         args[0] = `${this.getPrefix()}${String(args[0])}`;
         if (this.level >= Level.Info) {
-            Logger.saveLast('info', args);
+            Logger.saveLast(Level.Info, args);
             console.info(...args);
         }
     }
@@ -66,7 +66,7 @@ class Logger {
     warn(...args: unknown[]): void {
         args[0] = `${this.getPrefix()}${String(args[0])}`;
         if (this.level >= Level.Warn) {
-            Logger.saveLast('warn', args);
+            Logger.saveLast(Level.Warn, args);
             console.warn(...args);
         }
     }
@@ -74,12 +74,12 @@ class Logger {
     error(...args: unknown[]): void {
         args[0] = `${this.getPrefix()}${String(args[0])}`;
         if (this.level >= Level.Error) {
-            Logger.saveLast('error', args);
+            Logger.saveLast(Level.Error, args);
             console.error(...args);
         }
     }
 
-    static saveLast(level: string, args: unknown[]): void {
+    static saveLast(level: Level, args: unknown[]): void {
         lastLogs.push({ level, args: Array.prototype.slice.call(args) });
         if (lastLogs.length > MaxLogsToSave) {
             lastLogs.shift();
@@ -91,4 +91,4 @@ class Logger {
     }
 }
 
-export { Logger };
+export { Logger, Level as LoggerLevel };

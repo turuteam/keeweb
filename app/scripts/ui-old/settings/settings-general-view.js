@@ -3,68 +3,12 @@ import { View } from 'framework/views/view';
 import { Storage } from 'storage';
 import { Updater } from 'comp/app/updater';
 import { Launcher } from 'comp/launcher';
-import { Alerts } from 'comp/ui/alerts';
 import { Links } from 'const/links';
 import { AppSettingsModel } from 'models/app-settings-model';
-import { Locale } from 'util/locale';
-import { SettingsLogsView } from 'views/settings/settings-logs-view';
 import { minmax } from 'util/fn';
 import { NativeModules } from 'comp/launcher/native-modules';
-import template from 'templates/settings/settings-general.hbs';
 
 class SettingsGeneralView extends View {
-    template = template;
-
-    events = {
-        'click .settings__general-theme': 'changeTheme',
-        'click .settings__general-auto-switch-theme': 'changeAuthSwitchTheme',
-        'change .settings__general-locale': 'changeLocale',
-        'change .settings__general-font-size': 'changeFontSize',
-        'change .settings__general-expand': 'changeExpandGroups',
-        'change .settings__general-auto-update': 'changeAutoUpdate',
-        'change .settings__general-idle-minutes': 'changeIdleMinutes',
-        'change .settings__general-clipboard': 'changeClipboard',
-        'change .settings__general-auto-save': 'changeAutoSave',
-        'change .settings__general-auto-save-interval': 'changeAutoSaveInterval',
-        'change .settings__general-remember-key-files': 'changeRememberKeyFiles',
-        'change .settings__general-minimize': 'changeMinimize',
-        'change .settings__general-minimize-on-field-copy': 'changeMinimizeOnFieldCopy',
-        'change .settings__general-audit-passwords': 'changeAuditPasswords',
-        'change .settings__general-audit-password-entropy': 'changeAuditPasswordEntropy',
-        'change .settings__general-exclude-pins-from-audit': 'changeExcludePinsFromAudit',
-        'change .settings__general-check-passwords-on-hibp': 'changeCheckPasswordsOnHIBP',
-        'click .settings__general-toggle-help-hibp': 'clickToggleHelpHIBP',
-        'change .settings__general-audit-password-age': 'changeAuditPasswordAge',
-        'change .settings__general-lock-on-minimize': 'changeLockOnMinimize',
-        'change .settings__general-lock-on-copy': 'changeLockOnCopy',
-        'change .settings__general-lock-on-auto-type': 'changeLockOnAutoType',
-        'change .settings__general-lock-on-os-lock': 'changeLockOnOsLock',
-        'change .settings__general-table-view': 'changeTableView',
-        'change .settings__general-colorful-icons': 'changeColorfulIcons',
-        'change .settings__general-use-markdown': 'changeUseMarkdown',
-        'change .settings__general-use-group-icon-for-entries': 'changeUseGroupIconForEntries',
-        'change .settings__general-direct-autotype': 'changeDirectAutotype',
-        'change .settings__general-autotype-title-filter': 'changeAutoTypeTitleFilter',
-        'change .settings__general-field-label-dblclick-autotype':
-            'changeFieldLabelDblClickAutoType',
-        'change .settings__general-device-owner-auth': 'changeDeviceOwnerAuth',
-        'change .settings__general-device-owner-auth-timeout': 'changeDeviceOwnerAuthTimeout',
-        'change .settings__general-titlebar-style': 'changeTitlebarStyle',
-        'click .settings__general-update-btn': 'checkUpdate',
-        'click .settings__general-restart-btn': 'installUpdateAndRestart',
-        'click .settings__general-download-update-btn': 'downloadUpdate',
-        'click .settings__general-update-found-btn': 'installFoundUpdate',
-        'change .settings__general-disable-offline-storage': 'changeDisableOfflineStorage',
-        'change .settings__general-short-lived-storage-token': 'changeShortLivedStorageToken',
-        'change .settings__general-prv-check': 'changeStorageEnabled',
-        'click .settings__general-prv-logout': 'logoutFromStorage',
-        'click .settings__general-show-advanced': 'showAdvancedSettings',
-        'click .settings__general-dev-tools-link': 'openDevTools',
-        'click .settings__general-try-beta-link': 'tryBeta',
-        'click .settings__general-show-logs-link': 'showLogs',
-        'click .settings__general-reload-app-link': 'reloadApp'
-    };
-
     changeClipboard(e) {
         const clipboardSeconds = +e.target.value;
         AppSettingsModel.clipboardSeconds = clipboardSeconds;
@@ -269,47 +213,6 @@ class SettingsGeneralView extends View {
             storage.logout();
             $(e.target).remove();
         }
-    }
-
-    showAdvancedSettings() {
-        this.$el
-            .find('.settings__general-show-advanced, .settings__general-advanced')
-            .toggleClass('hide');
-        this.scrollToBottom();
-    }
-
-    openDevTools() {
-        if (Launcher) {
-            Launcher.openDevTools();
-        }
-    }
-
-    tryBeta() {
-        if (this.appModel.files.hasUnsavedFiles()) {
-            Alerts.info({
-                header: Locale.setGenTryBetaWarning,
-                body: Locale.setGenTryBetaWarningBody
-            });
-        } else {
-            location.href = Links.BetaWebApp;
-        }
-    }
-
-    showLogs() {
-        if (this.views.logView) {
-            this.views.logView.remove();
-        }
-        this.views.logView = new SettingsLogsView();
-        this.views.logView.render();
-        this.scrollToBottom();
-    }
-
-    reloadApp() {
-        location.reload();
-    }
-
-    scrollToBottom() {
-        this.$el.closest('.scroller').scrollTop(this.$el.height());
     }
 }
 

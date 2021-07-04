@@ -119,4 +119,5 @@ export interface DesktopIpcMainCalls {
     'minimize-main-window': () => void;
     'maximize-main-window': () => void;
     'restore-main-window': () => void;
+    'show-devtools': () => void;
 }

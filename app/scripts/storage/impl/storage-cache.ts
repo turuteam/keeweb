@@ -15,6 +15,10 @@ class StorageCache extends StorageBase {
         return !Launcher;
     }
 
+    get locName(): string {
+        return 'Cache';
+    }
+
     async save(id: string, data: ArrayBuffer): Promise<StorageSaveResult> {
         await this._io.save(id, data);
         return {};
@@ -38,6 +42,10 @@ class StorageCache extends StorageBase {
     watch: undefined;
     unwatch: undefined;
     getPathForName: undefined;
+    getOpenConfig: undefined;
+    getSettingsConfig: undefined;
+    applyConfig: undefined;
+    applySetting: undefined;
 }
 
 export { StorageCache };

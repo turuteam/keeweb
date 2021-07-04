@@ -35,6 +35,10 @@ class StorageGDrive extends StorageBase {
         return AppSettings.gdrive;
     }
 
+    get locName(): string {
+        return Locale.gdrive;
+    }
+
     getPathForName(fileName: string): string {
         return NewFileIdPrefix + fileName;
     }
@@ -398,6 +402,10 @@ class StorageGDrive extends StorageBase {
     mkdir: undefined;
     watch: undefined;
     unwatch: undefined;
+    getOpenConfig: undefined;
+    getSettingsConfig: undefined;
+    applyConfig: undefined;
+    applySetting: undefined;
 }
 
 export { StorageGDrive };

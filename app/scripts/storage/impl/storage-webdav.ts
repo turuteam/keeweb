@@ -32,6 +32,10 @@ class StorageWebDav extends StorageBase {
         return AppSettings.webdav;
     }
 
+    get locName(): string {
+        return Locale.webdav;
+    }
+
     get needShowOpenConfig(): boolean {
         return true;
     }
@@ -39,24 +43,24 @@ class StorageWebDav extends StorageBase {
     getOpenConfig(): StorageOpenConfig {
         const pathField: StorageConfigFieldText = {
             id: 'path',
-            title: 'openUrl',
-            desc: 'openUrlDesc',
+            title: Locale.openUrl,
+            desc: Locale.openUrlDesc,
             type: 'text',
             required: true,
             pattern: '^https://.+'
         };
         const userField: StorageConfigFieldText = {
             id: 'user',
-            title: 'openUser',
-            desc: 'openUserDesc',
-            placeholder: 'openUserPlaceholder',
+            title: Locale.openUser,
+            desc: Locale.openUserDesc,
+            placeholder: Locale.openUserPlaceholder,
             type: 'text'
         };
         const passwordField: StorageConfigFieldPassword = {
             id: 'password',
-            title: 'openPass',
-            desc: 'openPassDesc',
-            placeholder: 'openPassPlaceholder',
+            title: Locale.openPass,
+            desc: Locale.openPassDesc,
+            placeholder: Locale.openPassPlaceholder,
             type: 'password'
         };
 
@@ -68,14 +72,14 @@ class StorageWebDav extends StorageBase {
     getSettingsConfig(): StorageSettingsConfig {
         const methodField: StorageConfigFieldSelect = {
             id: 'webdavSaveMethod',
-            title: 'webdavSaveMethod',
+            title: Locale.webdavSaveMethod,
             type: 'select',
             value: AppSettings.webdavSaveMethod,
-            options: { default: 'webdavSaveMove', put: 'webdavSavePut' }
+            options: { move: Locale.webdavSaveMove, put: Locale.webdavSavePut }
         };
         const reloadField: StorageConfigFieldCheckbox = {
             id: 'webdavStatReload',
-            title: 'webdavStatReload',
+            title: Locale.webdavStatReload,
             type: 'checkbox',
             value: AppSettings.webdavStatReload ? 'true' : null
         };
@@ -408,6 +412,7 @@ class StorageWebDav extends StorageBase {
     watch: undefined;
     unwatch: undefined;
     getPathForName: undefined;
+    applyConfig: undefined;
 }
 
 export { StorageWebDav };

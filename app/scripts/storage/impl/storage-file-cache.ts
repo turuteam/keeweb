@@ -18,6 +18,10 @@ class StorageFileCache extends StorageBase {
         return !!Launcher;
     }
 
+    get locName(): string {
+        return 'File cache';
+    }
+
     private async init(): Promise<string> {
         if (this._path) {
             return Promise.resolve(this._path);
@@ -108,6 +112,10 @@ class StorageFileCache extends StorageBase {
     unwatch: undefined;
     watch: undefined;
     getPathForName: undefined;
+    getOpenConfig: undefined;
+    getSettingsConfig: undefined;
+    applyConfig: undefined;
+    applySetting: undefined;
 }
 
 export { StorageFileCache };

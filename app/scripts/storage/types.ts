@@ -74,8 +74,7 @@ export interface StorageSaveResult {
     path?: string;
 }
 
-export interface StorageConfigField {
-    type: string;
+export interface StorageConfigFieldBase {
     id: string;
     title: string;
     desc?: string;
@@ -83,26 +82,32 @@ export interface StorageConfigField {
     value?: string | null;
 }
 
-export interface StorageConfigFieldText extends StorageConfigField {
+export interface StorageConfigFieldText extends StorageConfigFieldBase {
     type: 'text';
     pattern?: string;
     placeholder?: string;
 }
 
-export interface StorageConfigFieldPassword extends StorageConfigField {
+export interface StorageConfigFieldPassword extends StorageConfigFieldBase {
     type: 'password';
     pattern?: string;
     placeholder?: string;
 }
 
-export interface StorageConfigFieldSelect extends StorageConfigField {
+export interface StorageConfigFieldSelect extends StorageConfigFieldBase {
     type: 'select';
     options: Record<string, string>;
 }
 
-export interface StorageConfigFieldCheckbox extends StorageConfigField {
+export interface StorageConfigFieldCheckbox extends StorageConfigFieldBase {
     type: 'checkbox';
 }
+
+export type StorageConfigField =
+    | StorageConfigFieldText
+    | StorageConfigFieldPassword
+    | StorageConfigFieldSelect
+    | StorageConfigFieldCheckbox;
 
 export interface StorageOpenConfig {
     desc?: string;

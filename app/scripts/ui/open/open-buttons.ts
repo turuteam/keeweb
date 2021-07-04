@@ -11,6 +11,7 @@ import { OpenController } from 'comp/app/open-controller';
 import { OpenState } from 'models/ui/open-state';
 import { GeneratorState } from 'models/ui/generator-state';
 import { Alerts } from 'comp/ui/alerts';
+import { StorageBase } from 'storage/storage-base';
 
 const logger = new Logger('open');
 
@@ -18,7 +19,7 @@ export const OpenButtons: FunctionComponent = () => {
     const secondRowVisible = useModelField(OpenState, 'secondRowVisible');
     const storageInProgress = useModelField(OpenState, 'storageInProgress');
 
-    const storageProviders = [];
+    const storageProviders: StorageBase[] = [];
 
     if (AppSettings.canOpenStorage) {
         for (const prv of Object.values(Storage.getAll())) {

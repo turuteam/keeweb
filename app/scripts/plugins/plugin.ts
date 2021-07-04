@@ -342,9 +342,7 @@ class Plugin extends Model {
                 el.addEventListener('load', () => {
                     URL.revokeObjectURL(objectUrl);
                     if (theme) {
-                        const locKey = this.getThemeLocaleKey(theme.name);
-                        SettingsManager.allThemes[theme.name] = locKey;
-                        SettingsManager.customThemeNames.set(locKey, theme.title);
+                        SettingsManager.customThemes[theme.name] = theme.title;
                         for (const styleSheet of Array.from(document.styleSheets)) {
                             const node = styleSheet.ownerNode as HTMLElement;
                             if (node?.id === id) {
@@ -470,16 +468,12 @@ class Plugin extends Model {
         }
     }
 
-    getThemeLocaleKey(name: string): string {
-        return `setGenThemeCustom_${name}`;
-    }
-
     removeTheme(theme: PluginManifestTheme): void {
         delete SettingsManager.allThemes[theme.name];
         if (AppSettings.theme === theme.name) {
             AppSettings.theme = SettingsManager.getDefaultTheme();
         }
-        SettingsManager.customThemeNames.delete(this.getThemeLocaleKey(theme.name));
+        delete SettingsManager.customThemes[theme.name];
     }
 
     loadPluginSettings(): void {

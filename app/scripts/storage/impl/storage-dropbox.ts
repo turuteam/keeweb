@@ -38,6 +38,10 @@ class StorageDropbox extends StorageBase {
         return AppSettings.dropbox;
     }
 
+    get locName(): string {
+        return Locale.dropbox;
+    }
+
     private toFullPath(path: string) {
         const rootFolder = AppSettings.dropboxFolder;
         if (rootFolder) {
@@ -114,29 +118,29 @@ class StorageDropbox extends StorageBase {
     getOpenConfig(): StorageOpenConfig {
         const keyField: StorageConfigFieldText = {
             id: 'key',
-            title: 'dropboxAppKey',
-            desc: 'dropboxAppKeyDesc',
+            title: Locale.dropboxAppKey,
+            desc: Locale.dropboxAppKeyDesc,
             type: 'text',
             required: true,
             pattern: '\\w+'
         };
         const secretField: StorageConfigFieldPassword = {
             id: 'secret',
-            title: 'dropboxAppSecret',
-            desc: 'dropboxAppSecretDesc',
+            title: Locale.dropboxAppSecret,
+            desc: Locale.dropboxAppSecretDesc,
             type: 'password',
             required: true,
             pattern: '\\w+'
         };
         const folderField: StorageConfigFieldText = {
             id: 'folder',
-            title: 'dropboxFolder',
-            desc: 'dropboxFolderDesc',
+            title: Locale.dropboxFolder,
+            desc: Locale.dropboxFolderDesc,
             type: 'text',
-            placeholder: 'dropboxFolderPlaceholder'
+            placeholder: Locale.dropboxFolderPlaceholder
         };
         return {
-            desc: 'dropboxSetupDesc',
+            desc: Locale.dropboxSetupDesc,
             fields: [keyField, secretField, folderField]
         };
     }
@@ -146,15 +150,19 @@ class StorageDropbox extends StorageBase {
         const appKey = this.getKey();
         const linkField: StorageConfigFieldSelect = {
             id: 'link',
-            title: 'dropboxLink',
+            title: Locale.dropboxLink,
             type: 'select',
             value: 'custom',
-            options: { app: 'dropboxLinkApp', full: 'dropboxLinkFull', custom: 'dropboxLinkCustom' }
+            options: {
+                app: Locale.dropboxLinkApp,
+                full: Locale.dropboxLinkFull,
+                custom: Locale.dropboxLinkCustom
+            }
         };
         const keyField: StorageConfigFieldText = {
             id: 'key',
-            title: 'dropboxAppKey',
-            desc: 'dropboxAppKeyDesc',
+            title: Locale.dropboxAppKey,
+            desc: Locale.dropboxAppKeyDesc,
             type: 'text',
             required: true,
             pattern: '\\w+',
@@ -162,8 +170,8 @@ class StorageDropbox extends StorageBase {
         };
         const secretField: StorageConfigFieldPassword = {
             id: 'secret',
-            title: 'dropboxAppSecret',
-            desc: 'dropboxAppSecretDesc',
+            title: Locale.dropboxAppSecret,
+            desc: Locale.dropboxAppSecretDesc,
             type: 'password',
             required: true,
             pattern: '\\w+',
@@ -171,8 +179,8 @@ class StorageDropbox extends StorageBase {
         };
         const folderField: StorageConfigFieldText = {
             id: 'folder',
-            title: 'dropboxFolder',
-            desc: 'dropboxFolderSettingsDesc',
+            title: Locale.dropboxFolder,
+            desc: Locale.dropboxFolderSettingsDesc,
             type: 'text',
             value: AppSettings.dropboxFolder ?? ''
         };

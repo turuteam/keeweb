@@ -6,6 +6,7 @@ import { classes } from 'util/ui/classes';
 
 interface StorageProvider {
     name: string;
+    locName: string;
     icon?: string;
 }
 
@@ -126,7 +127,7 @@ export const OpenButtonsView: FunctionComponent<{
                             onClick={() => storageClicked(prv.name)}
                         >
                             {prv.icon ? <i class={`fa fa-${prv.icon} open__icon-i`} /> : null}
-                            <div class="open__icon-text">{Locale.get(prv.name)}</div>
+                            <div class="open__icon-text">{prv.locName}</div>
                         </div>
                     ))}
                     {showDemoInSecondRow ? (

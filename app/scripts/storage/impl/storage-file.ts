@@ -13,6 +13,7 @@ import {
 } from 'storage/types';
 import * as fs from 'fs';
 import * as NodePath from 'path';
+import { Locale } from 'util/locale';
 
 interface StorageFileWatcherCallbackItem {
     file: string;
@@ -38,6 +39,10 @@ class StorageFile extends StorageBase {
 
     get enabled(): boolean {
         return !!Launcher;
+    }
+
+    get locName(): string {
+        return Locale.file;
     }
 
     async load(path: string): Promise<StorageFileData> {
@@ -185,6 +190,10 @@ class StorageFile extends StorageBase {
     list: undefined;
     remove: undefined;
     getPathForName: undefined;
+    getOpenConfig: undefined;
+    getSettingsConfig: undefined;
+    applyConfig: undefined;
+    applySetting: undefined;
 }
 
 export { StorageFile };

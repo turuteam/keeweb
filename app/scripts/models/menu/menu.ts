@@ -44,7 +44,7 @@ class Menu extends Model {
         this.sections = [];
 
         this.allItemsItem = new MenuItem({
-            locTitle: 'menuAllItems',
+            locTitle: () => Locale.menuAllItems,
             icon: 'th-large',
             active: true,
             shortcut: Keys.DOM_VK_A,
@@ -58,7 +58,7 @@ class Menu extends Model {
         this.groupsSection.grow = true;
 
         this.colorsItem = new MenuItem({
-            locTitle: 'menuColors',
+            locTitle: () => Locale.menuColors,
             icon: 'bookmark',
             shortcut: Keys.DOM_VK_C,
             cls: 'menu__item-colors',
@@ -75,7 +75,7 @@ class Menu extends Model {
 
         this.trashSection = new MenuSection(
             new MenuItem({
-                locTitle: 'menuTrash',
+                locTitle: () => Locale.menuTrash,
                 icon: 'trash-alt',
                 shortcut: Keys.DOM_VK_D,
                 filter: { type: 'trash' },
@@ -103,44 +103,44 @@ class Menu extends Model {
 
         this.generalSection = new MenuSection(
             new MenuItem({
-                locTitle: 'menuSetGeneral',
+                locTitle: () => Locale.menuSetGeneral,
                 icon: 'cog',
                 page: 'general',
                 anchor: undefined,
                 active: true
             }),
             new MenuItem({
-                locTitle: 'setGenAppearance',
+                locTitle: () => Locale.setGenAppearance,
                 icon: '0',
                 page: 'general',
                 anchor: 'appearance'
             }),
             new MenuItem({
-                locTitle: 'setGenFunction',
+                locTitle: () => Locale.setGenFunction,
                 icon: '0',
                 page: 'general',
                 anchor: 'function'
             }),
             new MenuItem({
-                locTitle: 'setGenAudit',
+                locTitle: () => Locale.setGenAudit,
                 icon: '0',
                 page: 'general',
                 anchor: 'audit'
             }),
             new MenuItem({
-                locTitle: 'setGenLock',
+                locTitle: () => Locale.setGenLock,
                 icon: '0',
                 page: 'general',
                 anchor: 'lock'
             }),
             new MenuItem({
-                locTitle: 'setGenStorage',
+                locTitle: () => Locale.setGenStorage,
                 icon: '0',
                 page: 'general',
                 anchor: 'storage'
             }),
             new MenuItem({
-                locTitle: 'advanced',
+                locTitle: () => StringFormat.capFirst(Locale.advanced),
                 icon: '0',
                 page: 'general',
                 anchor: 'advanced'
@@ -148,30 +148,46 @@ class Menu extends Model {
         );
 
         this.shortcutsSection = new MenuSection(
-            new MenuItem({ locTitle: 'shortcuts', icon: 'keyboard', page: 'shortcuts' })
+            new MenuItem({
+                locTitle: () => StringFormat.capFirst(Locale.shortcuts),
+                icon: 'keyboard',
+                page: 'shortcuts'
+            })
         );
         if (Features.supportsBrowserExtensions) {
             this.browserSection = new MenuSection(
                 new MenuItem({
-                    locTitle: 'menuSetBrowser',
+                    locTitle: () => Locale.menuSetBrowser,
                     icon: Features.browserIcon,
                     page: 'browser'
                 })
             );
         }
         this.pluginsSection = new MenuSection(
-            new MenuItem({ locTitle: 'plugins', icon: 'puzzle-piece', page: 'plugins' })
+            new MenuItem({
+                locTitle: () => StringFormat.capFirst(Locale.plugins),
+                icon: 'puzzle-piece',
+                page: 'plugins'
+            })
         );
         if (Launcher) {
             this.devicesSection = new MenuSection(
-                new MenuItem({ locTitle: 'menuSetDevices', icon: 'usb', page: 'devices' })
+                new MenuItem({
+                    locTitle: () => Locale.menuSetDevices,
+                    icon: 'usb',
+                    page: 'devices'
+                })
             );
         }
         this.aboutSection = new MenuSection(
-            new MenuItem({ locTitle: 'menuSetAbout', icon: 'info', page: 'about' })
+            new MenuItem({ locTitle: () => Locale.menuSetAbout, icon: 'info', page: 'about' })
         );
         this.helpSection = new MenuSection(
-            new MenuItem({ locTitle: 'help', icon: 'question', page: 'help' })
+            new MenuItem({
+                locTitle: () => StringFormat.capFirst(Locale.help),
+                icon: 'question',
+                page: 'help'
+            })
         );
         this.filesSection = new MenuSection();
         this.filesSection.scrollable = true;
@@ -299,7 +315,7 @@ class Menu extends Model {
             for (const section of menu) {
                 for (const item of section.items) {
                     if (item.locTitle) {
-                        item.title = StringFormat.capFirst(Locale.get(item.locTitle));
+                        item.title = item.locTitle();
                     }
                 }
             }

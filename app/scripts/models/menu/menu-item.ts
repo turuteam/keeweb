@@ -41,7 +41,7 @@ export type MenuItemFilter =
 class MenuItem extends Model {
     readonly id: string;
     title?: string;
-    locTitle?: LocaleKey;
+    locTitle?: () => string;
     icon?: string;
     customIcon?: string;
     active = false;

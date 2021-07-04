@@ -26,7 +26,7 @@ function withReplace(name: string): LocWithReplace {
 // prettier-ignore
 export const Locale = {
     set,
-    get,
+    // get,
     get localeName(): string { return activeLocaleName; },
 
     // this code is generated using npm run generate-locale

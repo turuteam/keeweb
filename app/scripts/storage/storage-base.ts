@@ -85,9 +85,7 @@ abstract class StorageBase {
     }
 
     abstract load(id: string, opts?: StorageFileOptions): Promise<StorageFileData>;
-
     abstract stat(id: string, opts?: StorageFileOptions): Promise<StorageFileStat>;
-
     abstract save(
         id: string,
         data: ArrayBuffer,
@@ -96,22 +94,22 @@ abstract class StorageBase {
     ): Promise<StorageSaveResult>;
 
     abstract remove?(id: string, opts?: StorageFileOptions): Promise<void>;
-
     abstract list?(dir?: string): Promise<StorageListItem[]>;
-
     abstract mkdir?(path: string): Promise<void>;
-
     abstract watch?(path: string, callback: StorageFileWatcherCallback): void;
-
     abstract unwatch?(path: string, callback: StorageFileWatcherCallback): void;
-
     abstract getPathForName?(fileName: string): string;
+    abstract getOpenConfig?(): StorageOpenConfig;
+    abstract getSettingsConfig?(): StorageSettingsConfig;
+    abstract applyConfig?(config: Record<string, string | null>): Promise<void>;
+    abstract applySetting?(key: string, value: string | null): void;
 
     protected getOAuthConfig(): StorageOAuthConfig {
         throw new Error('OAuth is not supported');
     }
 
     abstract get enabled(): boolean;
+    abstract get locName(): string;
 
     get loggedIn(): boolean {
         return !!this.getStoredOAuthToken();
@@ -494,6 +492,8 @@ abstract class StorageBase {
     protected async oauthRevokeToken(url?: string, usePost?: boolean): Promise<void> {
         const token = this.getStoredOAuthToken();
         if (token) {
+            this.deleteStoredToken();
+            this._oauthToken = undefined;
             if (url) {
                 await this.xhr({
                     url: url.replace('{token}', token.accessToken),
@@ -501,8 +501,6 @@ abstract class StorageBase {
                     method: usePost ? 'POST' : 'GET'
                 });
             }
-            this.deleteStoredToken();
-            this._oauthToken = undefined;
         }
     }
 
@@ -568,7 +566,7 @@ abstract class StorageBase {
         }
 
         this._logger.info('OAuth code exchanged', response);
-        this.oauthProcessReturn(response);
+        this.oauthProcessReturn(response.data);
     }
 
     private async oauthExchangeRefreshToken(): Promise<void> {
@@ -616,24 +614,6 @@ abstract class StorageBase {
 
     get needShowOpenConfig(): boolean {
         return false;
-    }
-
-    getOpenConfig(): StorageOpenConfig {
-        throw new Error('getOpenConfig is not implemented');
-    }
-
-    getSettingsConfig(): StorageSettingsConfig {
-        throw new Error('getSettingsConfig is not implemented');
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    applyConfig(config: Record<string, string | null>): Promise<void> {
-        throw new Error('applyConfig is not implemented');
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    applySetting(key: string, value: string | null): void {
-        throw new Error('applySetting is not implemented');
     }
 }
 

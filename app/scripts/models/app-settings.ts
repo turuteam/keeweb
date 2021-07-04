@@ -18,6 +18,7 @@ export type AppSettingsAutoUpdate = 'install' | 'check';
 export type AppSettingsRememberKeyFiles = 'path' | 'data';
 export type AppSettingsTitlebarStyle = 'default' | 'hidden' | 'hidden-inset';
 export type AppSettingsDeviceOwnerAuth = 'memory' | 'file';
+export type AppSettingsFontSize = 0 | 1 | 2;
 
 class AppSettings extends Model {
     theme: string | null = null; // UI theme
@@ -31,7 +32,7 @@ class AppSettings extends Model {
     clipboardSeconds = 0; // number of seconds after which the clipboard will be cleared
     autoSave = true; // auto-save open files
     autoSaveInterval = 0; // interval between performing automatic sync, minutes, -1: on every change
-    rememberKeyFiles: AppSettingsRememberKeyFiles = 'path'; // remember keyfiles selected on the Open screen
+    rememberKeyFiles: AppSettingsRememberKeyFiles | null = 'path'; // remember keyfiles selected on the Open screen
     idleMinutes = 15; // app lock timeout after inactivity, minutes
     minimizeOnClose = false; // minimise the app instead of closing
     minimizeOnFieldCopy = false; // minimise the app on copy
@@ -51,7 +52,7 @@ class AppSettings extends Model {
     hideEmptyFields = false; // hide empty fields in entries
     skipHttpsWarning = false; // disable the non-HTTPS warning
     demoOpened = false; // hide the demo button inside the More... menu
-    fontSize: 0 | 1 | 2 = 0; // font size
+    fontSize: AppSettingsFontSize = 0; // font size
     tableViewColumns: string[] | null = null; // columns displayed in the table view
     generatorPresets: PasswordGeneratorAppSetting | null = null; // presets used in the password generator
     generatorHidePassword = false; // hide password in the generator
@@ -478,8 +479,13 @@ class AppSettings extends Model {
     }
 
     private setRememberKeyFiles(value: unknown) {
-        if (value === 'path' || value === 'data') {
-            this.rememberKeyFiles = value;
+        if (value) {
+            if (value === 'path' || value === 'data') {
+                this.rememberKeyFiles = value;
+                return true;
+            }
+        } else {
+            this.rememberKeyFiles = null;
             return true;
         }
         return false;

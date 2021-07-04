@@ -1,8 +1,6 @@
 import { Events } from 'framework/events';
 import { View } from 'framework/views/view';
-import { AutoType } from 'auto-type';
 import { Storage } from 'storage';
-import { RuntimeInfo } from 'const/runtime-info';
 import { Updater } from 'comp/app/updater';
 import { Launcher } from 'comp/launcher';
 import { SettingsManager } from 'comp/settings/settings-manager';
@@ -10,14 +8,9 @@ import { Alerts } from 'comp/ui/alerts';
 import { Links } from 'const/links';
 import { AppSettingsModel } from 'models/app-settings-model';
 import { UpdateModel } from 'models/update-model';
-import { SemVer } from 'util/data/semver';
-import { Features } from 'util/features';
-import { DateFormat } from 'comp/i18n/date-format';
 import { Locale } from 'util/locale';
 import { SettingsLogsView } from 'views/settings/settings-logs-view';
-import { SettingsPrvView } from 'views/settings/settings-prv-view';
-import { mapObject, minmax } from 'util/fn';
-import { ThemeWatcher } from 'comp/browser/theme-watcher';
+import { minmax } from 'util/fn';
 import { NativeModules } from 'comp/launcher/native-modules';
 import template from 'templates/settings/settings-general.hbs';
 
@@ -78,184 +71,6 @@ class SettingsGeneralView extends View {
         super(model, options);
         this.listenTo(UpdateModel, 'change', this.render);
         this.listenTo(Events, 'theme-applied', this.render);
-    }
-
-    render() {
-        const updateReady = UpdateModel.updateStatus === 'ready';
-        const updateFound = UpdateModel.updateStatus === 'found';
-        const updateManual = UpdateModel.updateManual;
-        const storageProviders = this.getStorageProviders();
-
-        super.render({
-            themes: this.getAllThemes(),
-            autoSwitchTheme: AppSettingsModel.autoSwitchTheme,
-            activeTheme: SettingsManager.activeTheme,
-            locales: SettingsManager.allLocales,
-            activeLocale: SettingsManager.activeLocale,
-            fontSize: AppSettingsModel.fontSize,
-            expandGroups: AppSettingsModel.expandGroups,
-            canClearClipboard: !!Launcher,
-            clipboardSeconds: AppSettingsModel.clipboardSeconds,
-            rememberKeyFiles: AppSettingsModel.rememberKeyFiles,
-            supportFiles: !!Launcher,
-            autoSave: AppSettingsModel.autoSave,
-            autoSaveInterval: AppSettingsModel.autoSaveInterval,
-            idleMinutes: AppSettingsModel.idleMinutes,
-            minimizeOnClose: AppSettingsModel.minimizeOnClose,
-            minimizeOnFieldCopy: AppSettingsModel.minimizeOnFieldCopy,
-            devTools: Launcher && Launcher.devTools,
-            canAutoUpdate: Updater.enabled,
-            canAutoSaveOnClose: !!Launcher,
-            canMinimize: !!Launcher,
-            canDetectMinimize: !!Launcher,
-            canDetectOsSleep: Launcher && Launcher.canDetectOsSleep(),
-            canAutoType: AutoType.enabled,
-            auditPasswords: AppSettingsModel.auditPasswords,
-            auditPasswordEntropy: AppSettingsModel.auditPasswordEntropy,
-            excludePinsFromAudit: AppSettingsModel.excludePinsFromAudit,
-            checkPasswordsOnHIBP: AppSettingsModel.checkPasswordsOnHIBP,
-            auditPasswordAge: AppSettingsModel.auditPasswordAge,
-            hibpLink: Links.HaveIBeenPwned,
-            hibpPrivacyLink: Links.HaveIBeenPwnedPrivacy,
-            lockOnMinimize: Launcher && AppSettingsModel.lockOnMinimize,
-            lockOnCopy: AppSettingsModel.lockOnCopy,
-            lockOnAutoType: AppSettingsModel.lockOnAutoType,
-            lockOnOsLock: AppSettingsModel.lockOnOsLock,
-            tableView: AppSettingsModel.tableView,
-            canSetTableView: !Features.isMobile,
-            autoUpdate: Updater.getAutoUpdateType(),
-            updateInProgress: Updater.updateInProgress(),
-            updateInfo: this.getUpdateInfo(),
-            updateWaitingReload: updateReady && !Launcher,
-            showUpdateBlock: Updater.enabled && !updateManual,
-            updateReady,
-            updateFound,
-            updateManual,
-            releaseNotesLink: Links.ReleaseNotes,
-            colorfulIcons: AppSettingsModel.colorfulIcons,
-            useMarkdown: AppSettingsModel.useMarkdown,
-            useGroupIconForEntries: AppSettingsModel.useGroupIconForEntries,
-            directAutotype: AppSettingsModel.directAutotype,
-            autoTypeTitleFilterEnabled: AppSettingsModel.autoTypeTitleFilterEnabled,
-            fieldLabelDblClickAutoType: AppSettingsModel.fieldLabelDblClickAutoType,
-            supportsTitleBarStyles: Features.supportsTitleBarStyles,
-            supportsCustomTitleBarAndDraggableWindow:
-                Features.supportsCustomTitleBarAndDraggableWindow,
-            titlebarStyle: AppSettingsModel.titlebarStyle,
-            storageProviders,
-            showReloadApp: Features.isStandalone,
-            hasDeviceOwnerAuth: Features.isDesktop && Features.isMac,
-            deviceOwnerAuth: AppSettingsModel.deviceOwnerAuth,
-            deviceOwnerAuthTimeout: AppSettingsModel.deviceOwnerAuthTimeoutMinutes,
-            disableOfflineStorage: AppSettingsModel.disableOfflineStorage,
-            shortLivedStorageToken: AppSettingsModel.shortLivedStorageToken
-        });
-        this.renderProviderViews(storageProviders);
-    }
-
-    renderProviderViews(storageProviders) {
-        storageProviders.forEach(function (prv) {
-            if (this.views[prv.name]) {
-                this.views[prv.name].remove();
-            }
-            if (prv.hasConfig) {
-                const prvView = new SettingsPrvView(prv, {
-                    parent: this.$el.find('.settings__general-' + prv.name)[0]
-                });
-                this.views[prv.name] = prvView;
-                prvView.render();
-            }
-        }, this);
-    }
-
-    getUpdateInfo() {
-        switch (UpdateModel.status) {
-            case 'checking':
-                return Locale.setGenUpdateChecking + '...';
-            case 'error': {
-                let errMsg = Locale.setGenErrorChecking;
-                if (UpdateModel.lastError) {
-                    errMsg += ': ' + UpdateModel.lastError;
-                }
-                if (UpdateModel.lastSuccessCheckDate) {
-                    errMsg +=
-                        '. ' +
-                        Locale.setGenLastCheckSuccess.replace(
-                            '{}',
-                            DateFormat.dtStr(UpdateModel.lastSuccessCheckDate)
-                        ) +
-                        ': ' +
-                        Locale.setGenLastCheckVer.replace('{}', UpdateModel.lastVersion);
-                }
-                return errMsg;
-            }
-            case 'ok': {
-                let msg =
-                    Locale.setGenCheckedAt +
-                    ' ' +
-                    DateFormat.dtStr(UpdateModel.lastCheckDate) +
-                    ': ';
-                const cmp = SemVer.compareVersions(RuntimeInfo.version, UpdateModel.lastVersion);
-                if (cmp >= 0) {
-                    msg += Locale.setGenLatestVer;
-                } else {
-                    msg +=
-                        Locale.setGenNewVer.replace('{}', UpdateModel.lastVersion) +
-                        ' ' +
-                        DateFormat.dStr(UpdateModel.lastVersionReleaseDate);
-                }
-                switch (UpdateModel.updateStatus) {
-                    case 'downloading':
-                        return msg + '. ' + Locale.setGenDownloadingUpdate;
-                    case 'extracting':
-                        return msg + '. ' + Locale.setGenExtractingUpdate;
-                    case 'error':
-                        return msg + '. ' + Locale.setGenCheckErr;
-                }
-                return msg;
-            }
-            default:
-                return Locale.setGenNeverChecked;
-        }
-    }
-
-    getStorageProviders() {
-        const storageProviders = [];
-        Object.keys(Storage).forEach((name) => {
-            const prv = Storage[name];
-            if (!prv.system) {
-                storageProviders.push(prv);
-            }
-        });
-        storageProviders.sort((x, y) => (x.uipos || Infinity) - (y.uipos || Infinity));
-        return storageProviders.map((sp) => ({
-            name: sp.name,
-            enabled: sp.enabled,
-            hasConfig: !!sp.getSettingsConfig,
-            loggedIn: sp.loggedIn
-        }));
-    }
-
-    getAllThemes() {
-        const { autoSwitchTheme } = AppSettingsModel;
-        if (autoSwitchTheme) {
-            const themes = {};
-            const ignoredThemes = {};
-            for (const config of SettingsManager.autoSwitchedThemes) {
-                ignoredThemes[config.dark] = true;
-                ignoredThemes[config.light] = true;
-                const activeTheme = ThemeWatcher.dark ? config.dark : config.light;
-                themes[activeTheme] = Locale[config.name];
-            }
-            for (const [th, name] of Object.entries(SettingsManager.allThemes)) {
-                if (!ignoredThemes[th]) {
-                    themes[th] = Locale[name];
-                }
-            }
-            return themes;
-        } else {
-            return mapObject(SettingsManager.allThemes, (theme) => Locale[theme]);
-        }
     }
 
     changeTheme(e) {

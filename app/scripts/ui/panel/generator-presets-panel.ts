@@ -10,7 +10,16 @@ import {
     PasswordGeneratorPreset
 } from 'util/generators/password-generator';
 import { Locale } from 'util/locale';
-import { StringFormat } from 'util/formatting/string-format';
+
+const CharRangeTitles: Record<CharRange, string> = {
+    upper: Locale.genPsUpper,
+    lower: Locale.genPsLower,
+    digits: Locale.genPsDigits,
+    special: Locale.genPsSpecial,
+    brackets: Locale.genPsBrackets,
+    high: Locale.genPsHigh,
+    ambiguous: Locale.genPsAmbiguous
+};
 
 export const GeneratorPresetsPanel: FunctionComponent = () => {
     const backClicked = () => Workspace.showList();
@@ -58,7 +67,7 @@ export const GeneratorPresetsPanel: FunctionComponent = () => {
             const range = key as CharRange;
             return {
                 name: range,
-                title: Locale.get(`genPs${StringFormat.capFirst(range)}`) ?? '',
+                title: CharRangeTitles[range] ?? '',
                 enabled: !!selected[range],
                 sample: rangeOverride[range] || CharRanges[range]
             };

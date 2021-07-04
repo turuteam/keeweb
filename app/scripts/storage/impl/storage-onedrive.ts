@@ -13,6 +13,7 @@ import {
     StorageRevConflictError,
     StorageSaveResult
 } from 'storage/types';
+import { Locale } from 'util/locale';
 
 // https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow
 
@@ -29,6 +30,10 @@ class StorageOneDrive extends StorageBase {
 
     get enabled(): boolean {
         return AppSettings.onedrive;
+    }
+
+    get locName(): string {
+        return Locale.onedrive;
     }
 
     getPathForName(fileName: string): string {
@@ -323,6 +328,10 @@ class StorageOneDrive extends StorageBase {
 
     watch: undefined;
     unwatch: undefined;
+    getOpenConfig: undefined;
+    getSettingsConfig: undefined;
+    applyConfig: undefined;
+    applySetting: undefined;
 }
 
 export { StorageOneDrive };

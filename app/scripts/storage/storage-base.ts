@@ -492,14 +492,17 @@ abstract class StorageBase {
     protected async oauthRevokeToken(url?: string, usePost?: boolean): Promise<void> {
         const token = this.getStoredOAuthToken();
         if (token) {
-            this.deleteStoredToken();
-            this._oauthToken = undefined;
-            if (url) {
-                await this.xhr({
-                    url: url.replace('{token}', token.accessToken),
-                    statuses: [200, 401],
-                    method: usePost ? 'POST' : 'GET'
-                });
+            try {
+                if (url) {
+                    await this.xhr({
+                        url: url.replace('{token}', token.accessToken),
+                        statuses: [200, 401],
+                        method: usePost ? 'POST' : 'GET'
+                    });
+                }
+            } finally {
+                this.deleteStoredToken();
+                this._oauthToken = undefined;
             }
         }
     }

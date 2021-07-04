@@ -31,10 +31,9 @@ const AllGlobalShortcuts = {
     restoreApp: undefined
 };
 
-const GlobalShortcutAppSettingsFields: Record<
-    keyof typeof AllGlobalShortcuts,
-    AppSettingsFieldName
-> = {
+export type GlobalShortcutType = keyof typeof AllGlobalShortcuts;
+
+const GlobalShortcutAppSettingsFields: Record<GlobalShortcutType, AppSettingsFieldName> = {
     copyPassword: 'globalShortcutCopyPassword',
     copyUser: 'globalShortcutCopyUser',
     copyUrl: 'globalShortcutCopyUrl',
@@ -108,11 +107,11 @@ const Shortcuts = {
         return formatting ? `${shortcut} + ` : `${shortcut}+`;
     },
 
-    globalShortcutText(type: keyof typeof AllGlobalShortcuts, formatting?: boolean): string {
+    globalShortcutText(type: GlobalShortcutType, formatting?: boolean): string {
         return this.presentShortcut(this.globalShortcut(type), formatting);
     },
 
-    globalShortcut(type: keyof typeof AllGlobalShortcuts): string | undefined {
+    globalShortcut(type: GlobalShortcutType): string | undefined {
         const setting = GlobalShortcutAppSettingsFields[type];
         const appSettingsShortcut = AppSettings[setting];
         if (typeof appSettingsShortcut === 'string') {
@@ -128,7 +127,7 @@ const Shortcuts = {
         return undefined;
     },
 
-    setGlobalShortcut(type: keyof typeof AllGlobalShortcuts, value: string): void {
+    setGlobalShortcut(type: GlobalShortcutType, value: string | null): void {
         if (!AllGlobalShortcuts[type]) {
             throw new Error('Bad shortcut: ' + type);
         }
